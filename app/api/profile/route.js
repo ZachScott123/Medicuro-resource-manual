@@ -2,6 +2,7 @@ import { connectToDB } from "@/app/api/databases/db";
 import { connectToDB as connectToStaffDB } from "@/app/api/databases/staff-db";
 import { connectToDB as connectToPartnersDB } from "@/app/api/databases/partners-db";
 import { getAuthenticatedUser } from "@/app/lib/auth-session";
+import { buildProfileIdFromEmail } from "@/app/lib/profile-id";
 import { parseBody, userProfileSchema } from "@/app/api/validation";
 
 const profileTargets = {
@@ -39,10 +40,6 @@ function serializeProfile(record) {
     profileType: record.profileType || "",
     id: record.id || ""
   };
-}
-
-function buildProfileId(email) {
-  return `user-${String(email).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 }
 
 async function findExistingProfile(email) {
@@ -115,27 +112,39 @@ export async function PUT(request) {
     return Response.json({ e: "Invalid request body." }, { status: 400 });
   }
 
-  const profile = {
-    id: buildProfileId(user.email),
-    name: payload.name,
-    position: payload.position,
-    email: user.email?.toLowerCase(),
-    phone: payload.phone,
-    imageUrl: payload.imageUrl,
-    location: payload.location,
-    about: payload.about,
-    profileType: payload.profileType
-  };
-
-  const parsed = parseBody(userProfileSchema, profile);
-  if (parsed.error) {
-    return Response.json({ e: parsed.error }, { status: 400 });
-  }
-
-  const data = parsed.data;
-  const target = profileTargets[data.profileType];
+  const email = user.email?.toLowerCase();
+  const target = profileTargets[payload.profileType];
 
   try {
+    const { db } = await connectToDB();
+    const userRecord = await db.collection("users").findOne({ email });
+    let profileId = userRecord?.profileId;
+
+    if (!profileId) {
+      profileId = buildProfileIdFromEmail(email);
+      await db
+        .collection("users")
+        .updateOne({ email }, { $set: { profileId } }, { upsert: true });
+    }
+
+    const profile = {
+      id: profileId,
+      name: payload.name,
+      position: payload.position,
+      email,
+      phone: payload.phone,
+      imageUrl: payload.imageUrl,
+      location: payload.location,
+      about: payload.about,
+      profileType: payload.profileType
+    };
+
+    const parsed = parseBody(userProfileSchema, profile);
+    if (parsed.error) {
+      return Response.json({ e: parsed.error }, { status: 400 });
+    }
+
+    const data = parsed.data;
     const existing = await findExistingProfile(data.email);
     if (existing && existing.target.collection !== target.collection) {
       await existing.target.connect().then(({ db }) =>
@@ -159,7 +168,6 @@ export async function PUT(request) {
       .collection(target.collection)
       .replaceOne({ id: data.id }, directoryRecord, { upsert: true });
 
-    const { db } = await connectToDB();
     await db.collection("users").updateOne(
       { email: data.email },
       {

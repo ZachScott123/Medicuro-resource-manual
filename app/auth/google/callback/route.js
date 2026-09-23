@@ -1,5 +1,6 @@
 import { getGoogleUser } from "@/app/auth/google/googleOauthUtils";
 import { connectToDB } from "@/app/api/databases/db";
+import { buildProfileIdFromEmail } from "@/app/lib/profile-id";
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -42,27 +43,38 @@ export async function GET(request) {
 
         let user = await db.collection('users').findOne({ email: oauthUserInfo.email });
 
-        if (!user) {
+                if (!user) {
             const newUser = {
                 username: oauthUserInfo.name,
                 email: oauthUserInfo.email,
                 picture: oauthUserInfo.picture,
                 googleId: oauthUserInfo.id,
-                isEditor: editorEmails.includes(email)
+                isEditor: editorEmails.includes(email),
+                profileId: buildProfileIdFromEmail(oauthUserInfo.email)
             };
             const result = await db.collection('users').insertOne(newUser);
             user = await db.collection('users').findOne({ _id: result.insertedId });
         } else {
+            const updates = {
+                username: oauthUserInfo.name,
+                picture: oauthUserInfo.picture,
+                isEditor: editorEmails.includes(email)
+            };
+
+            // Backfill a stable profileId for users created before ids existed,
+            // so the id never changes across future logins.
+            if (!user.profileId) {
+                updates.profileId = buildProfileIdFromEmail(oauthUserInfo.email);
+            }
+
             await db.collection('users').updateOne(
                 { _id: user._id },
-                {
-                    $set: {
-                        username: oauthUserInfo.name,
-                        picture: oauthUserInfo.picture,
-                        isEditor: editorEmails.includes(email)
-                    }
-                }
+                { $set: updates }
             );
+
+            if (updates.profileId) {
+                user.profileId = updates.profileId;
+            }
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
