@@ -1,0 +1,1580 @@
+@import "tailwindcss";
+
+:root {
+	--ink: #123243;
+	--muted-ink: #607984;
+	--teal: #12a899;
+	--teal-dark: #087e78;
+	--blue: #176183;
+	--mist: #edf8f7;
+	--line: #d8e8e8;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	background: #f8fcfc;
+}
+
+body {
+	background: #f8fcfc;
+	color: var(--ink);
+	font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+}
+
+body.login-layout {
+	overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+p {
+	margin: 0;
+}
+
+h1 {
+	color: var(--ink);
+	font-size: clamp(2.5rem, 6vw, 5.25rem);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 0.98;
+}
+
+h3 {
+	color: var(--muted-ink);
+	font-size: 1rem;
+	font-weight: 500;
+	line-height: 1.6;
+}
+
+.site-nav {
+	background: rgba(248, 252, 252, 0.94);
+	backdrop-filter: blur(8px);
+	border-bottom: 1px solid transparent;
+	color: var(--ink);
+	padding: 0.35rem 5rem;
+	display: flex;
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	transition: box-shadow 450ms ease, border-color 220ms ease, padding 220ms ease;
+}
+
+.site-nav-scrolled {
+	box-shadow: 0 8px 24px rgba(18, 50, 67, 0.08);
+	border-bottom-color: rgba(18, 50, 67, 0.08);
+}
+
+.site-nav button {
+	background: linear-gradient(120deg, #0c8dcd, #5BC7B8);
+	border-radius: 5px;
+	padding: 0.8rem 3rem;
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+
+	transition: background 0.0s ease; 
+}
+
+.site-nav button:hover {
+	background: #0c8dcd;
+	border-radius: 5px;
+}
+
+.brand-mark {
+	color: var(--blue);
+	font-size: 1.55rem;
+	font-weight: 800;
+	letter-spacing: -0.04em;
+}
+
+.brand-logo {
+	display: inline-flex;
+	flex: 0 0 auto;
+	height: 3.5rem;
+	width: 12rem;
+}
+
+.brand-logo img {
+	height: 100%;
+	object-fit: contain;
+	object-position: left center;
+	width: 100%;
+	transition: opacity 200ms ease;
+}
+
+.brand-logo img:hover {
+	opacity: 80%;
+}
+
+.nav-links {
+	align-items: center;
+	display: flex;
+	gap: 0.3rem;
+}
+
+.nav-link {
+	border-radius: 999px;
+	color: #265B72;
+	font-size: 1.125rem;
+	font-weight: 500;
+	letter-spacing: 0.3px;
+	padding: 1.5rem 0.7rem;
+	transition: background 160ms ease, color 160ms ease;
+}
+
+.nav-link:hover,
+.nav-link-active {
+	color: #00ADFF;
+}
+
+.nav-link-footer {
+	font-size: 0.9rem;
+	padding: 0rem 0.7rem;
+	font-weight: 300;
+	color: #ffffff;
+	letter-spacing: 0.5px;
+}
+
+.nav-links .nav-spacer {
+	color:#528297;
+	cursor: default;
+}
+
+.nav-link-footer:hover,
+.nav-link-footer.nav-link-active {
+	color: #C8C6C6;
+}
+
+.specialist-form h2{
+	color: var(--teal);
+}
+
+.directory-page {
+	width: min(100%);
+}
+
+.directory-hero-copy {
+	position: relative;
+	z-index: 1;
+	width: min(100%, 900px);
+	animation: fade-content-in 700ms ease-out both;
+}
+
+.physician-hero {
+	background: 
+		linear-gradient(120deg, #7d5c9e7e 0%, #f8fcfcab 43%, #eefeda92 78%, #ffffff 100%),
+        url("/physician-hero-photo.png") right center / cover no-repeat;
+	display: flex;
+	align-items: center;
+	margin: 0rem -1.5rem 3rem;
+	overflow: hidden;
+	padding: clamp(6rem, 5vw, 9.5rem);
+	position: relative;
+	cursor: default;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.physician-hero .directory-hero-copy {
+	margin-left: auto;
+	text-align: right;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.physician-hero .directory-hero-copy p {
+	margin-left: auto;
+	text-align: right;
+}
+
+.specialist-hero {
+	background: 
+		linear-gradient(30deg, #ffaef672 0%, #f0edffba 20%, #f8fcfc70 62%, #8a673698 100%),
+        url("/specialist-hero-photo.png") right center / cover no-repeat;
+	display: flex;
+	align-items: center;
+	margin: 0rem -1.5rem 3rem;
+	overflow: hidden;
+	padding: clamp(6rem, 5vw, 9.5rem);
+	position: relative;	
+	cursor: default;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.staff-hero {
+	background: 
+		linear-gradient(40deg, #ffffffe4 0%, #ffe2e2ba 20%, #f8fcfc6d 62%, #fd990c50 100%),
+		url("/staff-hero-photo.png") right center / cover no-repeat;
+	display: flex;
+	align-items: center;
+	margin: 0rem -1.5rem 3rem;
+	overflow: hidden;
+	padding: clamp(6rem, 5vw, 9.5rem);
+	position: relative;
+	cursor: default;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.guide-hero {
+	background:
+		linear-gradient(105deg, #1a4f6cf2 0%, #176183d9 48%, #15bcabaa 100%),
+		url("/guide-hero-photo.png") center / cover no-repeat;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0rem -1.5rem 3rem;
+	min-height: 25rem;
+	overflow: hidden;
+	padding: clamp(4rem, 7vw, 8rem);
+	position: relative;
+	cursor: default;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.guide-hero .directory-hero-copy {
+	max-width: 700px;
+}
+
+.guide-hero .directory-hero-copy h1,
+.guide-hero .directory-hero-copy p,
+.guide-hero .directory-hero-copy .eyebrow {
+	color: #ffffff;
+}
+
+
+.guide-library {
+	margin-bottom: 4rem;
+}
+
+.guide-toolbar {
+	margin-bottom: 1.5rem;
+}
+
+.guide-toolbar h2 {
+	color: var(--ink);
+	font-size: 1.7rem;
+}
+
+.guide-grid {
+	display: grid;
+	gap: 1.25rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-card {
+	align-items: flex-start;
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.06);
+	display: flex;
+	gap: 1rem;
+	min-width: 0;
+	padding: 1.25rem;
+	min-width: 0;
+	transition: box-shadow 180ms ease, transform 180ms ease;
+	animation: fade-content-in 600ms ease-out both;
+}
+
+.guide-card:hover {
+	box-shadow: 0 18px 36px rgba(18, 50, 67, 0.12);
+	transform: translateY(-2px);
+}
+
+.guide-card-icon {
+	align-items: center;
+	background: var(--mist);
+	border-radius: 0.75rem;
+	color: var(--teal-dark);
+	display: flex;
+	flex: 0 0 auto;
+	height: 3rem;
+	justify-content: center;
+	width: 3rem;
+}
+
+.guide-card-copy {
+	min-width: 0;
+}
+
+.guide-card-copy h3 {
+	color: var(--ink);
+	font-size: 1.05rem;
+	font-weight: 750;
+	line-height: 1.25;
+}
+
+.guide-card-copy p {
+	color: var(--muted-ink);
+	font-size: 0.9rem;
+	line-height: 1.5;
+	margin-top: 0.35rem;
+}
+
+.guide-card-copy small {
+	color: var(--teal-dark);
+	display: block;
+	font-size: 0.75rem;
+	margin-top: 0.7rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.guide-card-actions {
+	display: flex;
+	gap: 0.5rem;
+	margin-left: auto;
+}
+
+.guide-card-actions .btn-accent2,
+.guide-delete-button {
+	align-items: center;
+	display: inline-flex;
+	flex: 0 0 auto;
+	justify-content: center;
+	padding: 0.65rem;
+}
+
+.guide-delete-button {
+	background: transparent;
+	border: 0;
+	color: #c24141;
+	cursor: pointer;
+}
+
+.guide-empty-state {
+	align-items: center;
+	border: 1px dashed var(--line);
+	color: var(--muted-ink);
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	justify-content: center;
+	min-height: 10rem;
+}
+
+.staff-hero h1 {
+	width: min(100%, 600px);
+}
+
+.staff-hero .eyebrow,
+.physician-hero .eyebrow,
+.specialist-hero .eyebrow {
+	background: linear-gradient(120deg, #0c8dcd, #01a19444);
+	border-radius: 10px;
+	padding: 0.2rem 1.2rem;
+	color: #ffffff;
+	display: inline-flex;
+	align-items: center;
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.staff-hero .directory-hero-copy,
+.specialist-hero .directory-hero-copy {
+	text-align: left;
+}
+
+.eyebrow {
+	color: var(--teal-dark);
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	margin-bottom: 1.2rem;
+	text-transform: uppercase;
+}
+
+.directory-hero h1 {
+	max-width: 1000px;
+	font-size: 4rem;
+	letter-spacing: 0.3px;
+	color: var(--ink);
+}
+
+.directory-hero p {
+	color: #3c4a51;
+	font-size: 1.5rem;
+	letter-spacing: 0.5px;
+	line-height: 1.7;
+	margin-top: 1.3rem;
+	max-width: 620px;
+}
+
+.directory-toolbar {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 3rem;
+	padding: 0rem 3rem;
+	animation: fade-content-in 600ms ease-out both;
+}
+
+.directory-toolbar h2 {
+	color: var(--ink);
+	font-size: 1.35rem;
+	font-weight: 700;
+}
+
+.profile-grid {
+	display: grid;
+	gap: 1.35rem;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.profile-card {
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.06);
+	min-width: 0;
+	overflow: hidden;
+	animation: fade-content-in 600ms ease-out both;
+	transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.profile-card:hover {
+	box-shadow: 0 18px 36px rgba(18, 50, 67, 0.12);
+	transform: translateY(-3px);
+}
+
+.profile-card-heading {
+	padding: 1.25rem 1.25rem 0.8rem;
+}
+
+.profile-card-name {
+	color: var(--ink);
+	font-size: 1.2rem;
+	font-weight: 750;
+	line-height: 1.2;
+	cursor: default;
+}
+
+.profile-card-role {
+	color: var(--teal-dark);
+	font-size: 0.82rem;
+	font-weight: 700;
+	margin-top: 0.35rem;
+	cursor: default;
+}
+
+.profile-card-image {
+	align-items: center;
+	background: 
+		linear-gradient(120deg, #e8f3f3 0%, #e8f3f3b1 62%, #e8f3f3 100%),
+        url("/medicuro-background-plus-1") right center / 470% auto no-repeat;
+	display: flex;
+	height: 12rem;
+	justify-content: center;
+	overflow: hidden;
+	width: 100%;
+}
+
+.profile-card-image img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+	transition: transform 350ms ease;
+}
+
+.profile-card:hover .profile-card-image img {
+	transform: scale(1.035);
+}
+
+.profile-card-actions {
+	padding: 1rem 1.25rem 1.25rem;
+}
+
+.card {
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.06);
+}
+
+.profile-detail {
+	margin: 0 auto;
+	max-width: 95%;
+	padding: 3rem 1.5rem 4rem;
+}
+
+.profile-detail-card {
+	background: #ffffff;
+	border-radius: 1.25rem;
+	box-shadow: 0 16px 40px rgba(18, 50, 67, 0.08);
+	overflow: hidden;
+}
+
+.profile-detail-header {
+	padding: 2rem 2rem 0rem;
+}
+
+.profile-detail-header .back-button {
+	color: var(--muted-ink);
+	cursor: pointer;
+	font-size: 2rem;
+	font-weight: 700;
+	transition: color 160ms ease;
+}
+
+.profile-detail-header .back-button:hover {
+	color: var(--teal);
+}
+
+.profile-detail-header h1 {
+	text-align: center;
+	font-size: clamp(2rem, 5vw, 3rem);
+	line-height: 1;
+	margin: 0rem 0.5rem 0rem;
+}
+
+.profile-detail-role {
+	text-align: center;
+	color: var(--teal-dark);
+	font-size: 1.1rem;
+	font-weight: 700;
+	margin: 0.5rem 1rem;
+}
+
+.profile-detail-header h1,
+.profile-detail-role {
+	animation: fade-content-in 600ms ease-out both;
+}
+
+.profile-detail-main {
+	display: grid;
+	gap: 2rem;
+	grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr);
+	padding: 2rem;
+}
+
+.profile-detail-image {
+	background: var(--mist);
+	border-radius: 1rem;
+	min-height: 20rem;
+	overflow: hidden;
+}
+
+.profile-detail-image img {
+	display: block;
+	border-radius: 1rem;
+	min-height: 20rem;
+	object-fit: cover;
+	width: 100%;
+}
+
+.profile-detail-info {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.profile-detail-contact {
+	gap: 1rem;
+	padding: 0.9rem 1rem;
+}
+
+.profile-detail-contact div {
+	width: 100%;
+	background: #bce2f3;
+	border-left: 4px solid #00ADFF;
+	border-radius: 0.75rem;
+	padding: 0.9rem 1rem;
+	margin-top: 0.9rem;
+}
+
+.profile-detail-contact div:nth-child(even) {
+  background: #caece9;
+  border-left-color: var(--teal);
+}
+
+.profile-detail-contact dt {
+	color: var(--muted-ink);
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.profile-detail-contact dd {
+	margin: 0.3rem 0 0;
+	overflow-wrap: anywhere;
+}
+
+.profile-detail-about {
+	border-top: 1px solid var(--line);
+	padding-top: 1.25rem;
+}
+
+.profile-detail-about h2 {
+	font-size: 1.5rem;
+	margin-bottom: 0.65rem;
+}
+
+.profile-detail-about p {
+	font-size: 0.9rem;
+	color: var(--muted-ink);
+	line-height: 1.75;
+	white-space: pre-wrap;
+}
+
+.btn-accent {
+	align-items: center;
+	background: linear-gradient(120deg, #41bfb3 0%, #0c6fd2b9 100%);
+	border: 0;
+	border-radius: 10px;
+	color: #ffffff;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 0.82rem;
+	font-weight: 800;
+	justify-content: center;
+	padding: 0.7rem 1rem;
+}
+
+.btn-accent:hover {
+	background: linear-gradient(120deg, #0588c5, #15a2de);
+}
+
+.btn-accent2 {
+	align-items: center;
+	border: 2px solid #0c8dcd;
+	border-radius: 999px;
+	color: #0c8dcd;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 0.95rem;
+	justify-content: center;
+	padding: 0.7rem 1.5rem;
+	transition: background 160ms ease, transform 160ms ease;
+}
+
+.btn-accent2:hover {
+	color: #ffffff;
+	border: 2px solid #ffffff00;
+	background: var(--teal);
+}
+
+.muted {
+	color: var(--muted-ink);
+}
+
+.home-page {
+	padding-bottom: 2rem;
+}
+
+.home-hero {
+	background: 
+		linear-gradient(150deg, #f8fcfca7 42%, #f8fcfb00 80%, #c6eaffd7 100%),
+		url("/medicuro-home-setup.png") right center / 57% no-repeat;
+	margin: 0rem -1.8rem 0rem;
+	min-height: 30rem;
+	overflow: hidden;
+	padding: clamp(1rem, 5vw, 6.5rem);
+	position: relative;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.home-hero-content {
+	position: relative;
+	z-index: 1;
+	cursor: default;
+	animation: fade-content-in 700ms ease-out both;
+}
+
+.home-hero-kicker {
+	align-items: center;
+	display: flex;
+	gap: 1.25rem;
+}
+
+.home-hero h1 {
+	max-width: 720px;
+	font-size: clamp(3.4rem, 6vw, 4.5rem);
+	margin-top: 0.5rem;
+}
+
+.home-hero h1 em {
+  background: linear-gradient(120deg, var(--teal-dark), var(--teal));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+
+.home-hero p {
+	color: var(--muted-ink);
+	font-size: clamp(1rem, 2vw, 1.1rem);
+	line-height: 1.7;
+	margin-top: 1.5rem;
+	max-width: 500px;
+}
+
+.home-hero-actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.25rem;
+	margin-top: 2rem;
+}
+
+.home-hero-actions .btn-accent {
+	background: linear-gradient(220deg, #0380ba, #15a2de);
+	gap: 0.5rem;
+}
+
+.home-hero-actions .btn-accent:hover {
+	background: var(--teal);
+}
+
+.home-text-link {
+	align-items: center;
+	color: #0080bb;
+	display: inline-flex;
+	font-size: 0.9rem;
+	font-weight: 800;
+	gap: 0.4rem;
+}
+
+.home-text-link:hover {
+	color: var(--teal-dark);
+}
+
+.privacy-panel {
+	align-items: flex-start;
+	background:
+		linear-gradient(120deg, #41bfb3 0%, #0c6fd2ce 100%),
+		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
+	border: 1px solid var(--line);
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.05);
+	display: flex;
+	gap: 1.25rem;
+	margin: 0rem -1.5rem 5rem;
+	padding: 3.5rem;
+	width: calc(100% + 3rem);
+	cursor: default;
+}
+
+.privacy-icon,
+.directory-link-icon {
+	align-items: center;
+	background: #7dd9d0;
+	border-radius: 0.75rem;
+	color: var(--teal-dark);
+	display: flex;
+	flex: 0 0 auto;
+	height: 3.5rem;
+	justify-content: center;
+	width: 3.5rem;
+}
+
+.privacy-panel h2,
+.section-heading h2 {
+	color: #ffffff;
+	font-size: clamp(3rem, 3vw, 2.5rem);
+	font-weight: 750;
+}
+
+.privacy-panel h3,
+.section-heading h3 {
+	color: #176183;
+	font-size: clamp(3rem, 3vw, 2.5rem);
+	font-weight: 750;
+}
+
+.privacy-panel p {
+	color: var(--ink);
+	line-height: 1.65;
+	margin-top: 0.7rem;
+	max-width: 760px;
+	letter-spacing: 0.3px;
+}
+
+.home-section {
+	margin: 0 auto 5rem;
+	max-width: 78rem;
+	padding: 0 clamp(1rem, 4vw, 4rem);
+	cursor: default;
+}
+
+.home-context {
+	display: grid;
+	gap: clamp(2.5rem, 6vw, 6rem);
+	grid-template-columns: minmax(14rem, 0.8fr) minmax(0, 1.2fr);
+	margin: 0 auto 0rem;
+	max-width: 90rem;
+	padding-inline: clamp(1rem, 3vw, 3rem);
+}
+
+.home-context-intro {
+	border-top: 2px solid var(--ink);
+	padding-top: 1.5rem;
+}
+
+.home-context-intro h2 {
+	color: var(--ink);
+	font-size: clamp(2rem, 4vw, 3.5rem);
+	font-weight: 700;
+	letter-spacing: -0.025em;
+	line-height: 1.05;
+}
+
+.home-context-intro p {
+	color: var(--muted-ink);
+	font-size: 1.05rem;
+	line-height: 1.75;
+	margin-top: 1.25rem;
+	max-width: 30rem;
+}
+
+.home-context-notes {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-context-notes article {
+	background: rgba(237, 248, 247, 0.42);
+	border-top: 2px solid var(--teal);
+	border-radius: 0.35rem;
+	min-height: 14rem;
+	padding: 1.25rem 1.15rem 1.4rem;
+}
+
+.home-context-notes article + article {
+	border-left: 0;
+}
+
+.home-context-number {
+	color: var(--teal-dark);
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	margin-bottom: 2.75rem;
+}
+
+.home-context-notes h3 {
+	color: var(--ink);
+	font-size: 1.05rem;
+	font-weight: 750;
+	line-height: 1.25;
+}
+
+.home-context-notes p {
+	color: var(--muted-ink);
+	font-size: 0.9rem;
+	line-height: 1.6;
+	margin-top: 0.6rem;
+}
+
+.section-heading {
+	align-items: end;
+	display: flex;
+	gap: 2rem;
+	justify-content: space-between;
+	margin-bottom: 1.5rem;
+}
+
+.section-heading .eyebrow {
+	margin-bottom: 0.65rem;
+}
+
+.section-heading p {
+	color: var(--muted-ink);
+	line-height: 1.6;
+	max-width: 360px;
+}
+
+.section-side-label {
+	border-bottom: 1px solid var(--teal);
+	padding-bottom: 0.4rem;
+}
+
+.directory-links {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.directory-link-card {
+	align-items: center;
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.05);
+	color: var(--ink);
+	display: flex;
+	gap: 1rem;
+	padding: 1.25rem;
+	transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.directory-link-number {
+	color: var(--teal-dark);
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+}
+
+.directory-link-card:hover {
+	border-color: var(--teal);
+	transform: translateY(-2px);
+}
+
+.directory-link-card strong,
+.directory-link-card small {
+	display: block;
+}
+
+.directory-link-card strong {
+	font-size: 1.05rem;
+}
+
+.directory-link-card small {
+	color: var(--muted-ink);
+	font-size: 0.82rem;
+	margin-top: 0.25rem;
+}
+
+.directory-link-card > svg {
+	color: var(--teal-dark);
+	margin-left: auto;
+}
+
+.page-footer {
+	background: #123243;
+	border-top: 3px solid var(--teal);
+	display: flex;
+	font-size: 0.9rem;
+	justify-content: space-between;
+	padding: 2rem;
+	padding-bottom: 2rem;
+	margin-top: 3rem;
+}
+
+.page-footer span {
+	color: var(--teal);
+	padding-top: 1rem;
+}
+
+.page-footer .brand-logo {
+	width: 15%;
+}
+
+body:has(.not-found-page) .page-footer {
+	display: none;
+}
+
+.not-found-page {
+    align-items: center;
+    background:
+        linear-gradient(#0effff00, #ffffffe2, #868686),
+        url("/medicuro-background-plus-1") right center / 135% auto no-repeat;
+    display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 0.75rem;
+	justify-content: center;
+	margin: 0 -1.5rem;
+	min-height: 0;
+	padding-bottom: 5rem;
+	text-align: center;
+	
+}
+
+.btn-accent-continue {
+	align-items: center;
+	background: var(--mist);
+	border: 2px solid #8bcfca;
+	border-radius: 0.75rem;
+	box-shadow: 0 10px 24px rgba(12, 111, 210, 0.2);
+	color: var(--blue);
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 0.95rem;
+	font-weight: 800;
+	justify-content: center;
+	min-width: 13.5rem;
+	padding: 0.85rem 1.35rem;
+	transition: background-color 200ms ease, border-color 200ms ease, box-shadow 160ms ease, color 200ms ease, transform 160ms ease;
+}
+
+.btn-accent-continue:hover {
+	background-color: var(--teal);
+	border-color: var(--teal);
+	box-shadow: 0 14px 28px rgba(12, 111, 210, 0.28);
+	color: #ffffff;
+	transform: translateY(-2px);
+}
+
+.btn-accent-continue:focus-visible {
+	box-shadow: 0 0 0 3px #f8fcfc, 0 0 0 6px #0c8dcd;
+	outline: none;
+}
+
+.manager-login-action {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	margin: 2rem 0;
+}
+
+.login-page {
+	align-items: center;
+	background:
+		linear-gradient(120deg, #55d997ad, #0082e6),
+		url("/medicuro-background-plus-1") center / 200% auto no-repeat;
+	display: flex;
+	flex: 1;
+	justify-content: center;
+	margin: 0 -1.5rem;
+	min-height: 0;
+	padding: 4rem 1.5rem;
+	cursor: default;
+}
+
+.login-panel {
+	background: rgba(255, 255, 255, 0.961);
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 18px 45px rgba(18, 50, 67, 0.14);
+	max-width: 27rem;
+	padding: 4rem 2.5rem;
+	position: relative;
+	text-align: center;
+	width: 100%;
+}
+
+.login-panel .back-button {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	color: var(--muted-ink);
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 1.2rem;
+	font-weight: 700;
+	gap: 0.2rem;
+	left: 1rem;
+	padding: 0.35rem 0.5rem;
+	position: absolute;
+	top: 1rem;
+	transition: color 160ms ease;
+}
+
+.login-panel .back-button:hover {
+	color: var(--teal-dark);
+}
+
+.login-panel h1 {
+	font-size: clamp(2.25rem, 6vw, 3.1rem);
+	color: var(--ink);
+}
+
+.login-page-unauthorized {
+	align-items: center;
+	background:
+		linear-gradient(120deg, #dff8f4c4, #e5f2ffed),
+		url("/medicuro-background-plus-1") center / 130% no-repeat;
+	display: flex;
+	flex: 1;
+	justify-content: center;
+	margin: 0 -1.5rem;
+	min-height: 0;
+	padding: 3rem 1.5rem;
+	cursor: default;
+}
+
+.login-panel-unauthorized {
+	background: rgba(255, 255, 255, 0.94);
+	border-radius: 1.25rem;
+	box-shadow: 0 22px 55px rgba(18, 50, 67, 0.16);
+	max-width: 27rem;
+	padding: 4.5rem 2.5rem;
+	position: relative;
+	text-align: center;
+	width: 100%;
+}
+
+.unauthorized-eyebrow {
+	color: #ff3030;
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	margin-bottom: 4rem;
+}
+
+.login-eyebrow {
+	color: #265B72;
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	margin-bottom: 4rem;
+}
+
+.login-panel-unauthorized h1 {
+	font-size: clamp(2.25rem, 6vw, 3.1rem);
+	color: var(--ink);
+	margin-top: 0.65rem;
+	margin-bottom: 2rem;
+}
+
+.login-description {
+	color: var(--muted-ink);
+	font-size: 1.2rem;
+	line-height: 1.6;
+	margin: 2rem auto 2rem;
+	max-width: 19rem;
+}
+
+.login-description-unauthorized {
+	color: var(--muted-ink);
+	font-size: 1.05rem;
+	line-height: 1.6;
+	margin: 1rem auto 1.5rem;
+	max-width: 25rem;
+}
+
+.unauthorized-redirect {
+	border-top: 1px solid var(--line);
+	color: var(--muted-ink);
+	font-size: 0.85rem;
+	padding-top: 1.25rem;
+}
+
+.unauthorized-redirect strong {
+	color: #000000;
+	font-size: 1rem;
+}
+
+.login-button {
+	background: var(--mist);
+	color: var(--muted-ink);
+	border-radius: 0.5rem;
+	border: 2px solid #c1cfce;
+	gap: 0.65rem;
+	font-size: 0.95rem;
+	margin-top: 0.5rem;
+	padding: 0.85rem 1.4rem;
+	width: 80%;
+
+	transition: background-color 200ms ease, border-color 200ms ease, transform 160ms ease;
+}
+
+.login-button:hover {
+	background: #f8fffe;
+	border: 2px solid #597481;
+}
+
+.google-logo {
+	height: 1.2rem;
+	object-fit: contain;
+	width: 1.2rem;
+}
+
+.nav-account {
+	align-items: center;
+	display: flex;
+	gap: 0.85rem;
+	margin-left: auto;
+}
+
+.profile-icon {
+	align-items: center;
+	background: linear-gradient(120deg, #41bfb3 0%, #0c6fd2b9 100%);
+	border-radius: 999px;
+	box-shadow: 0 6px 16px rgba(18, 50, 67, 0.16);
+	color: #ffffff;
+	cursor: pointer;
+	margin: 0rem -2rem 0rem 1rem;
+	display: inline-flex;
+	flex: 0 0 auto;
+	font-size: 1.05rem;
+	font-weight: 800;
+	height: 2.85rem;
+	justify-content: center;
+	overflow: hidden;
+	text-transform: uppercase;
+	transition: box-shadow 180ms ease, filter 180ms ease;
+	width: 2.85rem;
+}
+
+.profile-icon:hover {
+	box-shadow: 0 10px 22px rgba(18, 50, 67, 0.26);
+	filter: brightness(1.05);
+}
+
+.profile-icon img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+
+.profile-icon-initial {
+	line-height: 1;
+}
+
+.profile-page {
+	padding-bottom: 1rem;
+}
+
+.profile-hero {
+	background:
+		linear-gradient(180deg, #fcfcfc, #fcfcfcba),
+		url("/medicuro-background-plus-1") right center / 135% auto no-repeat,
+		#fcfcfc;
+	display: flex;
+	align-items: center;
+	margin: 0rem -1.5rem 3rem;
+	overflow: hidden;
+	padding: clamp(4.5rem, 5vw, 8rem);
+	position: relative;
+	cursor: default;
+	animation: static-fade-in 700ms ease-out both;
+}
+
+.profile-hero .directory-hero-copy h1 {
+	color: #134d68;
+	letter-spacing: .2px;
+	font-size: clamp(3rem, 6vw, 4.5rem);
+}
+
+.profile-hero .directory-hero-copy p {
+	background: #ffffff27;
+	border-radius: 10px;
+	padding: 0.2rem 1.1rem 0rem 0rem;
+	color: var(--muted-ink);
+    letter-spacing: .3px;
+	display: inline-flex;
+    max-width: 760px;
+    margin-top: 1rem;
+    line-height: 1.65;
+	font-size: 1.15rem;
+}
+
+.profile-editor {
+	margin: 0 auto;
+	max-width: 95%;
+}
+
+.profile-banner {
+	border-radius: 0.75rem;
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin-bottom: 1.25rem;
+	padding: 0.9rem 1.15rem;
+}
+
+.profile-banner-success {
+	background: #e4f7f2;
+	border: 1px solid #9fdfd0;
+	color: var(--teal-dark);
+}
+
+.profile-banner-error {
+	background: #fdecec;
+	border: 1px solid #f3b6b6;
+	color: #b42323;
+}
+
+.profile-editor-actions {
+	border-top: 1px solid var(--line);
+	display: flex;
+	justify-content: flex-end;
+	margin-top: auto;
+	padding-top: 1.25rem;
+}
+
+.profile-form {
+	padding: 2rem;
+}
+
+.profile-form-grid {
+	display: grid;
+	gap: 2rem;
+	grid-template-columns: minmax(0, 1.4fr) minmax(15rem, 0.85fr);
+}
+
+.profile-form-fields {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-form-field {
+	color: var(--ink);
+	display: flex;
+	flex-direction: column;
+	font-size: 0.9rem;
+	gap: 0.35rem;
+	grid-column: span 2;
+	letter-spacing: 0.1px;
+}
+
+.profile-form-hint {
+	color: var(--muted-ink);
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.profile-form-file {
+	color: var(--muted-ink);
+	font-size: 0.85rem;
+	transition: color 160ms ease;
+}
+
+.profile-form-file:hover {
+	color: var(--ink);
+}
+
+.profile-form-preview {
+	align-self: start;
+	background: var(--mist);
+	border-radius: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1.25rem;
+	position: sticky;
+	top: 6rem;
+}
+
+.profile-form-preview-label {
+	color: var(--teal-dark);
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.profile-form-preview .profile-card {
+	animation: none;
+}
+
+.profile-card-view {
+	cursor: default;
+}
+
+.profile-form-actions {
+	border-top: 1px solid var(--line);
+	display: flex;
+	gap: 0.85rem;
+	justify-content: flex-end;
+	margin-top: 2rem;
+	padding-top: 1.5rem;
+}
+
+.profile-form-cancel {
+	background: transparent;
+	border: 2px solid var(--line);
+	border-radius: 10px;
+	color: var(--blue);
+	cursor: pointer;
+	font-size: 0.85rem;
+	font-weight: 700;
+	padding: 0.7rem 1.25rem;
+	transition: background 160ms ease, border-color 160ms ease;
+}
+
+.profile-form-cancel:hover {
+	background: var(--mist);
+	border-color: var(--teal);
+}
+
+.profile-form-cancel:disabled,
+.profile-form .btn-accent:disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+/* ------------------------------------------- */
+
+@keyframes fade-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes static-fade-in {
+    from {
+        opacity: 0.65;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-note-in {
+    from {
+        opacity: 0;
+        transform: translateY(calc(-50% + 1rem));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+
+@media (max-width: 700px) {
+	.profile-detail {
+		padding: 1.5rem 1rem 3rem;
+	}
+
+	.profile-detail-header,
+	.profile-detail-main {
+		padding: 1.25rem;
+	}
+
+	.profile-detail-main {
+		grid-template-columns: 1fr;
+	}
+
+	.profile-detail-image,
+	.profile-detail-image img {
+		min-height: 16rem;
+	}
+
+	.profile-detail-contact {
+		grid-template-columns: 1fr;
+	}
+
+	.profile-detail-footer {
+		padding: 1.25rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-hero-content,
+	.home-hero-note,
+	.directory-hero-copy {
+        animation: none;
+    }
+}
+
+@media (max-width: 900px) {
+	.profile-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 680px) {
+	.guide-hero {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 2rem;
+		padding: 4rem 2rem;
+	}
+
+	.guide-hero-index {
+		border-left: 0;
+		border-top: 1px solid #ffffff80;
+		grid-template-columns: repeat(4, auto);
+		padding-left: 0;
+		padding-top: 1rem;
+		width: 100%;
+	}
+
+	.guide-hero-index strong {
+		grid-column: 1 / -1;
+	}
+
+	.guide-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.home-hero-note {
+		display: none;
+	}
+
+	.home-context {
+		grid-template-columns: 1fr;
+		margin-bottom: 4rem;
+	}
+
+	.home-context-notes {
+		grid-template-columns: 1fr;
+	}
+
+	.home-context-notes article {
+		min-height: auto;
+		padding: 1.25rem 0;
+	}
+
+	.home-context-notes article + article {
+		border-left: 0;
+		padding-left: 0;
+	}
+
+	.home-context-number {
+		margin-bottom: 1rem;
+	}
+
+	.privacy-panel,
+	.section-heading {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.directory-links {
+		grid-template-columns: 1fr;
+	}
+
+	.nav-links {
+		overflow-x: auto;
+	}
+
+	.profile-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 440px) {
+	.login-panel {
+		padding: 2.25rem 1.5rem;
+	}
+
+	.home-footer {
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.profile-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 900px) {
+	.profile-form-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.profile-form-preview {
+		position: static;
+	}
+}
+
+@media (max-width: 640px) {
+	.profile-form {
+		padding: 1.25rem;
+	}
+
+	.profile-form-fields {
+		grid-template-columns: 1fr;
+	}
+}
