@@ -30,7 +30,7 @@ async function loadProfile(email) {
       imageUrl: "/default-profile.svg",
       location: "",
       about: "",
-      profileType: "Staff"
+      profileType: ""
     };
   }
 
@@ -44,7 +44,7 @@ async function loadProfile(email) {
       imageUrl: "/default-profile.svg",
       location: "",
       about: "",
-      profileType: "Staff"
+      profileType: ""
     };
   }
 
@@ -86,6 +86,10 @@ export default async function ProfilePage() {
 
   const profile = await loadProfile(user.email);
 
+  const allowedProfileTypes = user.isPhysicianSpecialist
+    ? ["Physician", "Specialist"]
+    : ["Staff", "Physician", "Specialist"];
+
   return (
     <main className="profile-page">
       <div className="directory-page mx-auto">
@@ -96,7 +100,10 @@ export default async function ProfilePage() {
           </div>
         </section>
 
-        <ProfileEditor initialProfile={profile} accountEmail={user.email} />
+        <ProfileEditor
+          initialProfile={profile}
+          accountEmail={user.email}
+          allowedProfileTypes={allowedProfileTypes}/>
       </div>
     </main>
   );

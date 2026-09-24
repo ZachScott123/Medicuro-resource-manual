@@ -113,6 +113,14 @@ export async function PUT(request) {
   }
 
   const email = user.email?.toLowerCase();
+
+  if (!isAuthorizedEmail(email) && !["Physician", "Specialist"].includes(payload.profileType)) {
+    return Response.json(
+      { e: "Your account may only publish a Physician or Specialist profile." },
+      { status: 403 }
+    );
+  }
+
   const target = profileTargets[payload.profileType];
 
   try {

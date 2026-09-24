@@ -121,10 +121,10 @@ export default function RootLayout({ children }) {
             <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
             {(!isLoggedIn || isAuthorized) && (
-              <span>
+              <>
             <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
-              </span>
+              </>
             )}
           </div>
           <span>Internal Resource Manual</span>

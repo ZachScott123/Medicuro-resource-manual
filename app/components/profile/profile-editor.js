@@ -5,12 +5,11 @@ import { useRouter } from "next/navigation";
 import { FiSave, FiLock } from "react-icons/fi";
 import { compressImage } from "@/app/lib/compress-image";
 
-const PROFILE_TYPES = ["Staff", "Physician", "Specialist"];
+const ALL_PROFILE_TYPES = ["Staff", "Physician", "Specialist"];
 
 const DEFAULT_PROFILE_IMAGE = "/default-profile.svg";
 const DEFAULT_PHYSICIAN_IMAGE = "/default-profile-physician.svg";
 
-// Maps each profile type to the default image used when the user hasn't set their own.
 const defaultImageByProfileType = {
   Staff: DEFAULT_PROFILE_IMAGE,
   Physician: DEFAULT_PHYSICIAN_IMAGE,
@@ -25,7 +24,7 @@ const emptyProfile = {
   imageUrl: DEFAULT_PROFILE_IMAGE,
   location: "",
   about: "",
-  profileType: "Staff"
+  profileType: ""
 };
 
 const requiredFields = [
@@ -34,9 +33,25 @@ const requiredFields = [
   { name: "phone", label: "Phone", placeholder: "(709) xxx xxxx", type: "text", maxLength: 40 }
 ];
 
-export default function ProfileEditor({ initialProfile, accountEmail }) {
+export default function ProfileEditor({ initialProfile, accountEmail, allowedProfileTypes = ALL_PROFILE_TYPES }) {
   const router = useRouter();
-  const [formData, setFormData] = useState({ ...emptyProfile, ...initialProfile });
+
+  const selectableProfileTypes = ALL_PROFILE_TYPES.filter((type) =>
+    allowedProfileTypes.includes(type)
+  );
+  const isRoleLocked = selectableProfileTypes.length <= 1;
+
+  const initialProfileType = selectableProfileTypes.includes(initialProfile?.profileType)
+    ? initialProfile.profileType
+    : isRoleLocked
+      ? selectableProfileTypes[0]
+      : initialProfile?.profileType || "";
+
+  const [formData, setFormData] = useState({
+    ...emptyProfile,
+    ...initialProfile,
+    profileType: initialProfileType
+  });
   const [touchedFields, setTouchedFields] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -59,8 +74,6 @@ export default function ProfileEditor({ initialProfile, accountEmail }) {
       const currentImage = current.imageUrl || "";
       const isDefaultImage = Object.values(defaultImageByProfileType).includes(currentImage);
 
-      // Only swap the image when it's still a default one, so a user's
-      // custom upload or URL is never overwritten by a role change.
       const nextImageUrl = isDefaultImage
         ? defaultImageByProfileType[value] || DEFAULT_PROFILE_IMAGE
         : current.imageUrl;
@@ -81,7 +94,7 @@ export default function ProfileEditor({ initialProfile, accountEmail }) {
   }
 
   function startEditing() {
-    setFormData({ ...emptyProfile, ...initialProfile, email: accountEmail });
+    setFormData({ ...emptyProfile, ...initialProfile, profileType: initialProfileType, email: accountEmail });
     setTouchedFields({});
     setError("");
     setSavedMessage("");
@@ -89,7 +102,7 @@ export default function ProfileEditor({ initialProfile, accountEmail }) {
   }
 
   function cancelEditing() {
-    setFormData({ ...emptyProfile, ...initialProfile, email: accountEmail });
+    setFormData({ ...emptyProfile, ...initialProfile, profileType: initialProfileType, email: accountEmail });
     setTouchedFields({});
     setError("");
     setIsEditing(false);
@@ -285,13 +298,18 @@ export default function ProfileEditor({ initialProfile, accountEmail }) {
                   value={formData.profileType}
                   onChange={handleProfileTypeChange}
                   onBlur={markFieldAsTouched}
-                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900">
+                  disabled={isRoleLocked}
+                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900 disabled:cursor-not-allowed disabled:bg-teal-50/60 disabled:text-neutral-500">
 
-                  {PROFILE_TYPES.map((type) => (
+                  {selectableProfileTypes.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-                <span className="profile-form-hint">This determines which directory your profile is published to.</span>
+                <span className="profile-form-hint">
+                  {isRoleLocked
+                    ? "Your account role is fixed to this option."
+                    : "This determines which directory your profile is published to."}
+                </span>
               </label>
 
               <label className="profile-form-field">
