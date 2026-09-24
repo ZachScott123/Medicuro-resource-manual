@@ -1,3 +1,27 @@
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+
+function getAuthorizedEmails() {
+  return (process.env.AUTHORIZED_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function getPhysicianSpecialistEmails() {
+  return (process.env.PHYSICIAN_SPECIALIST_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function getEditorEmails() {
+  return (process.env.EDITOR_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export function isEditorEmail(email) {
   if (!email) return false;
   return getEditorEmails().includes(String(email).trim().toLowerCase());
@@ -76,3 +100,4 @@ export async function getPhysicianSpecialistUser({ requireEditor = false } = {})
     return null;
   }
 }
+

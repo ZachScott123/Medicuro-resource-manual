@@ -1,7 +1,13 @@
+import { redirect } from "next/navigation";
 import PhysicianManager from "@/app/components/manager/physician-manager/physician-manager";
+import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function PhysicianPartners() {
-  const { isEditor } = await getCurrentUser();
+  const { authenticated, isEditor } = await getCurrentUser();
+
+  if (!authenticated) {
+    redirect("/login");
+  }
 
   return (
         <div className="directory-page mx-auto">
