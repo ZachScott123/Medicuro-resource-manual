@@ -1,7 +1,7 @@
 import { connectToDB } from "@/app/api/databases/db";
 import { connectToDB as connectToStaffDB } from "@/app/api/databases/staff-db";
 import { connectToDB as connectToPartnersDB } from "@/app/api/databases/partners-db";
-import { getAuthenticatedUser } from "@/app/lib/auth-session";
+import { getAuthenticatedUser, isAuthorizedEmail } from "@/app/lib/auth-session";
 import { buildProfileIdFromEmail } from "@/app/lib/profile-id";
 import { parseBody, userProfileSchema } from "@/app/api/validation";
 
