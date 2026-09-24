@@ -1,4 +1,4 @@
-import { getAuthenticatedUser, isEditorEmail } from "@/app/lib/auth-session";
+import { getAuthenticatedUser, isEditorEmail, isAuthorizedEmail } from "@/app/lib/auth-session";
 import { connectToDB } from "@/app/api/databases/db";
 import { NextResponse } from "next/server";
 
@@ -9,6 +9,8 @@ export async function GET() {
     return NextResponse.json({
       authenticated: false,
       isEditor: false,
+      isAuthorized: false,
+      isPhysicianSpecialist: false,
       email: null,
       name: "",
       picture: "",
@@ -35,9 +37,13 @@ export async function GET() {
     }
   } catch { }
 
+  const isAuthorized = isAuthorizedEmail(email);
+
   return NextResponse.json({
     authenticated: true,
     isEditor: isEditorEmail(email),
+    isAuthorized,
+    isPhysicianSpecialist: !isAuthorized,
     email,
     name,
     picture,

@@ -1,11 +1,19 @@
-import { getAuthenticatedUser, isEditorEmail } from "@/app/lib/auth-session";
+import { getAuthenticatedUser, isEditorEmail, isAuthorizedEmail } from "@/app/lib/auth-session";
 import { connectToDB } from "@/app/api/databases/db";
 
 export async function getCurrentUser() {
   const user = await getAuthenticatedUser();
 
   if (!user) {
-    return { authenticated: false, isEditor: false, email: null, name: "", picture: "" };
+    return {
+      authenticated: false,
+      isEditor: false,
+      isAuthorized: false,
+      isPhysicianSpecialist: false,
+      email: null,
+      name: "",
+      picture: ""
+    };
   }
 
   const email = (user.email || "").toLowerCase();
@@ -22,9 +30,13 @@ export async function getCurrentUser() {
     }
   } catch {}
 
+  const isAuthorized = isAuthorizedEmail(email);
+
   return {
     authenticated: true,
     isEditor: isEditorEmail(email),
+    isAuthorized,
+    isPhysicianSpecialist: !isAuthorized,
     email,
     name,
     picture

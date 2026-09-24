@@ -1,10 +1,16 @@
+import { redirect } from "next/navigation";
 import SpecialistManager from "@/app/components/manager/specialist-manager/specialist-manager";
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function SpecialistPartners() {
-  const { isEditor } = await getCurrentUser();
+  const { authenticated, isEditor } = await getCurrentUser();
+
+  if (!authenticated) {
+    redirect("/login");
+  }
 
   return (
+
         <div className="directory-page mx-auto">
             <section className="directory-hero specialist-hero">
                 <div className="directory-hero-copy">

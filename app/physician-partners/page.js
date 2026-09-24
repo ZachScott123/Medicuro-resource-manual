@@ -1,5 +1,4 @@
 import PhysicianManager from "@/app/components/manager/physician-manager/physician-manager";
-import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function PhysicianPartners() {
   const { isEditor } = await getCurrentUser();

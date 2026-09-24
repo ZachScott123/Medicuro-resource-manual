@@ -1,5 +1,5 @@
 import { connectToDB } from "@/app/api/databases/partners-db";
-import { getAuthenticatedUser } from "@/app/lib/auth-session";
+import { getAuthenticatedUser, isAuthorizedEmail } from "@/app/lib/auth-session";
 import { guideSchema, parseBody } from "@/app/api/validation";
 
 const collectionName = "guides";
@@ -17,8 +17,8 @@ function serializeGuide(record) {
 
 export async function GET() {
   const user = await getAuthenticatedUser();
-  
-  if (!user) {
+
+  if (!user || !isAuthorizedEmail(user.email)) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -39,8 +39,8 @@ export async function GET() {
 
 export async function POST(request) {
   const user = await getAuthenticatedUser({ requireEditor: true });
-  
-  if (!user) {
+
+  if (!user || !isAuthorizedEmail(user.email)) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -75,8 +75,8 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   const user = await getAuthenticatedUser({ requireEditor: true });
-  
-  if (!user) {
+
+  if (!user || !isAuthorizedEmail(user.email)) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }

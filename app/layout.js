@@ -22,6 +22,7 @@ function NavLink({ href, children, className = "" }) {
 export default function RootLayout({ children }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [user, setUser] = useState({ name: "", picture: "", email: "" });
   const pathname = usePathname();
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
       .then((response) => response.json())
       .then((data) => {
         setIsLoggedIn(data.authenticated === true);
+        setIsAuthorized(data.isAuthorized === true);
         setUser({
           name: data.name || "",
           picture: data.picture || "",
@@ -51,6 +53,7 @@ export default function RootLayout({ children }) {
       })
       .catch(() => {
         setIsLoggedIn(false);
+        setIsAuthorized(false);
         setUser({ name: "", picture: "", email: "" });
       });
   }, [pathname]);
@@ -58,6 +61,7 @@ export default function RootLayout({ children }) {
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     setIsLoggedIn(false);
+    setIsAuthorized(false);
     setUser({ name: "", picture: "", email: "" });
     router.push("/");
     router.refresh();
@@ -78,21 +82,23 @@ export default function RootLayout({ children }) {
                 <NavLink className="nav-link-header" href="/staff-profiles">Staff</NavLink>
                 <NavLink className="nav-link-header" href="/physician-partners">Physicians</NavLink>
                 <NavLink className="nav-link-header" href="/specialist-partners">Specialists</NavLink>
+                {(!isLoggedIn || isAuthorized) && (
                 <NavLink className="nav-link-header" href="/medicuro-guides">Guides</NavLink>
-              </div>
+                )}
+                </div>
               {isLoggedIn ? (
                 <div className="nav-account ml-auto">
                   <button className="btn-accent" onClick={handleLogout} type="button">
                     Logout
-                  </button>
+                </button>
                   <Link href="/profile" className="profile-icon" aria-label={profileAlt} title={profileAlt}>
                     {user.picture ? (
                       <img src={user.picture} alt={profileAlt} referrerPolicy="no-referrer" />
                     ) : (
                       <span className="profile-icon-initial">{profileInitial}</span>
                     )}
-                  </Link>
-                </div>
+          </Link>
+          </div>
               ) : (
                 <button className="btn-accent ml-auto" onClick={() => router.push("/login")} type="button">
                   <span>Login</span>
@@ -110,12 +116,16 @@ export default function RootLayout({ children }) {
           </Link>
           <div className="nav-links">
               <NavLink className="nav-link-footer" href="/staff-profiles">Staff</NavLink>
-            <div className="nav-spacer">|</div>  
+            <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/physician-partners">Physicians</NavLink>
-            <div className="nav-spacer">|</div>  
+            <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
-            <div className="nav-spacer">|</div>  
+            {(!isLoggedIn || isAuthorized) && (
+              <span>
+            <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
+              </span>
+            )}
           </div>
           <span>Internal Resource Manual</span>
       </footer>}

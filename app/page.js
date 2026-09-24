@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { FiArrowUpRight, FiLock } from "react-icons/fi";
+import { getCurrentUser } from "@/app/lib/current-user";
 
-export default function Home() {
+export default async function Home() {
+  const { authenticated, isAuthorized } = await getCurrentUser();
+  const canViewGuides = !authenticated || isAuthorized;
+
   return (
     <div className="home-page w-full">
       <section className="home-hero">
@@ -14,10 +18,12 @@ export default function Home() {
             <Link href="/physician-partners" className="btn-accent">
               View physicians <FiArrowUpRight aria-hidden="true" />
             </Link>
+            {canViewGuides && (
             <Link href="/medicuro-guides" className="home-text-link">
               View guides <FiArrowUpRight aria-hidden="true" />
             </Link>
-          </div>
+            )}
+        </div>
         </div>
       </section>
 
@@ -39,7 +45,7 @@ export default function Home() {
           <p>
             The people, contacts, and procedures around a clinic change often. This manual keeps those details together so the next step is easier to find and the right person is easier to reach.
           </p>
-        </div>
+    </div>
 
         <div className="home-context-notes">
           <article>

@@ -1,8 +1,13 @@
+import { redirect } from "next/navigation";
 import StaffManager from "@/app/components/manager/staff-manager/staff-manager";
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function StaffProfiles() {
-  const { isEditor } = await getCurrentUser();
+  const { authenticated, isEditor } = await getCurrentUser();
+
+  if (!authenticated) {
+    redirect("/login");
+  }
 
   return (
     <div className="directory-page mx-auto">

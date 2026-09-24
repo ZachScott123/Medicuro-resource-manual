@@ -26,6 +26,11 @@ export async function GET(request) {
             .map((email) => email.trim().toLowerCase())
             .filter(Boolean);
 
+        const allowedPhysicianSpecialist = (process.env.PHYSICIAN_SPECIALIST_EMAILS || "")
+            .split(",")
+            .map((email) => email.trim().toLowerCase())
+            .filter(Boolean);
+
         const editorEmails = (process.env.EDITOR_EMAILS || "")
             .split(",")
             .map((email) => email.trim().toLowerCase())
@@ -33,7 +38,10 @@ export async function GET(request) {
 
             const email = oauthUserInfo.email?.trim().toLowerCase();
 
-            if (!email || !allowedEmails.includes(email)) {
+            const isAuthorized = allowedEmails.includes(email);
+            const isPhysicianSpecialist = allowedPhysicianSpecialist.includes(email);
+
+            if (!email || (!isAuthorized && !isPhysicianSpecialist)) {
             return NextResponse.redirect(
                 new URL("/login-unauthorizedAccount", request.url)
             );
@@ -61,8 +69,6 @@ export async function GET(request) {
                 isEditor: editorEmails.includes(email)
             };
 
-            // Backfill a stable profileId for users created before ids existed,
-            // so the id never changes across future logins.
             if (!user.profileId) {
                 updates.profileId = buildProfileIdFromEmail(oauthUserInfo.email);
             }
