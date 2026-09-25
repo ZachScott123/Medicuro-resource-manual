@@ -40,7 +40,6 @@ export default async function Home() {
 
       <section className="home-context" aria-labelledby="context-title">
         <div className="home-context-intro">
-          <div className="eyebrow">A working reference</div>
           <h2 id="context-title">The details that keep care moving.</h2>
           <p>
             The people, contacts, and procedures around a clinic change often. This manual keeps those details together so the next step is easier to find and the right person is easier to reach.

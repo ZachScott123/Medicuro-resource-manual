@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiExternalLink, FiFileText, FiSave, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiExternalLink, FiFileText, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 const emptyGuide = {
@@ -13,6 +13,7 @@ const emptyGuide = {
 
 export default function GuideManager({ initialGuides = [] }) {
   const [guides, setGuides] = useState(initialGuides);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyGuide);
   const [touchedFields, setTouchedFields] = useState({});
@@ -36,7 +37,15 @@ export default function GuideManager({ initialGuides = [] }) {
         setError("Access denied. Please login with an authorized account to access Guides and Documents.");
         setIsLoading(false);
       });
-  }, [initialGuides]);
+    }, [initialGuides]);
+
+  const query = searchQuery.trim().toLowerCase();
+  const filteredGuides = query
+    ? guides.filter((guide) =>
+        [guide.title, guide.description, guide.fileName]
+          .some((field) => field?.toLowerCase().includes(query))
+      )
+    : guides;
 
   function openForm() {
     setFormData(emptyGuide);
@@ -164,7 +173,7 @@ export default function GuideManager({ initialGuides = [] }) {
       {isLoading ? (
         <span/>
       ) : guides.length > 0 ? (
-        <span>
+                <span>
           <div className="directory-toolbar guide-toolbar">
             <div>
               <div className="eyebrow">Reference library</div>
@@ -176,29 +185,47 @@ export default function GuideManager({ initialGuides = [] }) {
             </button>
           </div>
 
-          <div className="guide-grid">
-            {guides.map((guide) => (
-              <article className="guide-card" key={guide.id}>
-                <div className="guide-card-icon"><FiFileText aria-hidden="true" /></div>
-                <div className="guide-card-copy">
-                  <h3>{guide.title}</h3>
-                  <p>{guide.description}</p>
-                  <small>{guide.fileName}</small>
-                </div>
-                <div className="guide-card-actions">
-                  <a href={guide.fileData} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
-                    <FiExternalLink aria-hidden="true" />
-                  </a>
-                  <a href={guide.fileData} download={guide.fileName} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
-                    <FiDownload aria-hidden="true" />
-                  </a>
-                  <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
-                    <FiTrash2 aria-hidden="true" />
-                  </button>
-                </div>
-              </article>
-            ))}
+          <div className="guide-search">
+            <FiSearch aria-hidden="true" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search guides..."
+              aria-label="Search guides"
+            />
           </div>
+
+          {filteredGuides.length > 0 ? (
+            <div className="guide-grid">
+              {filteredGuides.map((guide) => (
+                <article className="guide-card" key={guide.id}>
+                  <div className="guide-card-icon"><FiFileText aria-hidden="true" /></div>
+                  <div className="guide-card-copy">
+                    <h3>{guide.title}</h3>
+                    <p>{guide.description}</p>
+                    <small>{guide.fileName}</small>
+                  </div>
+                  <div className="guide-card-actions">
+                    <a href={guide.fileData} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
+                      <FiExternalLink aria-hidden="true" />
+                    </a>
+                    <a href={guide.fileData} download={guide.fileName} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
+                      <FiDownload aria-hidden="true" />
+                    </a>
+                    <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                      <FiTrash2 aria-hidden="true" />
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="guide-empty-state">
+              <FiSearch aria-hidden="true" />
+              <p>No guides match "{searchQuery.trim()}".</p>
+            </div>
+          )}
         </span>
       ) : (
         !error &&

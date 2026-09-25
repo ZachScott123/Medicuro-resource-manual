@@ -82,7 +82,7 @@ export default function RootLayout({ children }) {
                 <NavLink className="nav-link-header" href="/staff-profiles">Staff</NavLink>
                 <NavLink className="nav-link-header" href="/physician-partners">Physicians</NavLink>
                 <NavLink className="nav-link-header" href="/specialist-partners">Specialists</NavLink>
-                {(!isLoggedIn || isAuthorized) && (
+                {(isLoggedIn || isAuthorized) && (
                 <NavLink className="nav-link-header" href="/medicuro-guides">Guides</NavLink>
                 )}
                 </div>
@@ -120,7 +120,7 @@ export default function RootLayout({ children }) {
               <NavLink className="nav-link-footer" href="/physician-partners">Physicians</NavLink>
             <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
-            {(!isLoggedIn || isAuthorized) && (
+            {(isLoggedIn || isAuthorized) && (
               <>
             <div className="nav-spacer">|</div>
               <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>

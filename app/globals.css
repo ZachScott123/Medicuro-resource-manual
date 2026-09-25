@@ -259,6 +259,40 @@ h3 {
 	font-size: 1.7rem;
 }
 
+.guide-search {
+	align-items: center;
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.05);
+	color: var(--muted-ink);
+	display: flex;
+	gap: 0.6rem;
+	margin-bottom: 1.5rem;
+	max-width: 26rem;
+	padding: 0.65rem 1.1rem;
+	transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.guide-search:focus-within {
+	border-color: var(--teal);
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.12);
+}
+
+.guide-search input {
+	background: transparent;
+	border: 0;
+	color: var(--ink);
+	flex: 1;
+	font-size: 0.95rem;
+	min-width: 0;
+	outline: none;
+}
+
+.guide-search input::placeholder {
+	color: var(--muted-ink);
+}
+
 .guide-grid {
 	display: grid;
 	gap: 1.25rem;
@@ -671,7 +705,7 @@ h3 {
 
 .home-hero {
 	background: 
-		linear-gradient(150deg, #f8fcfca7 42%, #f8fcfb00 80%, #c6eaffd7 100%),
+		linear-gradient(150deg, #f8fcfc52 42%, #f8fcfb00 80%, #c6eaffd7 100%),
 		url("/medicuro-home-setup.png") right center / 57% no-repeat;
 	margin: 0rem -1.8rem 0rem;
 	min-height: 30rem;
@@ -815,11 +849,12 @@ h3 {
 
 .home-context-intro {
 	border-top: 2px solid var(--ink);
+	border-radius: 5px;
 	padding-top: 1.5rem;
 }
 
 .home-context-intro h2 {
-	color: var(--ink);
+	color: #0184b8;
 	font-size: clamp(2rem, 4vw, 3.5rem);
 	font-weight: 700;
 	letter-spacing: -0.025em;
@@ -841,11 +876,16 @@ h3 {
 }
 
 .home-context-notes article {
-	background: rgba(237, 248, 247, 0.42);
+	background: #bdece7;
 	border-top: 2px solid var(--teal);
 	border-radius: 0.35rem;
 	min-height: 14rem;
 	padding: 1.25rem 1.15rem 1.4rem;
+}
+
+.home-context-notes article:nth-child(even) {
+  background: #aae0f8;
+  border-top-color: #0082e6;
 }
 
 .home-context-notes article + article {
@@ -853,7 +893,7 @@ h3 {
 }
 
 .home-context-number {
-	color: var(--teal-dark);
+	color: #225f6b6c;
 	display: block;
 	font-size: 0.75rem;
 	font-weight: 800;
@@ -869,7 +909,7 @@ h3 {
 }
 
 .home-context-notes p {
-	color: var(--muted-ink);
+	color: var(--ink);
 	font-size: 0.9rem;
 	line-height: 1.6;
 	margin-top: 0.6rem;
