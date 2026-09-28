@@ -282,7 +282,7 @@ export default function GuideManager({ initialGuides = [] }) {
                   onBlur={markFieldAsTouched}
                   aria-invalid={touchedFields.fileData && !formData.fileData}
                   aria-describedby={touchedFields.fileData && !formData.fileData ? "file-error" : undefined}
-                  className={`rounded-md border p-2 text-neutral-900 ${touchedFields.fileData && !formData.fileData ? "border-red-500" : "border-[#d8e8e8]"}`}
+                  className={`text-neutral-400 rounded-md p-2 hover:text-neutral-900 transition-colors ${touchedFields.fileData && !formData.fileData ? "border-red-500" : "border-[#d8e8e8]"}`}
                 />
                 {touchedFields.fileData && !formData.fileData && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
               </label>
