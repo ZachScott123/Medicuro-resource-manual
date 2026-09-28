@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiArrowUpRight, FiLock } from "react-icons/fi";
+import { FiArrowUpRight, FiLock, FiUser, FiBookOpen, FiCheckCircle } from "react-icons/fi";
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function Home() {
@@ -48,16 +48,19 @@ export default async function Home() {
 
         <div className="home-context-notes">
           <article>
+            <span className="home-context-icon"><FiUser aria-hidden="true" /></span>
             <span className="home-context-number">01</span>
             <h3>People and partners</h3>
             <p>Find the teams, physicians, specialists, and external partners who support Medicuro's day-to-day work.</p>
           </article>
           <article>
+            <span className="home-context-icon"><FiBookOpen aria-hidden="true" /></span>
             <span className="home-context-number">02</span>
             <h3>Practical guidance</h3>
             <p>Use the guide library for the documents and instructions that help turn a question into a clear next action.</p>
           </article>
           <article>
+            <span className="home-context-icon"><FiCheckCircle aria-hidden="true" /></span>
             <span className="home-context-number">03</span>
             <h3>Current information</h3>
             <p>Check the record before reaching out, and update the source when a contact, role, or process changes.</p>

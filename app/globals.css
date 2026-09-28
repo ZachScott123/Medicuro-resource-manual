@@ -25,8 +25,6 @@ body {
 	overflow-x: clip;
 }
 
-/* Constrains page content to a comfortable reading width on large screens
-   so layouts look intentional instead of stretching edge to edge. */
 .page-shell {
 	margin-inline: auto;
 	width: 100%;
@@ -803,7 +801,7 @@ h3 {
 }
 
 .home-hero h1 {
-	max-width: 720px;
+	max-width: 650px;
 	font-size: clamp(3.4rem, 6vw, 4.5rem);
 	margin-top: 0.5rem;
 }
@@ -873,7 +871,7 @@ h3 {
 .directory-link-icon {
 	align-items: center;
 	background: #7dd9d0;
-	border-radius: 0.75rem;
+	border-radius: 5rem;
 	color: var(--teal-dark);
 	display: flex;
 	flex: 0 0 auto;
@@ -927,7 +925,10 @@ h3 {
 }
 
 .home-context-intro h2 {
-	color: #0184b8;
+	background: linear-gradient(120deg, #0092e6, #0655a4);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
 	font-size: clamp(2rem, 4vw, 3.5rem);
 	font-weight: 700;
 	letter-spacing: -0.025em;
@@ -954,6 +955,27 @@ h3 {
 	border-radius: 0.35rem;
 	min-height: 14rem;
 	padding: 1.25rem 1.15rem 1.4rem;
+	position: relative;
+}
+
+.home-context-icon {
+	align-items: center;
+	background: #e0fff569;
+	border-radius: 5rem;
+	color: var(--teal-dark);
+	display: flex;
+	font-size: 1.15rem;
+	height: 2.25rem;
+	justify-content: center;
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	width: 2.25rem;
+}
+
+.home-context-notes article:nth-child(even) .home-context-icon {
+	background: #d9effe71;
+	color: #0c6fd2;
 }
 
 .home-context-notes article:nth-child(even) {
@@ -1087,8 +1109,8 @@ h3 {
 
 .page-footer .brand-logo,
 .page-footer-logo {
-	width: clamp(9rem, 18vw, 15rem);
 	height: clamp(2.5rem, 4vw, 3.5rem);
+	width: clamp(9rem, 16vw, 12rem);
 }
 
 body:has(.not-found-page) .page-footer {
@@ -1098,7 +1120,7 @@ body:has(.not-found-page) .page-footer {
 .not-found-page {
     align-items: center;
     background:
-        linear-gradient(#0effff00, #ffffffe2, #868686),
+        linear-gradient(#0effff00, #ffffffe2, #dbf9ff),
         url("/medicuro-background-plus-1") right center / 135% auto no-repeat;
     display: flex;
 	flex-direction: column;
@@ -1520,70 +1542,9 @@ body:has(.not-found-page) .page-footer {
 	opacity: 0.6;
 }
 
-/* ----- Responsive navigation ----- */
 
-@media (max-width: 860px) {
-	.site-nav-inner {
-		flex-wrap: wrap;
-	}
 
-	.nav-toggle {
-		display: inline-flex;
-	}
-
-	.nav-menu {
-		align-items: stretch;
-		display: none;
-		flex-basis: 100%;
-		flex-direction: column;
-		gap: 0.5rem;
-		padding: 0.5rem 0 0.75rem;
-	}
-
-	.nav-menu-open {
-		display: flex;
-	}
-
-	.nav-links {
-		flex-direction: column;
-		flex-wrap: nowrap;
-		width: 100%;
-	}
-
-	.nav-link {
-		padding: 0.85rem 0.5rem;
-		width: 100%;
-	}
-
-	.nav-account {
-		margin-left: 0;
-		width: 100%;
-	}
-
-	.nav-account .btn-accent,
-	.nav-login {
-		flex: 1;
-	}
-
-		.guide-hero {
-		align-items: flex-start;
-		flex-direction: column;
-		gap: 2rem;
-	}
-
-	.directory-hero p {
-		font-size: clamp(1.05rem, 2.2vw, 1.5rem);
-	}
-
-	.home-hero {
-		background: 
-			linear-gradient(170deg, #f8fcfcf6 30%, #dffff6c8 100%),
-			url("/medicuro-background-plus-1") right center / 200% auto no-repeat,
-			#f8fcfc;
-	}
-}
-
-/* ------------------------------------------- */
+/* ----- Keyframes for Animated UI ----- */
 
 @keyframes fade-content-in {
     from {
@@ -1593,6 +1554,17 @@ body:has(.not-found-page) .page-footer {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes left-content-in {
+    from {
+        opacity: 0;
+        transform: translateX(-2.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
@@ -1617,7 +1589,76 @@ body:has(.not-found-page) .page-footer {
     }
 }
 
+/* ----- Responsive UI ----- */
+
+@media (max-width: 860px) {
+	.site-nav-inner {
+		flex-wrap: wrap;
+	}
+
+	.nav-toggle {
+		display: inline-flex;
+	}
+
+	.nav-menu {
+		align-items: stretch;
+		display: none;
+		flex-basis: 100%;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.5rem 0 0.75rem;
+		animation: left-content-in 700ms ease-out both;
+	}
+
+	.nav-menu .nav-links {
+		flex-direction: column;
+	}
+
+	.nav-menu-open {
+		display: flex;
+	}
+
+	.nav-links {
+		flex-wrap: nowrap;
+		width: 40%;
+	}
+
+	.nav-link {
+		padding: 0.85rem 0.5rem;
+		width: 100%;
+	}
+
+	.nav-account {
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.nav-account .btn-accent,
+	.nav-login {
+		flex: 1;
+	}
+
+	.guide-hero {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.directory-hero p {
+		font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+	}
+}
+
 @media (max-width: 700px) {
+	.page-footer-inner {
+		flex-direction: column;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
 	.profile-detail {
 		padding: 1.5rem 1rem 3rem;
 	}
@@ -1645,6 +1686,16 @@ body:has(.not-found-page) .page-footer {
 	}
 }
 
+@media (max-width: 670px) {
+	.page-footer-inner .nav-links {
+		flex-direction: column;
+	}
+
+	.nav-spacer {
+		display: none;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
     .home-hero-content,
 	.home-hero-note,
@@ -1668,6 +1719,13 @@ body:has(.not-found-page) .page-footer {
 @media (max-width: 1024px) {
 	.profile-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.home-hero {
+		background: 
+			linear-gradient(170deg, #f8fcfcf6 30%, #dffffdc8 100%),
+			url("/medicuro-background-plus-1") right center / 200% auto no-repeat,
+			#f8fcfc;
 	}
 }
 
@@ -1725,7 +1783,7 @@ body:has(.not-found-page) .page-footer {
 	}
 
 	.home-footer {
-		flex-direction: column;
+		flex-direction: left;
 		gap: 0.4rem;
 	}
 
@@ -1754,12 +1812,12 @@ body:has(.not-found-page) .page-footer {
 
 	.home-context-notes article {
 		min-height: auto;
-		padding: 1.25rem 0;
+		padding: 1.25rem 2rem;
 	}
 
 	.home-context-notes article + article {
+		padding: 1.25rem 2rem;
 		border-left: 0;
-		padding-left: 0;
 	}
 
 	.home-context-number {
