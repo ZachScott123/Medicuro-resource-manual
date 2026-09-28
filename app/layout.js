@@ -4,14 +4,16 @@ import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { FiMenu, FiX } from "react-icons/fi";
 
-function NavLink({ href, children, className = "" }) {
+function NavLink({ href, children, className = "", onClick }) {
   const pathname = usePathname();
   const isActive = pathname == href;
 
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={["nav-link", className, isActive ? "nav-link-active" : ""].filter(Boolean).join(" ")}
     >
       {children}
@@ -21,6 +23,7 @@ function NavLink({ href, children, className = "" }) {
 
 export default function RootLayout({ children }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [user, setUser] = useState({ name: "", picture: "", email: "" });
@@ -56,6 +59,10 @@ export default function RootLayout({ children }) {
         setIsAuthorized(false);
         setUser({ name: "", picture: "", email: "" });
       });
+    }, [pathname]);
+
+  useEffect(() => {
+    setIsNavOpen(false);
   }, [pathname]);
 
   async function handleLogout() {
@@ -73,61 +80,76 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
         <body className={['min-h-screen flex flex-col antialiased', isAuthPage ? 'login-layout' : ''].filter(Boolean).join(' ')}>
-          {!isAuthPage && <nav className={['site-nav w-full', isScrolled ? 'site-nav-scrolled' : ''].filter(Boolean).join(' ')}>
-            <div className="flex w-full items-center justify-start gap-6 px-6 py-4 transition-all duration-200">
+                    {!isAuthPage && <nav className={['site-nav w-full', isScrolled ? 'site-nav-scrolled' : ''].filter(Boolean).join(' ')}>
+            <div className="site-nav-inner">
               <Link href="/" className="brand-logo" aria-label="Medicuro home">
                 <img src="/medicuro-logo-tag-line-1.svg" alt="Medicuro" />
               </Link>
-              <div className="nav-links">
-                <NavLink className="nav-link-header" href="/staff-profiles">Staff</NavLink>
-                <NavLink className="nav-link-header" href="/physician-partners">Physicians</NavLink>
-                <NavLink className="nav-link-header" href="/specialist-partners">Specialists</NavLink>
-                {(isLoggedIn || isAuthorized) && (
-                <NavLink className="nav-link-header" href="/medicuro-guides">Guides</NavLink>
-                )}
+              <button
+                className="nav-toggle"
+                type="button"
+                aria-label={isNavOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isNavOpen}
+                onClick={() => setIsNavOpen((current) => !current)}
+              >
+                {isNavOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
+              </button>
+              <div className={['nav-menu', isNavOpen ? 'nav-menu-open' : ''].filter(Boolean).join(' ')}>
+                <div className="nav-links">
+                  <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
+                  <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
+                  <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
+                  {(isLoggedIn || isAuthorized) && (
+                  <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
+                  )}
                 </div>
-              {isLoggedIn ? (
-                <div className="nav-account ml-auto">
-                  <button className="btn-accent" onClick={handleLogout} type="button">
-                    Logout
-                </button>
-                  <Link href="/profile" className="profile-icon" aria-label={profileAlt} title={profileAlt}>
-                    {user.picture ? (
-                      <img src={user.picture} alt={profileAlt} referrerPolicy="no-referrer" />
-                    ) : (
-                      <span className="profile-icon-initial">{profileInitial}</span>
-                    )}
-          </Link>
-          </div>
-              ) : (
-                <button className="btn-accent ml-auto" onClick={() => router.push("/login")} type="button">
-                  <span>Login</span>
-                </button>
-              )}
+                {isLoggedIn ? (
+                  <div className="nav-account">
+                    <button className="btn-accent" onClick={handleLogout} type="button">
+                      Logout
+                    </button>
+                    <Link href="/profile" className="profile-icon" aria-label={profileAlt} title={profileAlt}>
+                      {user.picture ? (
+                        <img src={user.picture} alt={profileAlt} referrerPolicy="no-referrer" />
+                      ) : (
+                        <span className="profile-icon-initial">{profileInitial}</span>
+                      )}
+                    </Link>
+                  </div>
+                ) : (
+                  <button className="btn-accent nav-login" onClick={() => router.push("/login")} type="button">
+                    <span>Login</span>
+                  </button>
+                )}
+              </div>
             </div>
           </nav>}
         <main className="flex flex-1 w-full flex-col px-6">
-          {children}
+          <div className="page-shell">
+            {children}
+          </div>
         </main>
 
-        {!isAuthPage && <footer className="page-footer">
-          <Link href="/" className="brand-logo" aria-label="Medicuro home">
-            <img src="/medicuro-tagline-logo-white.svg" alt="Medicuro" />
-          </Link>
-          <div className="nav-links">
-              <NavLink className="nav-link-footer" href="/staff-profiles">Staff</NavLink>
-            <div className="nav-spacer">|</div>
-              <NavLink className="nav-link-footer" href="/physician-partners">Physicians</NavLink>
-            <div className="nav-spacer">|</div>
-              <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
-            {(isLoggedIn || isAuthorized) && (
-              <>
-            <div className="nav-spacer">|</div>
-              <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
-              </>
-            )}
+                {!isAuthPage && <footer className="page-footer">
+          <div className="page-footer-inner">
+            <Link href="/" className="brand-logo page-footer-logo" aria-label="Medicuro home">
+              <img src="/medicuro-tagline-logo-white.svg" alt="Medicuro" />
+            </Link>
+            <div className="nav-links">
+                <NavLink className="nav-link-footer" href="/staff-profiles">Staff</NavLink>
+              <div className="nav-spacer">|</div>
+                <NavLink className="nav-link-footer" href="/physician-partners">Physicians</NavLink>
+              <div className="nav-spacer">|</div>
+                <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
+              {(isLoggedIn || isAuthorized) && (
+                <>
+              <div className="nav-spacer">|</div>
+                <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
+                </>
+              )}
+            </div>
+            <span className="page-footer-note">Internal Resource Manual</span>
           </div>
-          <span>Internal Resource Manual</span>
       </footer>}
       </body>
     </html>

@@ -22,6 +22,19 @@ body {
 	background: #f8fcfc;
 	color: var(--ink);
 	font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+	overflow-x: clip;
+}
+
+/* Constrains page content to a comfortable reading width on large screens
+   so layouts look intentional instead of stretching edge to edge. */
+.page-shell {
+	margin-inline: auto;
+	width: 100%;
+	max-width: 90rem;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
 }
 
 body.login-layout {
@@ -53,25 +66,62 @@ h3 {
 .site-nav {
 	background: rgba(248, 252, 252, 0.94);
 	backdrop-filter: blur(8px);
-	border-bottom: 1px solid transparent;
 	color: var(--ink);
-	padding: 0.35rem 5rem;
 	display: flex;
+	justify-content: center;
 	position: sticky;
+	padding: 0.8rem 2rem;
 	top: 0;
 	z-index: 50;
-	transition: box-shadow 450ms ease, border-color 220ms ease, padding 220ms ease;
+	transition: box-shadow 450ms ease;
 }
 
 .site-nav-scrolled {
 	box-shadow: 0 8px 24px rgba(18, 50, 67, 0.08);
-	border-bottom-color: rgba(18, 50, 67, 0.08);
+}
+
+.site-nav-inner {
+	align-items: center;
+	display: flex;
+	width: 100%;
+	max-width: 90rem;
+	gap: 1.5rem;
+	margin-inline: auto;
+	padding: 0.35rem clamp(1rem, 3vw, 2.5rem);
+	transition: padding 220ms ease;
+}
+
+.nav-menu {
+	align-items: center;
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: space-between;
+	gap: 1rem;
+	min-width: 0;
+}
+
+.nav-toggle {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: 8px;
+	color: #0082e6;
+	cursor: pointer;
+	display: none;
+	font-size: 1.5rem;
+	justify-content: center;
+	margin-left: auto;
+	padding: 0.5rem;
+}
+
+.nav-toggle:hover {
+	background: var(--mist);
 }
 
 .site-nav button {
 	background: linear-gradient(120deg, #0c8dcd, #5BC7B8);
 	border-radius: 5px;
-	padding: 0.8rem 3rem;
+	padding: 0.7rem 1.75rem;
 	font-size: 1rem;
 	font-weight: 500;
 	letter-spacing: 0.5px;
@@ -84,6 +134,17 @@ h3 {
 	border-radius: 5px;
 }
 
+.site-nav .nav-toggle,
+.site-nav .nav-toggle:hover {
+	background: transparent;
+	border-radius: 8px;
+	padding: 0.5rem;
+}
+
+.site-nav .nav-toggle:hover {
+	background: var(--mist);
+}
+
 .brand-mark {
 	color: var(--blue);
 	font-size: 1.55rem;
@@ -94,8 +155,8 @@ h3 {
 .brand-logo {
 	display: inline-flex;
 	flex: 0 0 auto;
-	height: 3.5rem;
-	width: 12rem;
+	height: clamp(2.5rem, 4vw, 3.5rem);
+	width: clamp(9rem, 16vw, 12rem);
 }
 
 .brand-logo img {
@@ -113,17 +174,28 @@ h3 {
 .nav-links {
 	align-items: center;
 	display: flex;
+	flex-wrap: nowrap;
 	gap: 0.3rem;
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.nav-links::-webkit-scrollbar {
+	display: none;
 }
 
 .nav-link {
 	border-radius: 999px;
 	color: #265B72;
-	font-size: 1.125rem;
+	font-size: clamp(0.95rem, 1.1vw, 1.125rem);
 	font-weight: 500;
 	letter-spacing: 0.3px;
 	padding: 1.5rem 0.7rem;
 	transition: background 160ms ease, color 160ms ease;
+	white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -170,9 +242,9 @@ h3 {
         url("/physician-hero-photo.png") right center / cover no-repeat;
 	display: flex;
 	align-items: center;
-	margin: 0rem -1.5rem 3rem;
+	margin: 0 calc(50% - 50vw) 3rem;
 	overflow: hidden;
-	padding: clamp(6rem, 5vw, 9.5rem);
+	padding: clamp(4rem, 8vw, 9.5rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;
 	cursor: default;
 	animation: static-fade-in 700ms ease-out both;
@@ -197,9 +269,9 @@ h3 {
         url("/specialist-hero-photo.png") right center / cover no-repeat;
 	display: flex;
 	align-items: center;
-	margin: 0rem -1.5rem 3rem;
+	margin: 0 calc(50% - 50vw) 3rem;
 	overflow: hidden;
-	padding: clamp(6rem, 5vw, 9.5rem);
+	padding: clamp(4rem, 8vw, 9.5rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;	
 	cursor: default;
 	animation: static-fade-in 700ms ease-out both;
@@ -211,9 +283,9 @@ h3 {
 		url("/staff-hero-photo.png") right center / cover no-repeat;
 	display: flex;
 	align-items: center;
-	margin: 0rem -1.5rem 3rem;
+	margin: 0 calc(50% - 50vw) 3rem;
 	overflow: hidden;
-	padding: clamp(6rem, 5vw, 9.5rem);
+	padding: clamp(4rem, 8vw, 9.5rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;
 	cursor: default;
 	animation: static-fade-in 700ms ease-out both;
@@ -226,10 +298,10 @@ h3 {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin: 0rem -1.5rem 3rem;
-	min-height: 25rem;
+	margin: 0 calc(50% - 50vw) 3rem;
+	min-height: 22rem;
 	overflow: hidden;
-	padding: clamp(4rem, 7vw, 8rem);
+	padding: clamp(3.5rem, 8vw, 8rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;
 	cursor: default;
 	animation: static-fade-in 700ms ease-out both;
@@ -427,7 +499,7 @@ h3 {
 
 .directory-hero h1 {
 	max-width: 1000px;
-	font-size: 4rem;
+	font-size: clamp(2.25rem, 5vw, 4rem);
 	letter-spacing: 0.3px;
 	color: var(--ink);
 }
@@ -444,9 +516,11 @@ h3 {
 .directory-toolbar {
 	align-items: center;
 	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
 	justify-content: space-between;
 	margin-bottom: 3rem;
-	padding: 0rem 3rem;
+	padding: 0 clamp(1rem, 3vw, 3rem);
 	animation: fade-content-in 600ms ease-out both;
 }
 
@@ -534,7 +608,7 @@ h3 {
 
 .profile-detail {
 	margin: 0 auto;
-	max-width: 95%;
+	max-width: min(95%, 78rem);
 	padding: 3rem 1.5rem 4rem;
 }
 
@@ -707,10 +781,10 @@ h3 {
 	background: 
 		linear-gradient(150deg, #f8fcfc52 42%, #f8fcfb00 80%, #c6eaffd7 100%),
 		url("/medicuro-home-setup.png") right center / 57% no-repeat;
-	margin: 0rem -1.8rem 0rem;
+	margin: 0 calc(50% - 50vw);
 	min-height: 30rem;
 	overflow: hidden;
-	padding: clamp(1rem, 5vw, 6.5rem);
+	padding: clamp(2.5rem, 6vw, 6.5rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;
 	animation: static-fade-in 700ms ease-out both;
 }
@@ -784,15 +858,14 @@ h3 {
 .privacy-panel {
 	align-items: flex-start;
 	background:
-		linear-gradient(120deg, #41bfb3 0%, #0c6fd2ce 100%),
+		linear-gradient(120deg, #41bfb3 20%, #0c6fd2ce 100%),
 		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
 	border: 1px solid var(--line);
 	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.05);
 	display: flex;
 	gap: 1.25rem;
-	margin: 0rem -1.5rem 5rem;
-	padding: 3.5rem;
-	width: calc(100% + 3rem);
+	margin: 0 calc(50% - 50vw) 5rem;
+	padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 6vw, 6rem);
 	cursor: default;
 }
 
@@ -812,14 +885,14 @@ h3 {
 .privacy-panel h2,
 .section-heading h2 {
 	color: #ffffff;
-	font-size: clamp(3rem, 3vw, 2.5rem);
+	font-size: clamp(1.75rem, 3vw, 2.5rem);
 	font-weight: 750;
 }
 
 .privacy-panel h3,
 .section-heading h3 {
 	color: #176183;
-	font-size: clamp(3rem, 3vw, 2.5rem);
+	font-size: clamp(1.75rem, 3vw, 2.5rem);
 	font-weight: 750;
 }
 
@@ -992,21 +1065,30 @@ h3 {
 .page-footer {
 	background: #123243;
 	border-top: 3px solid var(--teal);
-	display: flex;
 	font-size: 0.9rem;
-	justify-content: space-between;
-	padding: 2rem;
-	padding-bottom: 2rem;
 	margin-top: 3rem;
+	padding: 2rem clamp(1rem, 3vw, 2.5rem);
+}
+
+.page-footer-inner {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	justify-content: space-between;
+	margin-inline: auto;
+	max-width: 90rem;
+	width: 100%;
 }
 
 .page-footer span {
 	color: var(--teal);
-	padding-top: 1rem;
 }
 
-.page-footer .brand-logo {
-	width: 15%;
+.page-footer .brand-logo,
+.page-footer-logo {
+	width: clamp(9rem, 18vw, 15rem);
+	height: clamp(2.5rem, 4vw, 3.5rem);
 }
 
 body:has(.not-found-page) .page-footer {
@@ -1022,8 +1104,8 @@ body:has(.not-found-page) .page-footer {
 	flex-direction: column;
 	flex: 1;
 	gap: 0.75rem;
-	justify-content: center;
-	margin: 0 -1.5rem;
+		justify-content: center;
+	margin: 0 calc(50% - 50vw);
 	min-height: 0;
 	padding-bottom: 5rem;
 	text-align: center;
@@ -1075,7 +1157,7 @@ body:has(.not-found-page) .page-footer {
 	display: flex;
 	flex: 1;
 	justify-content: center;
-	margin: 0 -1.5rem;
+	margin: 0 calc(50% - 50vw);
 	min-height: 0;
 	padding: 4rem 1.5rem;
 	cursor: default;
@@ -1083,7 +1165,7 @@ body:has(.not-found-page) .page-footer {
 
 .login-panel {
 	background: rgba(255, 255, 255, 0.961);
-	border: 1px solid var(--line);
+	border-top: 5px solid #dddddd;
 	border-radius: 1rem;
 	box-shadow: 0 18px 45px rgba(18, 50, 67, 0.14);
 	max-width: 27rem;
@@ -1127,7 +1209,7 @@ body:has(.not-found-page) .page-footer {
 	display: flex;
 	flex: 1;
 	justify-content: center;
-	margin: 0 -1.5rem;
+	margin: 0 calc(50% - 50vw);
 	min-height: 0;
 	padding: 3rem 1.5rem;
 	cursor: default;
@@ -1154,7 +1236,7 @@ body:has(.not-found-page) .page-footer {
 }
 
 .login-eyebrow {
-	color: #265B72;
+	color: var(--muted-ink);
 	font-size: 0.75rem;
 	font-weight: 800;
 	letter-spacing: 0.16em;
@@ -1225,6 +1307,7 @@ body:has(.not-found-page) .page-footer {
 .nav-account {
 	align-items: center;
 	display: flex;
+	flex: 0 0 auto;
 	gap: 0.85rem;
 	margin-left: auto;
 }
@@ -1236,7 +1319,7 @@ body:has(.not-found-page) .page-footer {
 	box-shadow: 0 6px 16px rgba(18, 50, 67, 0.16);
 	color: #ffffff;
 	cursor: pointer;
-	margin: 0rem -2rem 0rem 1rem;
+	margin: 0;
 	display: inline-flex;
 	flex: 0 0 auto;
 	font-size: 1.05rem;
@@ -1275,9 +1358,9 @@ body:has(.not-found-page) .page-footer {
 		#fcfcfc;
 	display: flex;
 	align-items: center;
-	margin: 0rem -1.5rem 3rem;
+	margin: 0 calc(50% - 50vw) 3rem;
 	overflow: hidden;
-	padding: clamp(4.5rem, 5vw, 8rem);
+	padding: clamp(3.5rem, 8vw, 8rem) clamp(1.5rem, 6vw, 6rem);
 	position: relative;
 	cursor: default;
 	animation: static-fade-in 700ms ease-out both;
@@ -1304,7 +1387,7 @@ body:has(.not-found-page) .page-footer {
 
 .profile-editor {
 	margin: 0 auto;
-	max-width: 95%;
+	max-width: min(95%, 78rem);
 }
 
 .profile-banner {
@@ -1437,6 +1520,69 @@ body:has(.not-found-page) .page-footer {
 	opacity: 0.6;
 }
 
+/* ----- Responsive navigation ----- */
+
+@media (max-width: 860px) {
+	.site-nav-inner {
+		flex-wrap: wrap;
+	}
+
+	.nav-toggle {
+		display: inline-flex;
+	}
+
+	.nav-menu {
+		align-items: stretch;
+		display: none;
+		flex-basis: 100%;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.5rem 0 0.75rem;
+	}
+
+	.nav-menu-open {
+		display: flex;
+	}
+
+	.nav-links {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		width: 100%;
+	}
+
+	.nav-link {
+		padding: 0.85rem 0.5rem;
+		width: 100%;
+	}
+
+	.nav-account {
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.nav-account .btn-accent,
+	.nav-login {
+		flex: 1;
+	}
+
+		.guide-hero {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.directory-hero p {
+		font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+	}
+
+	.home-hero {
+		background: 
+			linear-gradient(170deg, #f8fcfcf6 30%, #dffff6c8 100%),
+			url("/medicuro-background-plus-1") right center / 200% auto no-repeat,
+			#f8fcfc;
+	}
+}
+
 /* ------------------------------------------- */
 
 @keyframes fade-content-in {
@@ -1513,6 +1659,18 @@ body:has(.not-found-page) .page-footer {
 	}
 }
 
+@media (max-width: 1200px) {
+	.profile-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 1024px) {
+	.profile-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
 @media (max-width: 680px) {
 	.guide-hero {
 		align-items: flex-start;
@@ -1540,29 +1698,6 @@ body:has(.not-found-page) .page-footer {
 
 	.home-hero-note {
 		display: none;
-	}
-
-	.home-context {
-		grid-template-columns: 1fr;
-		margin-bottom: 4rem;
-	}
-
-	.home-context-notes {
-		grid-template-columns: 1fr;
-	}
-
-	.home-context-notes article {
-		min-height: auto;
-		padding: 1.25rem 0;
-	}
-
-	.home-context-notes article + article {
-		border-left: 0;
-		padding-left: 0;
-	}
-
-	.home-context-number {
-		margin-bottom: 1rem;
 	}
 
 	.privacy-panel,
@@ -1606,6 +1741,29 @@ body:has(.not-found-page) .page-footer {
 
 	.profile-form-preview {
 		position: static;
+	}
+
+	.home-context {
+		grid-template-columns: 1fr;
+		margin-bottom: 4rem;
+	}
+
+	.home-context-notes {
+		grid-template-columns: 1fr;
+	}
+
+	.home-context-notes article {
+		min-height: auto;
+		padding: 1.25rem 0;
+	}
+
+	.home-context-notes article + article {
+		border-left: 0;
+		padding-left: 0;
+	}
+
+	.home-context-number {
+		margin-bottom: 1rem;
 	}
 }
 
