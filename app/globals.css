@@ -910,22 +910,25 @@ h3 {
 }
 
 .home-context {
+	background: #ffffff;
+	border-radius: 20px;
 	display: grid;
 	gap: clamp(2.5rem, 6vw, 6rem);
 	grid-template-columns: minmax(14rem, 0.8fr) minmax(0, 1.2fr);
 	margin: 0 auto 0rem;
 	max-width: 90rem;
+	padding: 2.5rem 0rem;
 	padding-inline: clamp(1rem, 3vw, 3rem);
+	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.1);
 }
 
 .home-context-intro {
-	border-top: 2px solid var(--ink);
-	border-radius: 5px;
-	padding-top: 1.5rem;
+	border-radius: 5px;	
+	padding-top: 1rem;
 }
 
 .home-context-intro h2 {
-	background: linear-gradient(120deg, #0092e6, #0655a4);
+	background: linear-gradient(340deg, var(--teal-dark), var(--teal));
 	background-clip: text;
 	-webkit-background-clip: text;
 	color: transparent;
@@ -1727,6 +1730,15 @@ body:has(.not-found-page) .page-footer {
 			url("/medicuro-background-plus-1") right center / 200% auto no-repeat,
 			#f8fcfc;
 	}
+
+	.home-hero-content {
+		flex-direction: column;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+	}
 }
 
 @media (max-width: 680px) {
@@ -1804,6 +1816,13 @@ body:has(.not-found-page) .page-footer {
 	.home-context {
 		grid-template-columns: 1fr;
 		margin-bottom: 4rem;
+	}
+
+	.home-context-intro {
+		padding-top: 0;
+		flex-direction: column;
+		align-items: center;
+		display: flex;
 	}
 
 	.home-context-notes {

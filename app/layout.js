@@ -83,7 +83,9 @@ export default function RootLayout({ children }) {
                     {!isAuthPage && <nav className={['site-nav w-full', isScrolled ? 'site-nav-scrolled' : ''].filter(Boolean).join(' ')}>
             <div className="site-nav-inner">
               <Link href="/" className="brand-logo" aria-label="Medicuro home">
-                <img src="/medicuro-logo-tag-line-1.svg" alt="Medicuro" />
+                <img src="/medicuro-logo-tag-line-1.png" alt="Medicuro" 
+                      onMouseOver={(e) => (e.currentTarget.src = '/medicuro-logo-gradient.png')}
+                      onMouseOut={(e) => (e.currentTarget.src = '/medicuro-logo-tag-line-1.png')}/>
               </Link>
               <button
                 className="nav-toggle"
@@ -133,7 +135,7 @@ export default function RootLayout({ children }) {
                 {!isAuthPage && <footer className="page-footer">
           <div className="page-footer-inner">
             <Link href="/" className="brand-logo page-footer-logo" aria-label="Medicuro home">
-              <img src="/medicuro-tagline-logo-white.svg" alt="Medicuro" />
+              <img src="/medicuro-tagline-logo-white.png" alt="Medicuro" />
             </Link>
             <div className="nav-links">
                 <NavLink className="nav-link-footer" href="/staff-profiles">Staff</NavLink>
