@@ -41,7 +41,7 @@ export async function GET(request) {
             const isAuthorized = allowedEmails.includes(email);
             const isPhysicianSpecialist = allowedPhysicianSpecialist.includes(email);
 
-            if (!email || (!isAuthorized && !isPhysicianSpecialist)) {
+            if (!email || (!isAuthorized && !isPhysicianSpecialist && !editorEmails.includes(email))) {
             return NextResponse.redirect(
                 new URL("/login-unauthorizedAccount", request.url)
             );

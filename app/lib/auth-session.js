@@ -55,7 +55,9 @@ export async function getAuthenticatedUser({ requireEditor = false } = {}) {
 
     if (
       !email ||
-      (!isAuthorizedEmail(email) && !isPhysicianSpecialistEmail(email))
+      (!isAuthorizedEmail(email) &&
+        !isPhysicianSpecialistEmail(email) &&
+        !isEditorEmail(email))
     ) {
       return null;
     }
@@ -100,4 +102,3 @@ export async function getPhysicianSpecialistUser({ requireEditor = false } = {})
     return null;
   }
 }
-
