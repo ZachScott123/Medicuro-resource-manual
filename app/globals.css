@@ -1817,10 +1817,18 @@ body:has(.admin-notes) {
 
 .admin-access-group {
 	background: #fbfefe;
-	border: 1px solid var(--line);
 	border-radius: 0.75rem;
 	min-width: 0;
 	padding: 1rem;
+}
+
+.admin-access-group:nth-child(odd) {
+	
+	border-top: 3px solid #00ADFF;
+}
+
+.admin-access-group:nth-child(even) {
+	border-top: 3px solid #1ec59e;
 }
 
 .admin-access-group h3 {
@@ -1845,15 +1853,24 @@ body:has(.admin-notes) {
 
 .admin-email-chip {
 	align-items: center;
-	background: #e9f6f4;
-	border: 1px solid #c8e6e1;
 	border-radius: 999px;
-	color: #215a5b;
 	display: inline-flex;
 	font-size: 0.8rem;
 	gap: 0.4rem;
 	max-width: 100%;
 	padding: 0.3rem 0.4rem 0.3rem 0.65rem;
+}
+
+.admin-email-chip:nth-child(odd) {
+	background: #e9f6f4;
+	color: #215a5b;
+	border: 1px solid #c8e6e1;
+}
+
+.admin-email-chip:nth-child(even) {
+	background: #d4eff7;
+	color: #2b608c;
+	border: 1px solid #c8e0e6;
 }
 
 .admin-email-chip > span {
@@ -1916,10 +1933,10 @@ body:has(.admin-notes) {
 .admin-access-add button,
 .admin-access-save {
 	align-items: center;
-	background: var(--mist);
-	border: 1px solid #c8e6e1;
+	background: #dfdfdf;
+	border: 1px solid #dfdfdf;
 	border-radius: 0.45rem;
-	color: var(--teal-dark);
+	color: #666666;
 	cursor: pointer;
 	display: inline-flex;
 	flex: 0 0 auto;
@@ -1932,8 +1949,10 @@ body:has(.admin-notes) {
 }
 
 .admin-access-add button:hover {
-	background: #d8f2ec;
+	background: #ffffff;
 	color: var(--ink);
+	border: 1px solid #666666;
+
 }
 
 .admin-access-footer {
@@ -2081,8 +2100,7 @@ body:has(.admin-notes) {
 
 .admin-menu-panel {
 	animation: admin-dialog-in 220ms ease-out both;
-	background: #ffffff;
-	border: 1px solid rgba(18, 50, 67, 0.1);
+	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
 	border-radius: 1rem;
 	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
 	max-height: calc(100vh - 2rem);

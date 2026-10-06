@@ -22,7 +22,7 @@ export default async function Admin() {
   if (!currentUser.isEditor) {
     redirect("/");
   }
-
+  
   return (
     <div className="directory-page mx-auto">
       <header className="admin-page-heading">

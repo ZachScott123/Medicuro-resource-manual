@@ -161,7 +161,7 @@ export default function UserAccessLists() {
                 
                 {savedList === key && <span role="status">Changes saved.</span>}
                 <button
-                  className="admin-access-save"
+                  className="btn-accent"
                   type="button"
                   disabled={Boolean(savingList)}
                   onClick={() => saveList(key)}>
