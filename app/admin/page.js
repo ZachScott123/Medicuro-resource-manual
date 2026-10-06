@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { FiArrowRight, FiBookOpen, FiHeart, FiUser, FiUsers } from "react-icons/fi";
+import { FiArrowRight, FiBookOpen, FiHeart, FiHome, FiUser, FiUsers } from "react-icons/fi";
 import { getCurrentUser } from "@/app/lib/current-user";
 import AdminNotes from "./admin-notes";
+import AdminAccessLists from "./access-lists";
 
 const adminLinks = [
+  { href: "/", label: "Home", icon: FiHome },
   { href: "/staff-profiles", label: "Staff profiles", icon: FiUsers },
   { href: "/physician-partners", label: "Physician partners", icon: FiHeart },
   { href: "/specialist-partners", label: "Specialist partners", icon: FiUser },
@@ -12,23 +14,29 @@ const adminLinks = [
 ];
 
 export default async function Admin() {
-  const { authenticated, isEditor } = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
-  if (!authenticated) {
+  if (!currentUser.authenticated) {
     redirect("/login");
   }
 
-  if (!isEditor) {
+  if (!currentUser.isEditor) {
     redirect("/");
   }
 
   return (
     <div className="directory-page mx-auto">
+      <header className="admin-page-heading">
+        <h1>Welcome, <span className="admin-page-name">{currentUser.name || "Administrator"}</span></h1>
+      </header>
       <div className="admin-dashboard-layout">
         <aside className="admin-sidebar" aria-label="Admin workspace information">
           <div className="admin-sidebar-heading">
-            <h2>Administrative Portal</h2>
-            <p>Keep team profiles and care resources managed in one place.</p>
+            <div className="admin-sidebar-logo-div">
+              <img src="/medicuro-logo-white.png" alt="Medicuro" className="admin-menu-logo"/>
+            </div>
+            <h1 className="admin-page-kicker">Admin Workspace</h1>
+            <p>Manage staff profiles, partner directories, and care delivery resources from one central workspace.</p>
           </div>
           <nav className="admin-sidebar-nav" aria-label="Admin shortcuts">
             <span className="admin-sidebar-label">Quick links</span>
@@ -49,6 +57,7 @@ export default async function Admin() {
           <div className="admin-notes-frame">
             <AdminNotes />
           </div>
+          <AdminAccessLists />
         </section>
       </div>
     </div>

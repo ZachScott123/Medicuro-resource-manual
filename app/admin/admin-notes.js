@@ -33,8 +33,8 @@ export default function AdminNotes() {
               aria-haspopup="dialog"
               aria-expanded={openMenu === "staff"}
               aria-controls="admin-staff-menu"
-              onClick={() => setOpenMenu("staff")}
-            >
+              onClick={() => setOpenMenu("staff")}>
+
               <FiArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -51,8 +51,8 @@ export default function AdminNotes() {
               aria-haspopup="dialog"
               aria-expanded={openMenu === "partners"}
               aria-controls="admin-partners-menu"
-              onClick={() => setOpenMenu("partners")}
-            >
+              onClick={() => setOpenMenu("partners")}>
+
               <FiArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -69,8 +69,8 @@ export default function AdminNotes() {
               aria-haspopup="dialog"
               aria-expanded={openMenu === "accounts"}
               aria-controls="admin-accounts-menu"
-              onClick={() => setOpenMenu("accounts")}
-            >
+              onClick={() => setOpenMenu("accounts")}>
+
               <FiArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -87,8 +87,8 @@ export default function AdminNotes() {
               aria-haspopup="dialog"
               aria-expanded={openMenu === "administrators"}
               aria-controls="admin-administrators-menu"
-              onClick={() => setOpenMenu("administrators")}
-            >
+              onClick={() => setOpenMenu("administrators")}>
+
               <FiArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -103,19 +103,20 @@ export default function AdminNotes() {
             className="admin-menu-backdrop"
             type="button"
             aria-label="Close admin menu"
-            onClick={() => setOpenMenu("")}
-          />
+            onClick={() => setOpenMenu("")}/>
+
           <aside
             className="admin-menu-panel"
             id={`admin-${openMenu}-menu`}
             role="dialog"
             aria-modal="true"
-            aria-labelledby={`admin-${openMenu}-title`}
-          >
+            aria-labelledby={`admin-${openMenu}-title`}>
+            
             {openMenu === "staff" && (
               <>
                 <div className="admin-menu-heading">
-                  <h2 id="admin-staff-title">Staff members</h2>
+                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <h2 id="admin-staff-title">Staff Members</h2>
                   <button
                     className="admin-menu-close"
                     type="button"
@@ -130,6 +131,10 @@ export default function AdminNotes() {
                     <span>Manage staff profiles</span>
                     <FiArrowRight aria-hidden="true" />
                   </Link>
+                  <Link className="admin-menu-link" href="/staff-profiles" onClick={() => setOpenMenu("")}>
+                    <span>Edit authenticated staff</span>
+                    <FiArrowRight aria-hidden="true" />
+                  </Link>
                 </nav>
               </>
             )}
@@ -137,7 +142,8 @@ export default function AdminNotes() {
             {openMenu === "partners" && (
               <>
                 <div className="admin-menu-heading">
-                  <h2 id="admin-partners-title">Authenticated partners</h2>
+                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <h2 id="admin-partners-title">Authenticated Partners</h2>
                   <button
                     className="admin-menu-close"
                     type="button"
@@ -156,6 +162,10 @@ export default function AdminNotes() {
                     <span>Manage specialist partners</span>
                     <FiArrowRight aria-hidden="true" />
                   </Link>
+                  <Link className="admin-menu-link" href="/specialist-partners" onClick={() => setOpenMenu("")}>
+                    <span>Edit authenticated partners</span>
+                    <FiArrowRight aria-hidden="true" />
+                  </Link>
                 </nav>
               </>
             )}
@@ -163,13 +173,14 @@ export default function AdminNotes() {
             {openMenu === "accounts" && (
               <>
                 <div className="admin-menu-heading">
-                  <h2 id="admin-accounts-title">User accounts</h2>
+                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <h2 id="admin-accounts-title">User Accounts</h2>
                   <button
                     className="admin-menu-close"
                     type="button"
                     aria-label="Close user accounts menu"
-                    onClick={() => setOpenMenu("")}
-                  >
+                    onClick={() => setOpenMenu("")}>
+
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
@@ -182,31 +193,20 @@ export default function AdminNotes() {
             {openMenu === "administrators" && (
               <>
                 <div className="admin-menu-heading">
-                  <h2 id="admin-administrators-title">Administrative users</h2>
+                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <h2 id="admin-administrators-title">Administrative Users</h2>
                   <button
                     className="admin-menu-close"
                     type="button"
                     aria-label="Close administrative users menu"
-                    onClick={() => setOpenMenu("")}
-                  >
+                    onClick={() => setOpenMenu("")}>
+                      
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
                 <nav className="admin-menu-links" aria-label="Administrative shortcuts">
                   <Link className="admin-menu-link" href="/staff-profiles" onClick={() => setOpenMenu("")}>
-                    <span>Manage staff profiles</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
-                  <Link className="admin-menu-link" href="/physician-partners" onClick={() => setOpenMenu("")}>
-                    <span>Manage physician partners</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
-                  <Link className="admin-menu-link" href="/specialist-partners" onClick={() => setOpenMenu("")}>
-                    <span>Manage specialist partners</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
-                  <Link className="admin-menu-link" href="/medicuro-guides" onClick={() => setOpenMenu("")}>
-                    <span>Manage care delivery guides</span>
+                    <span>Manage authenticated admins</span>
                     <FiArrowRight aria-hidden="true" />
                   </Link>
                 </nav>

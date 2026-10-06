@@ -1,40 +1,48 @@
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { connectToAuthDB } from "@/app/api/databases/db";
 
-function getAuthorizedEmails() {
-  return (process.env.AUTHORIZED_EMAILS || "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+const emailCollation = { locale: "en", strength: 2 };
+
+function normalizeEmail(email) {
+  return typeof email === "string" ? email.trim().toLowerCase() : "";
 }
 
-function getPhysicianSpecialistEmails() {
-  return (process.env.PHYSICIAN_SPECIALIST_EMAILS || "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+async function hasEmail(collection, email) {
+  return Boolean(
+    await collection.findOne(
+      { email },
+      { projection: { _id: 1 }, collation: emailCollation }
+    )
+  );
 }
 
-function getEditorEmails() {
-  return (process.env.EDITOR_EMAILS || "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+export async function getEmailAccess(email) {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) {
+    return { isEditor: false, isAuthorized: false, isPhysicianSpecialist: false };
+  }
+
+  const { db } = await connectToAuthDB();
+  const [isEditor, isAuthorized, isPhysicianSpecialist] = await Promise.all([
+    hasEmail(db.collection("administrators"), normalizedEmail),
+    hasEmail(db.collection("authenticated_staff"), normalizedEmail),
+    hasEmail(db.collection("authenticated_partners"), normalizedEmail)
+  ]);
+
+  return { isEditor, isAuthorized, isPhysicianSpecialist };
 }
 
-export function isEditorEmail(email) {
-  if (!email) return false;
-  return getEditorEmails().includes(String(email).trim().toLowerCase());
+export async function isEditorEmail(email) {
+  return (await getEmailAccess(email)).isEditor;
 }
 
-export function isAuthorizedEmail(email) {
-  if (!email) return false;
-  return getAuthorizedEmails().includes(String(email).trim().toLowerCase());
+export async function isAuthorizedEmail(email) {
+  return (await getEmailAccess(email)).isAuthorized;
 }
 
-export function isPhysicianSpecialistEmail(email) {
-  if (!email) return false;
-  return getPhysicianSpecialistEmails().includes(String(email).trim().toLowerCase());
+export async function isPhysicianSpecialistEmail(email) {
+  return (await getEmailAccess(email)).isPhysicianSpecialist;
 }
 
 export async function getAuthenticatedUser({ requireEditor = false } = {}) {
@@ -45,33 +53,28 @@ export async function getAuthenticatedUser({ requireEditor = false } = {}) {
     return null;
   }
 
+  let payload;
   try {
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(secret)
-    );
-
-    const email = payload.email?.toLowerCase();
-
-    if (
-      !email ||
-      (!isAuthorizedEmail(email) &&
-        !isPhysicianSpecialistEmail(email) &&
-        !isEditorEmail(email))
-    ) {
-      return null;
-    }
-
-    if (requireEditor && !getEditorEmails().includes(email)) {
-      return null;
-    }
-
-    return payload;
+    ({ payload } = await jwtVerify(token, new TextEncoder().encode(secret)));
   } catch {
     return null;
   }
-}
 
+  const email = normalizeEmail(payload.email);
+  if (!email) {
+    return null;
+  }
+
+  const access = await getEmailAccess(email);
+  if (
+    (!access.isAuthorized && !access.isPhysicianSpecialist && !access.isEditor) ||
+    (requireEditor && !access.isEditor)
+  ) {
+    return null;
+  }
+
+  return { ...payload, email, ...access };
+}
 
 export async function getPhysicianSpecialistUser({ requireEditor = false } = {}) {
   const token = (await cookies()).get("session")?.value;
@@ -81,24 +84,22 @@ export async function getPhysicianSpecialistUser({ requireEditor = false } = {})
     return null;
   }
 
+  let payload;
   try {
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode(secret)
-    );
-
-    const email = payload.email?.toLowerCase();
-
-    if (!email || !isPhysicianSpecialistEmail(email)) {
-      return null;
-    }
-
-    if (requireEditor && !getEditorEmails().includes(email)) {
-      return null;
-    }
-
-    return payload;
+    ({ payload } = await jwtVerify(token, new TextEncoder().encode(secret)));
   } catch {
     return null;
   }
+
+  const email = normalizeEmail(payload.email);
+  if (!email) {
+    return null;
+  }
+
+  const access = await getEmailAccess(email);
+  if (!access.isPhysicianSpecialist || (requireEditor && !access.isEditor)) {
+    return null;
+  }
+
+  return { ...payload, email };
 }

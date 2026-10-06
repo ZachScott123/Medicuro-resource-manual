@@ -1,6 +1,7 @@
 import { getGoogleUser } from "@/app/auth/google/googleOauthUtils";
 import { connectToDB } from "@/app/api/databases/db";
 import { buildProfileIdFromEmail } from "@/app/lib/profile-id";
+import { getEmailAccess } from "@/app/lib/auth-session";
 import { SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -20,28 +21,10 @@ export async function GET(request) {
 
     try {
         const oauthUserInfo = await getGoogleUser(code);
+        const email = oauthUserInfo.email?.trim().toLowerCase();
+        const access = await getEmailAccess(email);
 
-        const allowedEmails = (process.env.AUTHORIZED_EMAILS || "")
-            .split(",")
-            .map((email) => email.trim().toLowerCase())
-            .filter(Boolean);
-
-        const allowedPhysicianSpecialist = (process.env.PHYSICIAN_SPECIALIST_EMAILS || "")
-            .split(",")
-            .map((email) => email.trim().toLowerCase())
-            .filter(Boolean);
-
-        const editorEmails = (process.env.EDITOR_EMAILS || "")
-            .split(",")
-            .map((email) => email.trim().toLowerCase())
-            .filter(Boolean);
-
-            const email = oauthUserInfo.email?.trim().toLowerCase();
-
-            const isAuthorized = allowedEmails.includes(email);
-            const isPhysicianSpecialist = allowedPhysicianSpecialist.includes(email);
-
-            if (!email || (!isAuthorized && !isPhysicianSpecialist && !editorEmails.includes(email))) {
+        if (!email || (!access.isAuthorized && !access.isPhysicianSpecialist && !access.isEditor)) {
             return NextResponse.redirect(
                 new URL("/login-unauthorizedAccount", request.url)
             );
@@ -57,7 +40,7 @@ export async function GET(request) {
                 email: oauthUserInfo.email,
                 picture: oauthUserInfo.picture,
                 googleId: oauthUserInfo.id,
-                isEditor: editorEmails.includes(email),
+                isEditor: access.isEditor,
                 profileId: buildProfileIdFromEmail(oauthUserInfo.email)
             };
             const result = await db.collection('users').insertOne(newUser);
@@ -66,7 +49,7 @@ export async function GET(request) {
             const updates = {
                 username: oauthUserInfo.name,
                 picture: oauthUserInfo.picture,
-                isEditor: editorEmails.includes(email)
+                isEditor: access.isEditor
             };
 
             if (!user.profileId) {

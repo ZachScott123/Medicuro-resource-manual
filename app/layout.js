@@ -105,12 +105,12 @@ export default function RootLayout({ children }) {
                   {(isLoggedIn && isEditor) && (
                     <NavLink className="nav-link-header" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
                   )}
-                  <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
-                  <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
-                  <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
                   {(isLoggedIn && isAuthorized) && (
                   <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
                   )}
+                  <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
+                  <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
+                  <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
                 </div>
                 {isLoggedIn ? (
                   <div className="nav-account">

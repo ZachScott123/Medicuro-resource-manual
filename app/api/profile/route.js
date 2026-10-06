@@ -114,7 +114,7 @@ export async function PUT(request) {
 
   const email = user.email?.toLowerCase();
 
-  if (!isAuthorizedEmail(email) && !["Physician", "Specialist"].includes(payload.profileType)) {
+  if (!(await isAuthorizedEmail(email)) && !["Physician", "Specialist"].includes(payload.profileType)) {
     return Response.json(
       { e: "Your account may only publish a Physician or Specialist profile." },
       { status: 403 }
@@ -196,4 +196,3 @@ export async function PUT(request) {
     return Response.json({ e: "Unable to save profile." }, { status: 500 });
   }
 }
-

@@ -18,7 +18,7 @@ function serializeGuide(record) {
 export async function GET() {
   const user = await getAuthenticatedUser();
 
-  if (!user || !isAuthorizedEmail(user.email)) {
+  if (!user || !(await isAuthorizedEmail(user.email))) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -40,7 +40,7 @@ export async function GET() {
 export async function POST(request) {
   const user = await getAuthenticatedUser({ requireEditor: true });
 
-  if (!user || !isAuthorizedEmail(user.email)) {
+  if (!user || !(await isAuthorizedEmail(user.email))) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -76,7 +76,7 @@ export async function POST(request) {
 export async function DELETE(request) {
   const user = await getAuthenticatedUser({ requireEditor: true });
 
-  if (!user || !isAuthorizedEmail(user.email)) {
+  if (!user || !(await isAuthorizedEmail(user.email))) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }

@@ -30,3 +30,8 @@ export async function connectToDB() {
     return { client: cachedClient, db: cachedDB };
 
 }
+
+export async function connectToAuthDB() {
+    const { client } = await connectToDB();
+    return { client, db: client.db("Auth") };
+}
