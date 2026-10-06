@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiArrowRight, FiX } from "react-icons/fi";
+import AdminAccessLists from "./access-list-admins";
+import UserAccessLists from "./access-list-users";
 
 export default function AdminNotes() {
   const [openMenu, setOpenMenu] = useState("");
@@ -131,10 +133,6 @@ export default function AdminNotes() {
                     <span>Manage staff profiles</span>
                     <FiArrowRight aria-hidden="true" />
                   </Link>
-                  <Link className="admin-menu-link" href="/staff-profiles" onClick={() => setOpenMenu("")}>
-                    <span>Edit authenticated staff</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
                 </nav>
               </>
             )}
@@ -162,10 +160,6 @@ export default function AdminNotes() {
                     <span>Manage specialist partners</span>
                     <FiArrowRight aria-hidden="true" />
                   </Link>
-                  <Link className="admin-menu-link" href="/specialist-partners" onClick={() => setOpenMenu("")}>
-                    <span>Edit authenticated partners</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
                 </nav>
               </>
             )}
@@ -184,9 +178,7 @@ export default function AdminNotes() {
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
-                <p className="admin-menu-message">
-                  User account list management will be added in a separate step.
-                </p>
+                <UserAccessLists />
               </>
             )}
 
@@ -204,12 +196,7 @@ export default function AdminNotes() {
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
-                <nav className="admin-menu-links" aria-label="Administrative shortcuts">
-                  <Link className="admin-menu-link" href="/staff-profiles" onClick={() => setOpenMenu("")}>
-                    <span>Manage authenticated admins</span>
-                    <FiArrowRight aria-hidden="true" />
-                  </Link>
-                </nav>
+                <AdminAccessLists />
               </>
             )}
           </aside>

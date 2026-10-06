@@ -146,21 +146,23 @@ export default function RootLayout({ children }) {
             </Link>
             <div className="nav-links">
               {(isLoggedIn && isEditor) && (
-                <NavLink className="nav-link-footer" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
+                <>
+                  <NavLink className="nav-link-footer" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
+                  <div className="nav-spacer">|</div>
+                </>
               )}
-              <div className="nav-spacer">|</div>
+              {(isLoggedIn || isAuthorized) && (
+                <>
+                  <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
+                  <div className="nav-spacer">|</div>                
+                </>
+              )}
                 <NavLink className="nav-link-footer" href="/staff-profiles">Staff</NavLink>
               <div className="nav-spacer">|</div>
                 <NavLink className="nav-link-footer" href="/physician-partners">Physicians</NavLink>
               <div className="nav-spacer">|</div>
                 <NavLink className="nav-link-footer" href="/specialist-partners">Specialists</NavLink>
-              {(isLoggedIn || isAuthorized) && (
-                <>
-              <div className="nav-spacer">|</div>
-                <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
-                </>
-              )}
-            </div>
+              </div>
             <span className="page-footer-note">Internal Resource Manual</span>
           </div>
       </footer>}

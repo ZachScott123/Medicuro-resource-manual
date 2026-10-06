@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FiArrowRight, FiBookOpen, FiHeart, FiHome, FiUser, FiUsers } from "react-icons/fi";
 import { getCurrentUser } from "@/app/lib/current-user";
 import AdminNotes from "./admin-notes";
-import AdminAccessLists from "./access-lists";
 
 const adminLinks = [
   { href: "/", label: "Home", icon: FiHome },
@@ -57,7 +56,6 @@ export default async function Admin() {
           <div className="admin-notes-frame">
             <AdminNotes />
           </div>
-          <AdminAccessLists />
         </section>
       </div>
     </div>

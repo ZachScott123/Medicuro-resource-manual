@@ -5,16 +5,6 @@ import { FiPlus, FiX } from "react-icons/fi";
 
 const accessGroups = [
   {
-    key: "staff",
-    title: "Authenticated staff",
-    description: "Staff members allowed to access internal resources."
-  },
-  {
-    key: "partners",
-    title: "Authenticated partners",
-    description: "Physician and specialist partners allowed to sign in."
-  },
-  {
     key: "administrators",
     title: "Administrators",
     description: "Administrators can edit resources and manage these access lists."
@@ -22,8 +12,6 @@ const accessGroups = [
 ];
 
 const emptyLists = {
-  staff: [],
-  partners: [],
   administrators: []
 };
 
@@ -48,8 +36,6 @@ export default function AdminAccessLists() {
         }
 
         setEmailLists({
-          staff: result.staff || [],
-          partners: result.partners || [],
           administrators: result.administrators || []
         });
 
@@ -117,9 +103,8 @@ export default function AdminAccessLists() {
     <section className="admin-access" aria-labelledby="admin-access-title">
       <header className="admin-access-heading">
         <div>
-          <span className="admin-content-kicker">Sign-in permissions</span>
-          <h2 id="admin-access-title">Manage access</h2>
-          <p>Add or remove the email addresses allowed into each part of the site.</p>
+          <h2 id="admin-access-title">Manage Admin Access</h2>
+          <p>Add or remove the administrator email addresses allowed into each part of the site.</p>
         </div>
       </header>
 

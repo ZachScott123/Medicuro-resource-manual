@@ -1558,8 +1558,8 @@ body:has(.admin-notes) .page-footer {
 
 body:has(.admin-notes) {
 	background:
-		linear-gradient(180deg, #fcfcfce7 20%, #edf8f7 100%),
-		url("/medicuro-background-plus-1") bottom / 200% auto no-repeat,
+		linear-gradient(180deg, #fcfcfcde 20%, #edf8f7 100%),
+		url("/medicuro-background-plus-1") bottom / 240% auto no-repeat,
 }
 
 .admin-page-heading {
@@ -2086,7 +2086,7 @@ body:has(.admin-notes) {
 	border-radius: 1rem;
 	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
 	max-height: calc(100vh - 2rem);
-	max-width: min(32rem, 100%);
+	max-width: min(46rem, 100%);
 	overflow-y: auto;
 	padding: clamp(1.25rem, 4vw, 2rem);
 	position: relative;
@@ -2185,8 +2185,8 @@ body:has(.admin-notes) {
 }
 
 .admin-menu-logo {
-	height: clamp(1.2rem, 6vw, 2.4rem);
-	width: clamp(2rem, 5vw, 3rem);
+	height: clamp(1rem, 6vw, 2rem);
+	width: clamp(1.8rem, 5vw, 2.5rem);
 }
 
 /* ----- Keyframes for Animated UI ----- */
