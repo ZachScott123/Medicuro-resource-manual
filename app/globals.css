@@ -1820,15 +1820,19 @@ body:has(.admin-notes) {
 	border-radius: 0.75rem;
 	min-width: 0;
 	padding: 1rem;
+	box-shadow: 0 6px 16px rgba(18, 50, 67, 0.16);
 }
 
 .admin-access-group:nth-child(odd) {
-	
 	border-top: 3px solid #00ADFF;
 }
 
 .admin-access-group:nth-child(even) {
 	border-top: 3px solid #1ec59e;
+}
+
+.admin-access-group .btn-accent {
+    margin-left: auto;
 }
 
 .admin-access-group h3 {
@@ -1892,13 +1896,12 @@ body:has(.admin-notes) {
 
 .admin-email-chip button:hover,
 .admin-email-chip button:focus-visible {
-	background: #d5ebe7;
+	background: #a7a7a76b;
 	color: var(--ink);
 }
 
 .admin-email-chip button:focus-visible,
-.admin-access-add button:focus-visible,
-.admin-access-save:focus-visible {
+.admin-access-add button:focus-visible {
 	outline: 2px solid var(--teal-dark);
 	outline-offset: 2px;
 }
@@ -1930,8 +1933,7 @@ body:has(.admin-notes) {
 	outline: 2px solid rgba(8, 126, 120, 0.15);
 }
 
-.admin-access-add button,
-.admin-access-save {
+.admin-access-add button {
 	align-items: center;
 	background: #dfdfdf;
 	border: 1px solid #dfdfdf;
@@ -1951,7 +1953,7 @@ body:has(.admin-notes) {
 .admin-access-add button:hover {
 	background: #ffffff;
 	color: var(--ink);
-	border: 1px solid #666666;
+	border: 1px solid #a8a8a8;
 
 }
 
@@ -1969,19 +1971,12 @@ body:has(.admin-notes) {
 	font-size: 0.8rem;
 }
 
-.admin-access-save {
-	background: var(--teal-dark);
-	border-color: var(--teal-dark);
-	color: #ffffff;
-	margin-left: auto;
-}
-
-.admin-access-save:hover:not(:disabled) {
+.admin-access-group .btn-accent:hover:not(:disabled) {
 	background: var(--ink);
 	border-color: var(--ink);
 }
 
-.admin-access-save:disabled {
+.admin-access-group .btn-accent:disabled {
 	cursor: wait;
 	opacity: 0.65;
 }
