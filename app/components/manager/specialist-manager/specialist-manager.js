@@ -26,7 +26,8 @@ const requiredSpecialistFields = [
 export default function SpecialistManager({ 
 	initialSpecialists,
 	isEditor = false,
-  	showManagementControls = true
+	showManagementControls = true,
+	onRecordsChange
 }) {
 	const [specialists, setSpecialists] = useState(initialSpecialists);
 	const [editMode, setEditMode] = useState(false);
@@ -180,6 +181,7 @@ export default function SpecialistManager({
 		setSpecialists((current) => editingId
 			? current.map((item) => (item.id === editingId ? savedSpecialist : item))
 			: [...current, savedSpecialist]);
+		onRecordsChange?.();
 		closeForm();
 	}
 
@@ -201,6 +203,7 @@ export default function SpecialistManager({
 		}
 
 		setSpecialists((current) => current.filter((item) => item.id !== deleteTarget.id));
+		onRecordsChange?.();
 		setDeleteTarget(null);
 	}
 

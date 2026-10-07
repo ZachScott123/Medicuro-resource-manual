@@ -26,7 +26,8 @@ const requiredStaffFields = [
 export default function StaffManager({
   initialStaff,
   isEditor = false,
-  showManagementControls = true
+  showManagementControls = true,
+  onRecordsChange
 }) {
   const [staff, setStaff] = useState(initialStaff);
   const [editMode, setEditMode] = useState(false);
@@ -181,6 +182,7 @@ export default function StaffManager({
     setStaff((current) => editingId
       ? current.map((item) => (item.id === editingId ? savedEmployee : item))
       : [...current, savedEmployee]);
+    onRecordsChange?.();
     closeForm();
   }
 
@@ -203,6 +205,7 @@ export default function StaffManager({
     }
 
     setStaff((current) => current.filter((item) => item.id !== deleteTarget.id));
+    onRecordsChange?.();
     setDeleteTarget(null);
   }
 

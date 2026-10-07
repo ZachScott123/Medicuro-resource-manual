@@ -3,7 +3,7 @@ import PhysicianManager from "@/app/components/manager/physician-manager/physici
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function PhysicianPartners() {
-  const { authenticated, isEditor } = await getCurrentUser();
+  const { authenticated } = await getCurrentUser();
 
   if (!authenticated) {
     redirect("/login");
@@ -18,7 +18,7 @@ export default async function PhysicianPartners() {
                     <p>Licensed professionals committed to delivering accessible, patient-centered virtual healthcare.</p>
                 </div>
             </section>
-            <PhysicianManager initialPhysicians={[]} isEditor={isEditor} />
+            <PhysicianManager initialPhysicians={[]} showManagementControls={false} />
         </div>
     );
 }

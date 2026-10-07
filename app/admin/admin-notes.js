@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FiArrowLeft, FiArrowRight, FiX } from "react-icons/fi";
 import AdminAccessLists from "./access-list-admins";
 import UserAccessLists from "./access-list-users";
@@ -10,6 +10,27 @@ import SpecialistManager from "@/app/components/manager/specialist-manager/speci
 
 export default function AdminNotes({ isEditor = false }) {
   const [openMenu, setOpenMenu] = useState("");
+  const [counts, setCounts] = useState(null);
+  const [countsError, setCountsError] = useState("");
+
+  const refreshCounts = useCallback(async () => {
+    try {
+      const response = await fetch("/api/admin/counts", { cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to load admin dashboard counts.");
+      }
+
+      setCounts(result);
+      setCountsError("");
+    } catch (error) {
+      setCountsError(error.message || "Unable to load admin dashboard counts.");
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshCounts();
+  }, [refreshCounts]);
 
   useEffect(() => {
     if (!openMenu) return undefined;
@@ -29,7 +50,7 @@ export default function AdminNotes({ isEditor = false }) {
       <div className="admin-notes">
         <article>
           <div className="admin-note-stat">
-            <strong className="admin-note-count">8</strong>
+            <strong className="admin-note-count">{counts?.staff ?? "—"}</strong>
             <button
               className="admin-notes-btn"
               type="button"
@@ -47,7 +68,7 @@ export default function AdminNotes({ isEditor = false }) {
         </article>
         <article>
           <div className="admin-note-stat">
-            <strong className="admin-note-count">5</strong>
+            <strong className="admin-note-count">{counts?.partners ?? "—"}</strong>
             <button
               className="admin-notes-btn"
               type="button"
@@ -65,7 +86,7 @@ export default function AdminNotes({ isEditor = false }) {
         </article>
         <article>
           <div className="admin-note-stat">
-            <strong className="admin-note-count">13</strong>
+            <strong className="admin-note-count">{counts?.accounts ?? "—"}</strong>
             <button
               className="admin-notes-btn"
               type="button"
@@ -83,7 +104,7 @@ export default function AdminNotes({ isEditor = false }) {
         </article>
         <article>
           <div className="admin-note-stat">
-            <strong className="admin-note-count">2</strong>
+            <strong className="admin-note-count">{counts?.administrators ?? "—"}</strong>
             <button
               className="admin-notes-btn"
               type="button"
@@ -100,6 +121,8 @@ export default function AdminNotes({ isEditor = false }) {
           <small>Users who maintain workspace content.</small>
         </article>
       </div>
+
+      {countsError && <p className="admin-menu-message" role="alert">{countsError}</p>}
 
       {openMenu && (
         <div className="admin-menu-layer">
@@ -131,7 +154,7 @@ export default function AdminNotes({ isEditor = false }) {
                   </button>
                 </div>
                 <div className="admin-staff-manager">
-                  <StaffManager initialStaff={[]} isEditor={isEditor} />
+                  <StaffManager initialStaff={[]} isEditor={isEditor} onRecordsChange={refreshCounts} />
                 </div>
               </>
             )}
@@ -181,8 +204,8 @@ export default function AdminNotes({ isEditor = false }) {
                 </div>
                 <div className="admin-partner-manager">
                   {openMenu === "physicians"
-                    ? <PhysicianManager initialPhysicians={[]} isEditor={isEditor} />
-                    : <SpecialistManager initialSpecialists={[]} isEditor={isEditor} />}
+                    ? <PhysicianManager initialPhysicians={[]} isEditor={isEditor} onRecordsChange={refreshCounts} />
+                    : <SpecialistManager initialSpecialists={[]} isEditor={isEditor} onRecordsChange={refreshCounts} />}
                 </div>
               </>
             )}
@@ -201,7 +224,7 @@ export default function AdminNotes({ isEditor = false }) {
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
-                <UserAccessLists />
+                <UserAccessLists onListsChange={refreshCounts} />
               </>
             )}
 
@@ -219,7 +242,7 @@ export default function AdminNotes({ isEditor = false }) {
                     <FiX aria-hidden="true" />
                   </button>
                 </div>
-                <AdminAccessLists />
+                <AdminAccessLists onListsChange={refreshCounts} />
               </>
             )}
           </aside>

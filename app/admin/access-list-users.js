@@ -23,7 +23,7 @@ const emptyLists = {
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function UserAccessLists() {
+export default function UserAccessLists({ onListsChange }) {
   const [emailLists, setEmailLists] = useState(emptyLists);
   const [emailInputs, setEmailInputs] = useState({ staff: "", partners: "", administrators: "" });
   const [isLoading, setIsLoading] = useState(true);
@@ -99,6 +99,7 @@ export default function UserAccessLists() {
 
       setEmailLists((current) => ({ ...current, [list]: result.emails }));
       setSavedList(list);
+      onListsChange?.();
     } catch (saveError) {
       setError(saveError.message || "Unable to save this access list.");
     } finally {

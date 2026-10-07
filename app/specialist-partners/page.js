@@ -3,7 +3,7 @@ import SpecialistManager from "@/app/components/manager/specialist-manager/speci
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function SpecialistPartners() {
-  const { authenticated, isEditor } = await getCurrentUser();
+  const { authenticated } = await getCurrentUser();
 
   if (!authenticated) {
     redirect("/login");
@@ -19,7 +19,7 @@ export default async function SpecialistPartners() {
                     <p>Dedicated specialists helping deliver timely, connected, patient-centered care across the network.</p>
                 </div>
             </section>
-            <SpecialistManager initialSpecialists={[]} isEditor={isEditor} />
+            <SpecialistManager initialSpecialists={[]} showManagementControls={false} />
         </div>
     );
 }

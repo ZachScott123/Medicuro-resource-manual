@@ -26,7 +26,8 @@ const requiredPhysicianFields = [
 export default function PhysicianManager({ 
   initialPhysicians,
   isEditor = false,
-  showManagementControls = true
+  showManagementControls = true,
+  onRecordsChange
 }) {
   const [physicians, setPhysicians] = useState(initialPhysicians);
   const [editMode, setEditMode] = useState(false);
@@ -180,6 +181,7 @@ export default function PhysicianManager({
     setPhysicians((current) => editingId
       ? current.map((item) => (item.id === editingId ? savedPhysician : item))
       : [...current, savedPhysician]);
+    onRecordsChange?.();
     closeForm();
   }
 
@@ -202,6 +204,7 @@ export default function PhysicianManager({
     }
 
     setPhysicians((current) => current.filter((item) => item.id !== deleteTarget.id));
+    onRecordsChange?.();
     setDeleteTarget(null);
   }
 
