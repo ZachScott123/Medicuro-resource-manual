@@ -26,7 +26,7 @@ export default async function Admin() {
   return (
     <div className="directory-page mx-auto">
       <header className="admin-page-heading">
-        <h1>Welcome, <span className="admin-page-name">{currentUser.name || "Administrator"}</span></h1>
+        <h1>Welcome, {currentUser.name || "Administrator"}</h1>
       </header>
       <div className="admin-dashboard-layout">
         <aside className="admin-sidebar" aria-label="Admin workspace information">

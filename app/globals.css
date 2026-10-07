@@ -1564,19 +1564,10 @@ body:has(.admin-notes) {
 }
 
 .admin-page-heading {
+	color: #134d68;
 	margin: clamp(1.75rem, 4vw, 3rem) auto 0;
 	max-width: 78rem;
 	padding-inline: 0.25rem;
-}
-
-.admin-page-name {
-	color: var(--muted-ink);
-	font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-	font-style: italic;
-	font-weight: 400;
-	font-size: clamp(2.3rem, 4vw, 2.5rem);
-	text-transform: uppercase;
-	letter-spacing: 0.02em;
 }
 
 .admin-page-kicker {
@@ -1898,7 +1889,7 @@ body:has(.admin-notes) {
 
 .admin-email-chip button:hover,
 .admin-email-chip button:focus-visible {
-	background: #a7a7a76b;
+	background: #a7a7a738;
 	color: var(--ink);
 }
 
@@ -2289,8 +2280,10 @@ body:has(.admin-notes) {
 }
 
 .admin-menu-logo {
-	height: clamp(1rem, 6vw, 2rem);
-	width: clamp(1.8rem, 5vw, 2.5rem);
+	flex: 0 0 40px;
+	height: 32px;
+	object-fit: contain;
+	width: 40px;
 }
 
 /* ----- Keyframes for Animated UI ----- */
