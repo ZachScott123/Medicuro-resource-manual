@@ -23,7 +23,11 @@ const requiredStaffFields = [
   { name: "phone", label: "Phone", placeholder: "(709) xxx xxxx", type: "text", maxLength: 40 }
 ];
 
-export default function StaffManager({ initialStaff, isEditor = false }) {
+export default function StaffManager({
+  initialStaff,
+  isEditor = false,
+  showManagementControls = true
+}) {
   const [staff, setStaff] = useState(initialStaff);
   const [editMode, setEditMode] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -216,29 +220,29 @@ export default function StaffManager({ initialStaff, isEditor = false }) {
       {isLoading ? (
         <span/>
       ) : (
-                staff.length > 0 ? (
-            <span>
-              {isEditor && (
-                <div className="directory-toolbar flex-col gap-4 sm:flex-row">
-                  <div className="flex flex-wrap gap-3 justify-end">
-                    <button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload staff member" title="Upload staff member">
-                      <FiUpload aria-hidden="true" />
-                    </button>
-                    <button type="button" onClick={() => setEditMode((current) => !current)} className="btn-accent2 inline-flex items-center gap-2" aria-pressed={editMode} aria-label={editMode ? "Done editing staff" : "Edit staff"} title={editMode ? "Done editing staff" : "Edit staff"}>
-                      {editMode ? <FiCheck aria-hidden="true" /> : <FiEdit3 aria-hidden="true" />}
-                    </button>
-                  </div>
-                </div>
-              )}
-              <div className="profile-grid">
-                {filteredStaff.map((employee) => (
-                  <StaffCard key={employee.id} employee={employee} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
-                ))}
+        <>
+          {isEditor && showManagementControls && !error && (
+            <div className="directory-toolbar flex-col gap-4 sm:flex-row">
+              <div className="flex flex-wrap gap-3 justify-end">
+                <button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload staff member" title="Upload staff member">
+                  <FiUpload aria-hidden="true" />
+                </button>
+                <button type="button" onClick={() => setEditMode((current) => !current)} className="btn-accent2 inline-flex items-center gap-2" aria-pressed={editMode} aria-label={editMode ? "Done editing staff" : "Edit staff"} title={editMode ? "Done editing staff" : "Edit staff"}>
+                  {editMode ? <FiCheck aria-hidden="true" /> : <FiEdit3 aria-hidden="true" />}
+                </button>
               </div>
-            </span>
-        ) : (
-          !error && <p>No staff profiles were found in the MongoDB staff collection.</p>
-        )
+            </div>
+          )}
+          {staff.length > 0 ? (
+            <div className="profile-grid">
+              {filteredStaff.map((employee) => (
+                <StaffCard key={employee.id} employee={employee} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+              ))}
+            </div>
+          ) : (
+            !error && <p>No staff profiles were found in the MongoDB staff collection.</p>
+          )}
+        </>
       )}
 
       {isFormOpen && (

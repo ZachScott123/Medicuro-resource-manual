@@ -216,30 +216,29 @@ export default function PhysicianManager({ initialPhysicians, isEditor = false }
       {isLoading ? (
         <span/>
       ) : (
-                physicians.length > 0 ? (
-          <span>
-            {isEditor && (
-              <div className="directory-toolbar flex-col gap-4 sm:flex-row">
-                <div className="flex flex-wrap gap-3 justify-end">
-                  <button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload physician" title="Upload physician">
-                    <FiUpload aria-hidden="true" />
-                  </button>
-                  <button type="button" onClick={() => setEditMode((current) => !current)} className="btn-accent2 inline-flex items-center gap-2" aria-pressed={editMode} aria-label={editMode ? "Done editing physicians" : "Edit physicians"} title={editMode ? "Done editing physicians" : "Edit physicians"}>
-                    {editMode ? <FiCheck aria-hidden="true" /> : <FiEdit3 aria-hidden="true" />}
-                  </button>
-                </div>
+        <>
+          {isEditor && !error && (
+            <div className="directory-toolbar flex-col gap-4 sm:flex-row">
+              <div className="flex flex-wrap gap-3 justify-end">
+                <button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload physician" title="Upload physician">
+                  <FiUpload aria-hidden="true" />
+                </button>
+                <button type="button" onClick={() => setEditMode((current) => !current)} className="btn-accent2 inline-flex items-center gap-2" aria-pressed={editMode} aria-label={editMode ? "Done editing physicians" : "Edit physicians"} title={editMode ? "Done editing physicians" : "Edit physicians"}>
+                  {editMode ? <FiCheck aria-hidden="true" /> : <FiEdit3 aria-hidden="true" />}
+                </button>
               </div>
-            )}
-
+            </div>
+          )}
+          {physicians.length > 0 ? (
             <div className="profile-grid">
               {filteredPhysicians.map((physician) => (
                 <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
               ))}
             </div>
-          </span>
-        ) : (
-          !error && <p>No physician partners were found in the MongoDB physician-partners collection.</p>
-        )
+          ) : (
+            !error && <p>No physician partners were found in the MongoDB physician-partners collection.</p>
+          )}
+        </>
       )}
 
       {isFormOpen && (

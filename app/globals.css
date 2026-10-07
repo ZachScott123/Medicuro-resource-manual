@@ -1816,6 +1816,7 @@ body:has(.admin-notes) {
 }
 
 .admin-access-group {
+	animation: fade-content-in 500ms ease-out both;
 	background: #fbfefe;
 	border-radius: 0.75rem;
 	min-width: 0;
@@ -2093,13 +2094,76 @@ body:has(.admin-notes) {
 	width: 100%;
 }
 
-.admin-menu-panel {
+.admin-staff-panel {
 	animation: admin-dialog-in 220ms ease-out both;
 	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
 	border-radius: 1rem;
 	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
 	max-height: calc(100vh - 2rem);
-	max-width: min(46rem, 100%);
+	max-width: min(76rem, 100%);
+	overflow-y: auto;
+	padding: clamp(1.25rem, 4vw, 2rem);
+	position: relative;
+	width: 100%;
+}
+
+.admin-physicians-panel,
+.admin-specialists-panel {
+	animation: admin-dialog-in 220ms ease-out both;
+	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
+	border-radius: 1rem;
+	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
+	max-height: calc(100vh - 2rem);
+	max-width: min(72rem, 100%);
+	overflow-y: auto;
+	padding: clamp(1.25rem, 4vw, 2rem);
+	position: relative;
+	width: 100%;
+}
+
+.admin-partners-panel {
+	animation: admin-dialog-in 220ms ease-out both;
+	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
+	border-radius: 1rem;
+	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
+	max-height: calc(100vh - 2rem);
+	max-width: min(32rem, 100%);
+	overflow-y: auto;
+	padding: clamp(1.25rem, 4vw, 2rem);
+	position: relative;
+	width: 100%;
+}
+
+.admin-staff-manager .directory-toolbar {
+	margin-bottom: 1.5rem;
+	padding: 0;
+}
+
+.admin-partner-manager .directory-toolbar {
+	margin-bottom: 1.5rem;
+	padding: 0;
+}
+
+.admin-accounts-panel {
+	animation: admin-dialog-in 220ms ease-out both;
+	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
+	border-radius: 1rem;
+	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
+	max-height: calc(100vh - 2rem);
+	max-width: min(50rem, 100%);
+	overflow-y: auto;
+	padding: clamp(1.25rem, 4vw, 2rem);
+	position: relative;
+	width: 100%;
+}
+
+.admin-administrators-panel {
+	animation: admin-dialog-in 220ms ease-out both;
+	background: linear-gradient(145deg, #f1fdff 0%, #ffffff 82%);
+	border-radius: 1rem;
+	box-shadow: 0 24px 72px rgba(18, 50, 67, 0.28);
+	max-height: calc(100vh - 2rem);
+	max-width: min(44rem, 100%);
 	overflow-y: auto;
 	padding: clamp(1.25rem, 4vw, 2rem);
 	position: relative;

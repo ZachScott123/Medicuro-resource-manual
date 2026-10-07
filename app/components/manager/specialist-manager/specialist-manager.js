@@ -214,9 +214,9 @@ export default function SpecialistManager({ initialSpecialists, isEditor = false
 
 			{isLoading ? (
 				<span/>
-						) : specialists.length > 0 ? (
-				<span>
-					{isEditor && (
+			) : (
+				<>
+					{isEditor && !error && (
 						<div className="directory-toolbar flex-col gap-4 sm:flex-row">
 							<div className="flex flex-wrap gap-3 justify-end">
 								<button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload specialist" title="Upload specialist">
@@ -228,12 +228,14 @@ export default function SpecialistManager({ initialSpecialists, isEditor = false
 							</div>
 						</div>
 					)}
-					<div className="profile-grid">
-						{filteredSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
-					</div>
-				</span>
-			) : (
-				!error && <p>No specialist partners were found in the MongoDB specialist-partners collection.</p>
+					{specialists.length > 0 ? (
+						<div className="profile-grid">
+							{filteredSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
+						</div>
+					) : (
+						!error && <p>No specialist partners were found in the MongoDB specialist-partners collection.</p>
+					)}
+				</>
 			)}
 
 			{isFormOpen && (

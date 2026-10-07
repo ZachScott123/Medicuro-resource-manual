@@ -18,7 +18,7 @@ export default async function StaffProfiles() {
           <p>Meet the team behind accessible, patient-centered virtual healthcare for the communities we serve.</p>
         </div>
       </section>
-      <StaffManager initialStaff={[]} isEditor={isEditor} />
+      <StaffManager initialStaff={[]} isEditor={isEditor} showManagementControls={false} />
     </div>
     
     );
