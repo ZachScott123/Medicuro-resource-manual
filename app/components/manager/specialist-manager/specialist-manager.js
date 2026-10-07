@@ -23,7 +23,11 @@ const requiredSpecialistFields = [
 	{ name: "phone", label: "Phone", placeholder: "(709) xxx xxxx", type: "text", maxLength: 40 }
 ];
 
-export default function SpecialistManager({ initialSpecialists, isEditor = false }) {
+export default function SpecialistManager({ 
+	initialSpecialists,
+	isEditor = false,
+  	showManagementControls = true
+}) {
 	const [specialists, setSpecialists] = useState(initialSpecialists);
 	const [editMode, setEditMode] = useState(false);
 	const [isFormOpen, setIsFormOpen] = useState(false);
@@ -216,7 +220,7 @@ export default function SpecialistManager({ initialSpecialists, isEditor = false
 				<span/>
 			) : (
 				<>
-					{isEditor && !error && (
+					{isEditor && showManagementControls && !error && (
 						<div className="directory-toolbar flex-col gap-4 sm:flex-row">
 							<div className="flex flex-wrap gap-3 justify-end">
 								<button type="button" onClick={openCreateForm} className="btn-accent2 inline-flex items-center gap-2" aria-label="Upload specialist" title="Upload specialist">

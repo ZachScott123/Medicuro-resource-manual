@@ -520,6 +520,7 @@ h3 {
 	justify-content: space-between;
 	margin-bottom: 3rem;
 	padding: 0 clamp(1rem, 3vw, 3rem);
+	margin-top: 1.5rem;
 	animation: fade-content-in 600ms ease-out both;
 }
 
@@ -2139,9 +2140,35 @@ body:has(.admin-notes) {
 	padding: 0;
 }
 
+.admin-staff-manager .profile-card {
+    border-top: 3px solid #cfdee1;
+	transition: border-top-color 250ms ease
+}
+
+.admin-staff-manager .profile-card:nth-child(odd):hover {
+    border-top-color: #00adff;
+}
+
+.admin-staff-manager .profile-card:nth-child(even):hover {
+    border-top-color: #1ec59e;
+}
+
 .admin-partner-manager .directory-toolbar {
 	margin-bottom: 1.5rem;
 	padding: 0;
+}
+
+.admin-partner-manager .profile-card {
+    border-top: 3px solid #cfdee1;
+	transition: border-top-color 250ms ease
+}
+
+.admin-partner-manager .profile-card:nth-child(odd):hover {
+    border-top-color: #00adff;
+}
+
+.admin-partner-manager .profile-card:nth-child(even):hover {
+    border-top-color: #1ec59e;
 }
 
 .admin-accounts-panel {
