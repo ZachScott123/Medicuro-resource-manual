@@ -4,7 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiLogIn, FiLogOut } from "react-icons/fi";
 
 function NavLink({ href, children, className = "", onClick }) {
   const pathname = usePathname();
@@ -114,8 +114,9 @@ export default function RootLayout({ children }) {
                 </div>
                 {isLoggedIn ? (
                   <div className="nav-account">
-                    <button className="btn-accent" onClick={handleLogout} type="button">
-                      Logout
+                    <button className="nav-login" onClick={handleLogout} type="button">
+                      <FiLogOut aria-hidden="true" />
+                      <span>Logout</span>
                     </button>
                     <Link href="/profile" className="profile-icon" aria-label={profileAlt} title={profileAlt}>
                       {user.picture ? (
@@ -126,7 +127,8 @@ export default function RootLayout({ children }) {
                     </Link>
                   </div>
                 ) : (
-                  <button className="btn-accent nav-login" onClick={() => router.push("/login")} type="button">
+                  <button className="nav-login" onClick={() => router.push("/login")} type="button">
+                    <FiLogIn aria-hidden="true" />
                     <span>Login</span>
                   </button>
                 )}

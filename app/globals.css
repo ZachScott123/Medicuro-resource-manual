@@ -143,6 +143,8 @@ h3 {
 	background: var(--mist);
 }
 
+.login-button
+
 .brand-mark {
 	color: var(--blue);
 	font-size: 1.55rem;
@@ -1314,6 +1316,104 @@ body:has(.admin-notes) .page-footer {
 .unauthorized-redirect strong {
 	color: #000000;
 	font-size: 1rem;
+}
+
+.nav-login {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: 8px;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 1.125rem;
+	font-weight: 700;
+	gap: 0.45rem;
+	justify-content: center;
+	margin-left: auto;
+	padding: 0.5rem;
+}
+
+.nav-login svg {
+	color: #0082e6;
+	font-size: 1.5rem;
+}
+
+.nav-login span {
+	background: linear-gradient(90deg, #0082e6, #1ec59e);
+	background-clip: text;
+	color: transparent;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.site-nav .nav-logout,
+.site-nav .nav-logout:hover,
+.site-nav .nav-logout:focus-visible {
+	background: transparent;
+	border-radius: 8px;
+	font-size: 1.125rem;
+	font-weight: 700;
+	padding: 0.5rem;
+}
+
+.nav-login {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: 8px;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 1.125rem;
+	font-weight: 700;
+	gap: 0.45rem;
+	justify-content: center;
+	margin-left: auto;
+	padding: 0.5rem;
+}
+
+.nav-login svg {
+	color: #0082e6;
+	font-size: 1.5rem;
+}
+
+.nav-login span {
+	background: linear-gradient(90deg, #0082e6, #1ec59e);
+	background-clip: text;
+	color: transparent;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.site-nav .nav-login,
+.site-nav .nav-login:hover,
+.site-nav .nav-login:focus-visible {
+	background: transparent;
+	border-radius: 8px;
+	font-size: 1.125rem;
+	font-weight: 700;
+	padding: 0.5rem;
+}
+
+.site-nav .nav-login svg {
+	transition: color 160ms ease;
+}
+
+.site-nav .nav-login span {
+	transition: background 160ms ease;
+}
+
+.site-nav .nav-login:hover svg,
+.site-nav .nav-login:focus-visible svg {
+	color: #3bc5dd;
+}
+
+.site-nav .nav-login:hover span,
+.site-nav .nav-login:focus-visible span {
+	background: linear-gradient(90deg, #3bc5dd, #68cfb7);
+	background-clip: text;
+	color: transparent;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;;
 }
 
 .login-button {
