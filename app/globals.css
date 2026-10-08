@@ -1190,28 +1190,60 @@ body:has(.admin-notes) .page-footer {
 
 .login-page {
 	align-items: center;
-	background:
-		linear-gradient(120deg, #55d997ad, #0082e6),
-		url("/medicuro-background-plus-1") center / 200% auto no-repeat;
+	background: #ffffff;
 	display: flex;
 	flex: 1;
-	justify-content: center;
+	justify-content: flex-start;
 	margin: 0 calc(50% - 50vw);
 	min-height: 0;
-	padding: 4rem 1.5rem;
+	overflow: hidden;
+	padding: 4rem clamp(1.5rem, 7vw, 7rem);
+	position: relative;
 	cursor: default;
 }
 
+.login-page::before {
+	background-image: url("/login-phone.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	bottom: 0;
+	content: "";
+	left: 46%;
+	position: absolute;
+	right: 0%;
+	top: 0;
+}
+
+.login-panel-behind {
+	align-items: center;
+	background: linear-gradient(180deg, #00adff, #0c6fd2);
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	left: 0;
+	padding: 2rem clamp(1.25rem, 4vw, 7rem);
+	padding-right: 7rem;
+	position: absolute;
+	top: 0;
+	width: 50%;
+	clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+	filter: drop-shadow(14px 0 16px rgba(18, 50, 67, 0.22));
+}
+
 .login-panel {
-	background: rgba(255, 255, 255, 0.961);
-	border-top: 5px solid #dddddd;
+	background: #ffffff;
+	border: 1px solid rgba(18, 50, 67, 0.08);
 	border-radius: 1rem;
-	box-shadow: 0 18px 45px rgba(18, 50, 67, 0.14);
+	box-shadow: 0 22px 50px rgba(18, 50, 67, 0.2);
 	max-width: 27rem;
 	padding: 4rem 2.5rem;
 	position: relative;
 	text-align: center;
 	width: 100%;
+	margin: 0;
+	z-index: 1;
+	animation: left-admin-sidebar-in 0ms ease-out both;
 }
 
 .login-panel .back-button {
@@ -1225,19 +1257,22 @@ body:has(.admin-notes) .page-footer {
 	font-weight: 700;
 	gap: 0.2rem;
 	left: 1rem;
-	padding: 0.35rem 0.5rem;
+	border-radius: 0.7rem;
+	padding: 0.4rem;
 	position: absolute;
 	top: 1rem;
-	transition: color 160ms ease;
+	transition: color 160ms ease, background 200ms ease;
 }
 
 .login-panel .back-button:hover {
-	color: var(--teal-dark);
+	background:#e1f2ff;
+	color: var(--blue);
 }
 
 .login-panel h1 {
 	font-size: clamp(2.25rem, 6vw, 3.1rem);
 	color: var(--ink);
+	animation: fade-content-in 500ms ease-out both;
 }
 
 .login-page-unauthorized {
@@ -1432,7 +1467,7 @@ body:has(.admin-notes) .page-footer {
 
 .login-button:hover {
 	background: #f8fffe;
-	border: 2px solid #597481;
+	border: 2px solid #327ca1;
 }
 
 .google-logo {
@@ -2568,6 +2603,31 @@ body:has(.admin-notes) {
 
 	.directory-hero p {
 		font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+	}
+}
+
+@media (max-width: 1050px) {
+	.login-page {
+		background: #0082e6;
+		justify-content: center;
+		padding: 2rem 1.25rem;
+	}
+
+	.login-page::before {
+		display: none;
+	}
+
+	.login-panel-behind {
+		background: 
+			linear-gradient(180deg, #00aeffaf, #0c6fd2),
+			url("/medicuro-background-plus-white.png") center / 110% auto no-repeat;
+		padding: 1.25rem;
+		width: 100%;
+		clip-path: none;
+	}
+
+	.login-panel {
+		margin: 0 auto;
 	}
 }
 
