@@ -805,6 +805,7 @@ h3 {
 }
 
 .home-hero h1 {
+	color: #134d68;
 	max-width: 650px;
 	font-size: clamp(3.4rem, 6vw, 4.5rem);
 	margin-top: 0.5rem;
@@ -1716,7 +1717,7 @@ body:has(.admin-notes) {
 }
 
 .admin-page-heading h1 {
-	color: var(--ink);
+	color: #134d68;
 	font-size: clamp(2rem, 4vw, 3rem);
 	font-weight: 700;
 	font-style: italic;
@@ -2165,6 +2166,7 @@ body:has(.admin-notes) {
 }
 
 .admin-notes p {
+	color: #134d68;
 	font-size: 1rem;
 	font-weight: 700;
 	line-height: 1.35;
