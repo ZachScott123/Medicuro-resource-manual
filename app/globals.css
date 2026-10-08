@@ -1217,7 +1217,7 @@ body:has(.admin-notes) .page-footer {
 
 .login-panel-behind {
 	align-items: center;
-	background: linear-gradient(180deg, #00adff, #0c6fd2);
+	background: linear-gradient(180deg, #57b2dc, #2173c6);
 	bottom: 0;
 	display: flex;
 	justify-content: center;
