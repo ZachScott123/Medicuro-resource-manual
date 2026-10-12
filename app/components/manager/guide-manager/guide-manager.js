@@ -1,21 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiExternalLink, FiFileText, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiExternalLink, FiFileText, FiFolder, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 const emptyGuide = {
   title: "",
   description: "",
+  folder: "Uncategorized",
   fileName: "",
   fileData: ""
 };
 
+const allFolders = "all";
+const newFolderOption = "__new_folder__";
+
 export default function GuideManager({ initialGuides = [] }) {
   const [guides, setGuides] = useState(initialGuides);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState(allFolders);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyGuide);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
   const [touchedFields, setTouchedFields] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -39,16 +46,21 @@ export default function GuideManager({ initialGuides = [] }) {
       });
     }, [initialGuides]);
 
+  const folders = [...new Set(guides.map((guide) => guide.folder || "Uncategorized"))]
+    .sort((first, second) => first.localeCompare(second));
+  if (folders.length === 0) folders.push("Uncategorized");
   const query = searchQuery.trim().toLowerCase();
-  const filteredGuides = query
-    ? guides.filter((guide) =>
-        [guide.title, guide.description, guide.fileName]
-          .some((field) => field?.toLowerCase().includes(query))
-      )
-    : guides;
+  const filteredGuides = guides.filter((guide) => {
+    const matchesFolder = selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
+    const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.folder]
+      .some((field) => field?.toLowerCase().includes(query));
+    return matchesFolder && matchesQuery;
+  });
 
   function openForm() {
-    setFormData(emptyGuide);
+    setFormData({ ...emptyGuide, folder: folders[0] || "Uncategorized" });
+    setIsCreatingFolder(false);
+    setNewFolderName("");
     setTouchedFields({});
     setError("");
     setIsFormOpen(true);
@@ -56,6 +68,8 @@ export default function GuideManager({ initialGuides = [] }) {
 
   function closeForm() {
     setFormData(emptyGuide);
+    setIsCreatingFolder(false);
+    setNewFolderName("");
     setTouchedFields({});
     setError("");
     setIsFormOpen(false);
@@ -64,6 +78,18 @@ export default function GuideManager({ initialGuides = [] }) {
   function updateField(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
+  }
+
+  function updateFolderChoice(event) {
+    if (event.target.value === newFolderOption) {
+      setIsCreatingFolder(true);
+      setNewFolderName("");
+      setTouchedFields((current) => ({ ...current, folder: false }));
+      return;
+    }
+
+    setIsCreatingFolder(false);
+    setFormData((current) => ({ ...current, folder: event.target.value }));
   }
 
   function markFieldAsTouched(event) {
@@ -97,14 +123,15 @@ export default function GuideManager({ initialGuides = [] }) {
 
     const invalidFields = [
       !formData.title.trim() && "title",
-      !formData.fileData && "fileData"
+      !formData.fileData && "fileData",
+      isCreatingFolder && !newFolderName.trim() && "folder"
     ].filter(Boolean);
     if (invalidFields.length > 0) {
       setTouchedFields((current) => ({
         ...current,
         ...Object.fromEntries(invalidFields.map((field) => [field, true]))
       }));
-      document.querySelector(`[name="${invalidFields[0] === "fileData" ? "guide-file" : invalidFields[0]}"]`)?.focus();
+      document.querySelector(`[name="${invalidFields[0]}"]`)?.focus();
       return;
     }
 
@@ -114,6 +141,9 @@ export default function GuideManager({ initialGuides = [] }) {
     const guide = {
       title: formData.title.trim(),
       description: formData.description.trim() || "...",
+      folder: isCreatingFolder
+        ? folders.find((folder) => folder.toLowerCase() === newFolderName.trim().toLowerCase()) || newFolderName.trim()
+        : formData.folder,
       fileName: formData.fileName,
       fileData: formData.fileData
     };
@@ -132,6 +162,7 @@ export default function GuideManager({ initialGuides = [] }) {
 
     const savedGuide = await response.json();
     setGuides((current) => [savedGuide, ...current]);
+    setSelectedFolder(savedGuide.folder);
     setIsSaving(false);
     closeForm();
   }
@@ -154,7 +185,14 @@ export default function GuideManager({ initialGuides = [] }) {
       return;
     }
 
-    setGuides((current) => current.filter((item) => item.id !== deleteTarget.id));
+    const remainingGuides = guides.filter((item) => item.id !== deleteTarget.id);
+    setGuides(remainingGuides);
+    if (
+      selectedFolder !== allFolders &&
+      !(remainingGuides.some((guide) => (guide.folder || "Uncategorized") === selectedFolder))
+    ) {
+      setSelectedFolder(allFolders);
+    }
     setDeleteTarget(null);
   }
 
@@ -172,8 +210,8 @@ export default function GuideManager({ initialGuides = [] }) {
 
       {isLoading ? (
         <span/>
-      ) : guides.length > 0 ? (
-                <span>
+      ) : (
+        <>
           <div className="directory-toolbar guide-toolbar">
             <div>
               <div className="eyebrow">Reference library</div>
@@ -185,15 +223,29 @@ export default function GuideManager({ initialGuides = [] }) {
             </button>
           </div>
 
-          <div className="guide-search">
-            <FiSearch aria-hidden="true" />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search guides..."
-              aria-label="Search guides"
-            />
+          <div className="guide-library-controls">
+            <div className="guide-search">
+              <FiSearch aria-hidden="true" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search guides..."
+                aria-label="Search guides"
+              />
+            </div>
+            <label className="guide-folder-filter">
+              <FiFolder aria-hidden="true" />
+              <span className="sr-only">Filter by folder</span>
+              <select
+                value={selectedFolder}
+                onChange={(event) => setSelectedFolder(event.target.value)}
+                aria-label="Filter guides by folder"
+              >
+                <option value={allFolders}>All folders</option>
+                {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
+              </select>
+            </label>
           </div>
 
           {filteredGuides.length > 0 ? (
@@ -204,6 +256,7 @@ export default function GuideManager({ initialGuides = [] }) {
                   <div className="guide-card-copy">
                     <h3>{guide.title}</h3>
                     <p>{guide.description}</p>
+                    <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
                     <small>{guide.fileName}</small>
                   </div>
                   <div className="guide-card-actions">
@@ -220,19 +273,18 @@ export default function GuideManager({ initialGuides = [] }) {
                 </article>
               ))}
             </div>
-          ) : (
+          ) : guides.length > 0 ? (
             <div className="guide-empty-state">
               <FiSearch aria-hidden="true" />
-              <p>No guides match "{searchQuery.trim()}".</p>
+              <p>No guides match the selected folder or search.</p>
+            </div>
+          ) : (
+            <div className="guide-empty-state">
+              <FiFileText aria-hidden="true" />
+              <p>No guides have been uploaded yet. Upload a PDF to create your first folder.</p>
             </div>
           )}
-        </span>
-      ) : (
-        !error &&
-        <div className="guide-empty-state">
-          <FiFileText aria-hidden="true" />
-          <p>No guides have been uploaded yet.</p>
-        </div>
+        </>
       )}
 
       {isFormOpen && (
@@ -268,6 +320,34 @@ export default function GuideManager({ initialGuides = [] }) {
               <label className="flex flex-col gap-1">Description
                 <textarea maxLength={1400} name="description" value={formData.description} onChange={updateField} placeholder="What is this guide for?" rows={3} className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900" />
               </label>
+              <label className="flex flex-col gap-1">
+                <span>Folder</span>
+                <select
+                  value={isCreatingFolder ? newFolderOption : formData.folder}
+                  onChange={updateFolderChoice}
+                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
+                >
+                  {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
+                  <option value={newFolderOption}>Create a new folder...</option>
+                </select>
+              </label>
+              {isCreatingFolder && (
+                <label className="flex flex-col gap-1">
+                  <span>New folder name</span>
+                  <input
+                    required
+                    name="folder"
+                    maxLength={100}
+                    value={newFolderName}
+                    onChange={(event) => setNewFolderName(event.target.value)}
+                    onBlur={markFieldAsTouched}
+                    placeholder="e.g. Clinic procedures"
+                    aria-invalid={touchedFields.folder && !newFolderName.trim()}
+                    className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${touchedFields.folder && !newFolderName.trim() ? "border-red-500" : "border-teal-400"}`}
+                  />
+                  {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
+                </label>
+              )}
               <label className="flex flex-col gap-1">
                 <span>
                   PDF file

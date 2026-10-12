@@ -9,6 +9,7 @@ function serializeGuide(record) {
     id: record.id || record._id?.toString(),
     title: record.title || "",
     description: record.description || "",
+    folder: record.folder || "Uncategorized",
     fileName: record.fileName || "",
     fileData: record.fileData || "",
     createdAt: record.createdAt || ""
@@ -56,6 +57,7 @@ export async function POST(request) {
       id: `${guide.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`,
       title: guide.title.trim(),
       description: guide.description?.trim() || "...",
+      folder: guide.folder?.trim() || "Uncategorized",
       fileName: guide.fileName,
       fileData: guide.fileData,
       createdAt: new Date().toISOString()
