@@ -1,4 +1,4 @@
-import { connectToDB } from "@/app/api/databases/partners-db";
+import { connectToDB } from "@/app/api/databases/guides-db";
 import { getAuthenticatedUser, isAuthorizedEmail } from "@/app/lib/auth-session";
 import { guideSchema, parseBody } from "@/app/api/validation";
 
