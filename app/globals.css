@@ -2566,11 +2566,15 @@ body:has(.admin-notes) {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	.admin-sidebar-label {
+		padding-top: 2rem;
+	}
+
 	.admin-sidebar {
 		align-items: start;
 		display: grid;
 		gap: 1rem 1.5rem;
-		grid-template-columns: minmax(0, 1fr) minmax(15rem, 1.2fr);
+		grid-template-columns: minmax(0, 1fr);
 	}
 
 	.admin-sidebar-nav {
@@ -2593,6 +2597,10 @@ body:has(.admin-notes) {
 @media (max-width: 540px) {
 	.admin-dashboard-layout {
 		padding-block: 1.25rem 2rem;
+	}
+
+	.admin-sidebar-label {
+		padding-top: 2rem;
 	}
 
 	.admin-sidebar {

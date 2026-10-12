@@ -15,13 +15,13 @@ const adminLinks = [
 export default async function Admin() {
   const currentUser = await getCurrentUser();
 
-  {/*if (!currentUser.authenticated) {
+  if (!currentUser.authenticated) {
     redirect("/login");
   }
 
   if (!currentUser.isEditor) {
     redirect("/");
-  }*/}
+  }
   
   return (
     <div className="directory-page mx-auto">

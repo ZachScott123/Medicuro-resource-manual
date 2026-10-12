@@ -312,7 +312,7 @@ export default function GuideManager({ initialGuides = [], canManage = true }) {
                 onChange={(event) => setSelectedFolder(event.target.value)}
                 aria-label="Filter guides by folder"
               >
-                <option value={allFolders}>All folders</option>
+                <option value={allFolders}>Any</option>
                 {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
               </select>
             </label>
