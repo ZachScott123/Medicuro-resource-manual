@@ -8,6 +8,7 @@ const emptyGuide = {
   title: "",
   description: "",
   folder: "Uncategorized",
+  partnerViewable: false,
   fileName: "",
   fileData: ""
 };
@@ -15,7 +16,7 @@ const emptyGuide = {
 const allFolders = "all";
 const newFolderOption = "__new_folder__";
 
-export default function GuideManager({ initialGuides = [] }) {
+export default function GuideManager({ initialGuides = [], canManage = true }) {
   const [guides, setGuides] = useState(initialGuides);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(allFolders);
@@ -25,6 +26,8 @@ export default function GuideManager({ initialGuides = [] }) {
   const [newFolderName, setNewFolderName] = useState("");
   const [touchedFields, setTouchedFields] = useState({});
   const [error, setError] = useState("");
+  const [folderPermissionError, setFolderPermissionError] = useState("");
+  const [isSavingFolderPermission, setIsSavingFolderPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -57,8 +60,20 @@ export default function GuideManager({ initialGuides = [] }) {
     return matchesFolder && matchesQuery;
   });
 
+  function isFolderPartnerViewable(folder) {
+    const folderGuides = guides.filter((guide) => (guide.folder || "Uncategorized") === folder);
+    return folderGuides.length > 0 && folderGuides.every((guide) => guide.partnerViewable === true);
+  }
+
+  const selectedFolderPartnerViewable = selectedFolder !== allFolders && isFolderPartnerViewable(selectedFolder);
+
   function openForm() {
-    setFormData({ ...emptyGuide, folder: folders[0] || "Uncategorized" });
+    const folder = folders[0] || "Uncategorized";
+    setFormData({
+      ...emptyGuide,
+      folder,
+      partnerViewable: isFolderPartnerViewable(folder)
+    });
     setIsCreatingFolder(false);
     setNewFolderName("");
     setTouchedFields({});
@@ -84,12 +99,59 @@ export default function GuideManager({ initialGuides = [] }) {
     if (event.target.value === newFolderOption) {
       setIsCreatingFolder(true);
       setNewFolderName("");
+      setFormData((current) => ({ ...current, partnerViewable: false }));
       setTouchedFields((current) => ({ ...current, folder: false }));
       return;
     }
 
     setIsCreatingFolder(false);
-    setFormData((current) => ({ ...current, folder: event.target.value }));
+    const folder = event.target.value;
+    setFormData((current) => ({
+      ...current,
+      folder,
+      partnerViewable: isFolderPartnerViewable(folder)
+    }));
+  }
+
+  function updateNewFolderName(event) {
+    const folder = event.target.value;
+    const existingFolder = folders.find((item) => item.toLowerCase() === folder.trim().toLowerCase());
+    setNewFolderName(folder);
+    setFormData((current) => ({
+      ...current,
+      partnerViewable: existingFolder
+        ? isFolderPartnerViewable(existingFolder)
+        : false
+    }));
+  }
+
+  async function updateFolderPartnerViewable(event) {
+    const partnerViewable = event.target.checked;
+    setIsSavingFolderPermission(true);
+    setFolderPermissionError("");
+
+    try {
+      const response = await fetch("/api/guides", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder: selectedFolder, partnerViewable })
+      });
+
+      if (!response.ok) {
+        setFolderPermissionError("Unable to update folder partner access. Please try again.");
+        return;
+      }
+
+      setGuides((current) => current.map((guide) =>
+        (guide.folder || "Uncategorized") === selectedFolder
+          ? { ...guide, partnerViewable }
+          : guide
+      ));
+    } catch {
+      setFolderPermissionError("Unable to update folder partner access. Please try again.");
+    } finally {
+      setIsSavingFolderPermission(false);
+    }
   }
 
   function markFieldAsTouched(event) {
@@ -144,6 +206,7 @@ export default function GuideManager({ initialGuides = [] }) {
       folder: isCreatingFolder
         ? folders.find((folder) => folder.toLowerCase() === newFolderName.trim().toLowerCase()) || newFolderName.trim()
         : formData.folder,
+      partnerViewable: formData.partnerViewable,
       fileName: formData.fileName,
       fileData: formData.fileData
     };
@@ -161,7 +224,12 @@ export default function GuideManager({ initialGuides = [] }) {
     }
 
     const savedGuide = await response.json();
-    setGuides((current) => [savedGuide, ...current]);
+    setGuides((current) => [
+      savedGuide,
+      ...current.map((guide) => (guide.folder || "Uncategorized") === savedGuide.folder
+        ? { ...guide, partnerViewable: savedGuide.partnerViewable }
+        : guide)
+    ]);
     setSelectedFolder(savedGuide.folder);
     setIsSaving(false);
     closeForm();
@@ -217,10 +285,12 @@ export default function GuideManager({ initialGuides = [] }) {
               <div className="eyebrow">Reference library</div>
               <h2 id="guide-library-title">Guides and Documents</h2>
             </div>
-            <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a PDF guide" title="Upload a PDF guide">
-              <FiUpload aria-hidden="true" />
-              <span>Upload PDF</span>
-            </button>
+            {canManage && (
+              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a PDF guide" title="Upload a PDF guide">
+                <FiUpload aria-hidden="true" />
+                <span>Upload PDF</span>
+              </button>
+            )}
           </div>
 
           <div className="guide-library-controls">
@@ -247,6 +317,21 @@ export default function GuideManager({ initialGuides = [] }) {
               </select>
             </label>
           </div>
+          {canManage && selectedFolder !== allFolders && (
+            <div className="guide-folder-permission">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedFolderPartnerViewable}
+                  onChange={updateFolderPartnerViewable}
+                  disabled={isSavingFolderPermission}
+                  className="h-4 w-4 accent-teal-700"
+                />
+                <span>Partners can view this folder</span>
+              </label>
+              {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
+            </div>
+          )}
 
           {filteredGuides.length > 0 ? (
             <div className="guide-grid">
@@ -266,9 +351,11 @@ export default function GuideManager({ initialGuides = [] }) {
                     <a href={guide.fileData} download={guide.fileName} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
                       <FiDownload aria-hidden="true" />
                     </a>
-                    <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
-                      <FiTrash2 aria-hidden="true" />
-                    </button>
+                    {canManage && (
+                      <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                        <FiTrash2 aria-hidden="true" />
+                      </button>
+                    )}
                   </div>
                 </article>
               ))}
@@ -281,13 +368,15 @@ export default function GuideManager({ initialGuides = [] }) {
           ) : (
             <div className="guide-empty-state">
               <FiFileText aria-hidden="true" />
-              <p>No guides have been uploaded yet. Upload a PDF to create your first folder.</p>
+              <p>{canManage
+                ? "No guides have been uploaded yet. Upload a PDF to create your first folder."
+                : "There are no partner-viewable guides yet."}</p>
             </div>
           )}
         </>
       )}
 
-      {isFormOpen && (
+      {canManage && isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
@@ -339,7 +428,7 @@ export default function GuideManager({ initialGuides = [] }) {
                     name="folder"
                     maxLength={100}
                     value={newFolderName}
-                    onChange={(event) => setNewFolderName(event.target.value)}
+                    onChange={updateNewFolderName}
                     onBlur={markFieldAsTouched}
                     placeholder="e.g. Clinic procedures"
                     aria-invalid={touchedFields.folder && !newFolderName.trim()}
@@ -348,6 +437,18 @@ export default function GuideManager({ initialGuides = [] }) {
                   {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
                 </label>
               )}
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.partnerViewable}
+                  onChange={(event) => setFormData((current) => ({
+                    ...current,
+                    partnerViewable: event.target.checked
+                  }))}
+                  className="h-4 w-4 accent-teal-700"
+                />
+                <span>Partner viewable</span>
+              </label>
               <label className="flex flex-col gap-1">
                 <span>
                   PDF file

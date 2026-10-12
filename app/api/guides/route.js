@@ -1,8 +1,21 @@
 import { connectToDB } from "@/app/api/databases/guides-db";
 import { getAuthenticatedUser, isAuthorizedEmail } from "@/app/lib/auth-session";
-import { guideSchema, parseBody } from "@/app/api/validation";
+import { guideFolderSchema, guideSchema, parseBody } from "@/app/api/validation";
 
 const collectionName = "guides";
+
+function folderQuery(folder) {
+  if (folder !== "Uncategorized") return { folder };
+
+  return {
+    $or: [
+      { folder: "Uncategorized" },
+      { folder: { $exists: false } },
+      { folder: null },
+      { folder: "" }
+    ]
+  };
+}
 
 function serializeGuide(record) {
   return {
@@ -12,14 +25,15 @@ function serializeGuide(record) {
     folder: record.folder || "Uncategorized",
     fileName: record.fileName || "",
     fileData: record.fileData || "",
-    createdAt: record.createdAt || ""
+    createdAt: record.createdAt || "",
+    partnerViewable: record.partnerViewable === true
   };
 }
 
 export async function GET() {
   const user = await getAuthenticatedUser();
 
-  if (!user || !(await isAuthorizedEmail(user.email))) {
+  if (!user || (!user.isAuthorized && !user.isPhysicianSpecialist)) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -28,7 +42,10 @@ export async function GET() {
 
   try {
     const { db } = await connectToDB();
-    const records = await db.collection(collectionName).find({}).sort({ createdAt: -1 }).toArray();
+    const query = user.isPhysicianSpecialist && !user.isAuthorized && !user.isEditor
+      ? { partnerViewable: true }
+      : {};
+    const records = await db.collection(collectionName).find(query).sort({ createdAt: -1 }).toArray();
     return Response.json(records.map(serializeGuide));
 
   } catch (e) {
@@ -58,20 +75,56 @@ export async function POST(request) {
       title: guide.title.trim(),
       description: guide.description?.trim() || "...",
       folder: guide.folder?.trim() || "Uncategorized",
+      partnerViewable: guide.partnerViewable === true,
       fileName: guide.fileName,
       fileData: guide.fileData,
       createdAt: new Date().toISOString()
     };
 
     const { db } = await connectToDB();
-    
-    await db.collection(collectionName).insertOne(record);
+    const guides = db.collection(collectionName);
+    await guides.updateMany(folderQuery(record.folder), {
+      $set: { partnerViewable: record.partnerViewable }
+    });
+    await guides.insertOne(record);
     return Response.json(record, { status: 201 });
 
   } catch (e) {
 
     console.error("Unable to save guide:", e);
     return Response.json({ e: "Unable to save guide." }, { status: 500 });
+  }
+}
+
+export async function PATCH(request) {
+  const user = await getAuthenticatedUser({ requireEditor: true });
+
+  if (!user || !(await isAuthorizedEmail(user.email))) {
+    return Response.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const parsed = parseBody(guideFolderSchema, await request.json());
+    if (parsed.error) return Response.json({ e: parsed.error }, { status: 400 });
+
+    const { folder, partnerViewable } = parsed.data;
+    const { db } = await connectToDB();
+    const result = await db.collection(collectionName).updateMany(
+      folderQuery(folder),
+      { $set: { partnerViewable } }
+    );
+
+    if (result.matchedCount === 0) {
+      return Response.json({ e: "Folder not found." }, { status: 404 });
+    }
+
+    return Response.json({ folder, partnerViewable });
+  } catch (e) {
+    console.error("Unable to update guide folder access:", e);
+    return Response.json({ e: "Unable to update guide folder access." }, { status: 500 });
   }
 }
 

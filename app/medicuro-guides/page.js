@@ -3,13 +3,13 @@ import GuideManager from "@/app/components/manager/guide-manager/guide-manager";
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function Guides() {
-  const { authenticated, isAuthorized } = await getCurrentUser();
+  const { authenticated, isAuthorized, isPhysicianSpecialist, isEditor } = await getCurrentUser();
 
   if (!authenticated) {
     redirect("/login");
   }
 
-  if (!isAuthorized) {
+  if (!isAuthorized && !isPhysicianSpecialist) {
     redirect("/");
   }
 
@@ -22,7 +22,7 @@ export default async function Guides() {
           <p>Keep clinic procedures, reference materials, and everyday resources in one reliable place.</p>
         </div>
       </section>
-      <GuideManager initialGuides={[]} />
+      <GuideManager initialGuides={[]} canManage={isAuthorized && isEditor} />
     </div>
   )
 }

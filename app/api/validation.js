@@ -28,8 +28,14 @@ export const guideSchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000),
   folder: z.string().trim().min(1).max(100).optional(),
+  partnerViewable: z.boolean().optional(),
   fileName: z.string().trim().min(1).max(255),
   fileData: z.string().max(14_000_000).startsWith("data:application/pdf;base64,")
+}).strict();
+
+export const guideFolderSchema = z.object({
+  folder: z.string().trim().min(1).max(100),
+  partnerViewable: z.boolean()
 }).strict();
 
 export function parseBody(schema, payload) {

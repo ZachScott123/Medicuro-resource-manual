@@ -398,6 +398,21 @@ h3 {
 	outline: none;
 }
 
+.guide-folder-permission {
+	color: var(--muted-ink);
+	font-size: 0.9rem;
+	margin: -0.5rem 0 1.25rem;
+}
+
+.guide-folder-permission label {
+	width: fit-content;
+}
+
+.guide-folder-permission p {
+	color: #b42318;
+	margin-top: 0.35rem;
+}
+
 .guide-grid {
 	display: grid;
 	gap: 1.25rem;
