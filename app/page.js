@@ -3,8 +3,8 @@ import { FiArrowUpRight, FiLock, FiUser, FiBookOpen, FiCheckCircle } from "react
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function Home() {
-  const { authenticated, isAuthorized } = await getCurrentUser();
-  const canViewGuides = !authenticated || isAuthorized;
+  const { isAuthorized, isPhysicianSpecialist } = await getCurrentUser();
+  const canViewGuides = isAuthorized || isPhysicianSpecialist;
 
   return (
     <div className="home-page w-full">

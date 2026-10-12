@@ -26,6 +26,7 @@ export default function RootLayout({ children }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isPhysicianSpecialist, setIsPhysicianSpecialist] = useState(false);
   const [isEditor, setIsEditor] = useState(false);
   const [user, setUser] = useState({ name: "", picture: "", email: "" });
   const pathname = usePathname();
@@ -49,6 +50,7 @@ export default function RootLayout({ children }) {
       .then((data) => {
         setIsLoggedIn(data.authenticated === true);
         setIsAuthorized(data.isAuthorized === true);
+        setIsPhysicianSpecialist(data.isPhysicianSpecialist === true);
         setIsEditor(data.isEditor === true);
         setUser({
           name: data.name || "",
@@ -59,6 +61,7 @@ export default function RootLayout({ children }) {
       .catch(() => {
         setIsLoggedIn(false);
         setIsAuthorized(false);
+        setIsPhysicianSpecialist(false);
         setIsEditor(false);
         setUser({ name: "", picture: "", email: "" });
       });
@@ -72,6 +75,7 @@ export default function RootLayout({ children }) {
     await fetch("/api/auth/logout", { method: "POST" });
     setIsLoggedIn(false);
     setIsAuthorized(false);
+    setIsPhysicianSpecialist(false);
     setIsEditor(false);
     setUser({ name: "", picture: "", email: "" });
     router.push("/");
@@ -105,7 +109,7 @@ export default function RootLayout({ children }) {
                   {(isLoggedIn && isEditor) && (
                     <NavLink className="nav-link-header" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
                   )}
-                  {(isLoggedIn && isAuthorized) && (
+                  {(isLoggedIn && (isAuthorized || isPhysicianSpecialist)) && (
                   <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
                   )}
                   <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
@@ -153,7 +157,7 @@ export default function RootLayout({ children }) {
                   <div className="nav-spacer">|</div>
                 </>
               )}
-              {(isLoggedIn || isAuthorized) && (
+              {(isLoggedIn && (isAuthorized || isPhysicianSpecialist)) && (
                 <>
                   <NavLink className="nav-link-footer" href="/medicuro-guides">Guides</NavLink>
                   <div className="nav-spacer">|</div>                
