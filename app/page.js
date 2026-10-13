@@ -14,7 +14,7 @@ export default async function Home() {
           <p>
             Medicuro's Internal Resource Manual is a private clinic reference for the people and partners who help Medicuro deliver accessible, patient-centered care.
           </p>
-          {!canViewGuides && (
+          {canViewGuides && (
           <div className="home-hero-actions">
             <>
               <Link href="/physician-partners" className="btn-accent">
