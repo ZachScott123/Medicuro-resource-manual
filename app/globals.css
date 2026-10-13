@@ -890,10 +890,11 @@ h3 {
 }
 
 .home-hero-actions .btn-accent {
-	background: transparent;
+	background: #ffffff;
 	color: var(--muted-ink);
-	border: 2px solid #c1cfce;
+	border: 2px solid #ffffff;
 	gap: 0.5rem;
+	box-shadow: 0 16px 40px #12324314;
 	transition: color 200ms ease, border-color 200ms ease, background 170ms ease, transform 170ms ease;
 }
 
@@ -1043,7 +1044,6 @@ h3 {
 
 .home-context-notes article {
 	background: #ffffff;
-	border: 1px solid #e3ecee;
 	border-radius: 1rem;
 	column-gap: 1rem;
 	display: grid;
@@ -2760,6 +2760,10 @@ body:has(.admin-notes) {
 	.directory-hero p {
 		font-size: clamp(1.05rem, 2.2vw, 1.5rem);
 	}
+
+	.home-hero-actions {
+		flex-direction: column;
+	}
 }
 
 @media (max-width: 1050px) {
@@ -2875,6 +2879,10 @@ body:has(.admin-notes) {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
+	}
+
+	.home-hero-actions .btn-accent {
+		background: #fcfcfc;
 	}
 }
 
