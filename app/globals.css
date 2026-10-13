@@ -915,7 +915,7 @@ h3 {
 .privacy-panel {
 	align-items: flex-start;
 	background:
-		linear-gradient(120deg, #178de1 0%, #41bfb3ce 100%),
+		linear-gradient(120deg, #3492d4 0%, #41bfb3ce 100%),
 		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
 	border: 1px solid var(--line);
 	box-shadow: 0 12px 30px rgba(18, 50, 67, 0.05);
@@ -1198,7 +1198,7 @@ h3 {
 	width: clamp(9rem, 16vw, 12rem);
 }
 
-body:has(.not-found-page),
+body:has(.not-found-page) .page-footer,
 body:has(.admin-notes) .page-footer {
 	display: none;
 }
@@ -1212,20 +1212,84 @@ body:has(.admin-notes) .page-footer {
 }
 
 .not-found-page {
-    align-items: center;
-    background:
-        linear-gradient(#0effff00, #ffffffe2, #dbf9ff),
-        url("/medicuro-background-plus-1") right center / 135% auto no-repeat;
-    display: flex;
-	flex-direction: column;
+	align-items: center;
+	background:
+		radial-gradient(ellipse at 78% 52%, rgba(143, 225, 235, 0.36), transparent 42%),
+		linear-gradient(135deg, #fcfcfc 5%, #f0fbfb 100%);
+	display: grid;
 	flex: 1;
-	gap: 0.75rem;
-		justify-content: center;
+	gap: clamp(1.5rem, 4vw, 4rem);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
 	margin: 0 calc(50% - 50vw);
-	min-height: 0;
-	padding-bottom: 5rem;
-	text-align: center;
-	
+	min-height: min(70vh, 48rem);
+	overflow: hidden;
+	padding: clamp(1.5rem, 2vw, 1rem) max(clamp(1.5rem, 8vw, 7rem), calc((100vw - 90rem) / 2));
+}
+
+.not-found-copy {
+	margin-inline: auto;
+	max-width: 38rem;
+	width: 100%;
+}
+
+.not-found-code {
+	color: var(--teal-dark);
+	display: inline-block;
+	font-size: 0.8rem;
+	font-weight: 800;
+	letter-spacing: 0.14em;
+	margin-bottom: 1.25rem;
+}
+
+.not-found-copy h1 {
+	font-size: clamp(2.5rem, 5.2vw, 4.75rem);
+	letter-spacing: -0.045em;
+	line-height: 1.06;
+	max-width: 11ch;
+}
+
+.not-found-copy p {
+	color: var(--muted-ink);
+	font-size: clamp(1rem, 1.5vw, 1.2rem);
+	line-height: 1.7;
+	margin-top: 1.25rem;
+	max-width: 24rem;
+}
+
+.not-found-copy .btn-accent {
+	background: linear-gradient(120deg, #05c5b6, #15c2de);
+	margin-top: 2rem;
+}
+
+.not-found-copy .btn-accent:hover {
+	background: linear-gradient(120deg, #37b5a8 0%, #17a6e9 100%);
+}
+
+.not-found-art {
+	display: block;
+	filter: drop-shadow(0 1.5rem 2rem rgba(18, 50, 67, 0.12));
+	margin-inline: auto;
+	max-width: 38rem;
+	width: 100%;
+}
+
+@media (max-width: 700px) {
+	.not-found-page {
+		gap: 0.5rem;
+		grid-template-columns: minmax(0, 1fr);
+		min-height: auto;
+		padding-block: 3rem;
+		text-align: center;
+	}
+
+	.not-found-copy h1,
+	.not-found-copy p {
+		margin-inline: auto;
+	}
+
+	.not-found-art {
+		max-width: min(22rem, 78vw);
+	}
 }
 
 .btn-accent-continue {
