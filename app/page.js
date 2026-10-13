@@ -14,19 +14,18 @@ export default async function Home() {
           <p>
             Medicuro's Internal Resource Manual is a private clinic reference for the people and partners who help Medicuro deliver accessible, patient-centered care.
           </p>
+          {canViewGuides && (
           <div className="home-hero-actions">
-            <Link href="/physician-partners" className="btn-accent">
-              View physicians <FiArrowUpRight aria-hidden="true" />
-            </Link>
-            <Link href="/staff-profiles" className="home-text-link">
-              View Staff <FiArrowUpRight aria-hidden="true" />
-            </Link>
-            {canViewGuides && (
-            <Link href="/medicuro-guides" className="home-text-link">
-              View guides <FiArrowUpRight aria-hidden="true" />
-            </Link>
-            )}
+            <>
+              <Link href="/physician-partners" className="btn-accent">
+                View physicians <FiArrowUpRight aria-hidden="true" />
+              </Link>
+              <Link href="/medicuro-guides" className="home-text-link">
+                View guides <FiArrowUpRight aria-hidden="true" />
+              </Link>
+            </>
         </div>
+        )}
         </div>
       </section>
 
