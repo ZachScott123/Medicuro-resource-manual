@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FiArrowUpRight, FiLock, FiUser, FiBookOpen, FiCheckCircle } from "react-icons/fi";
+import { FiArrowUpRight, FiLock, FiFolder, FiFileText, FiSearch } from "react-icons/fi";
 import { getCurrentUser } from "@/app/lib/current-user";
 
 export default async function Home() {
@@ -40,30 +40,36 @@ export default async function Home() {
 
       <section className="home-context" aria-labelledby="context-title">
         <div className="home-context-intro">
-          <h2 id="context-title">The details that keep care moving.</h2>
+          <div className="eyebrow">Medicuro resource library</div>
+          <h2 id="context-title">The right guidance, right when it’s needed.</h2>
           <p>
-            The people, contacts, and procedures around a clinic change often. This manual keeps those details together so the next step is easier to find and the right person is easier to reach.
+            Keep essential care documents together in a clear, searchable library, so your team can spend less time looking for information and more time moving care forward.
           </p>
-    </div>
+          {canViewGuides && (
+            <Link href="/medicuro-guides" className="home-context-link">
+              Explore the guide library <FiArrowUpRight aria-hidden="true" />
+            </Link>
+          )}
+        </div>
 
         <div className="home-context-notes">
           <article>
-            <span className="home-context-icon"><FiUser aria-hidden="true" /></span>
-            <span className="home-context-number">01</span>
-            <h3>People and partners</h3>
-            <p>Find the teams, physicians, specialists, and external partners who support Medicuro's day-to-day work.</p>
+            <span className="home-context-icon"><FiFolder aria-hidden="true" /></span>
+            <span className="home-context-number">01 / ORGANIZED</span>
+            <h3>Folders that make sense</h3>
+            <p>Group guides by topic or workflow, keeping related resources together and easier to navigate.</p>
           </article>
           <article>
-            <span className="home-context-icon"><FiBookOpen aria-hidden="true" /></span>
-            <span className="home-context-number">02</span>
-            <h3>Practical guidance</h3>
-            <p>Use the guide library for the documents and instructions that help turn a question into a clear next action.</p>
+            <span className="home-context-icon"><FiSearch aria-hidden="true" /></span>
+            <span className="home-context-number">02 / FINDABLE</span>
+            <h3>Easy to find and use</h3>
+            <p>Search the library, preview a document, or download a PDF when you need it.</p>
           </article>
           <article>
-            <span className="home-context-icon"><FiCheckCircle aria-hidden="true" /></span>
-            <span className="home-context-number">03</span>
-            <h3>Current information</h3>
-            <p>Check the record before reaching out, and update the source when a contact, role, or process changes.</p>
+            <span className="home-context-icon"><FiFileText aria-hidden="true" /></span>
+            <span className="home-context-number">03 / THOUGHTFULLY SHARED</span>
+            <h3>Shared with the right people</h3>
+            <p>Make selected folders available to physician partners while keeping other internal resources private.</p>
           </article>
         </div>
       </section>

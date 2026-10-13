@@ -16,7 +16,7 @@ const emptyGuide = {
 const allFolders = "all";
 const newFolderOption = "__new_folder__";
 
-export default function GuideManager({ initialGuides = [], canManage = true }) {
+export default function GuideManager({ initialGuides = [], canManage = true, canUpload = canManage }) {
   const [guides, setGuides] = useState(initialGuides);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(allFolders);
@@ -285,7 +285,7 @@ export default function GuideManager({ initialGuides = [], canManage = true }) {
               <div className="eyebrow">Reference library</div>
               <h2 id="guide-library-title">Guides and Documents</h2>
             </div>
-            {canManage && (
+            {canUpload && (
               <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a PDF guide" title="Upload a PDF guide">
                 <FiUpload aria-hidden="true" />
                 <span>Upload PDF</span>
@@ -368,7 +368,7 @@ export default function GuideManager({ initialGuides = [], canManage = true }) {
           ) : (
             <div className="guide-empty-state">
               <FiFileText aria-hidden="true" />
-              <p>{canManage
+              <p>{canUpload
                 ? "No guides have been uploaded yet. Upload a PDF to create your first folder."
                 : "There are no partner-viewable guides yet."}</p>
             </div>
@@ -376,7 +376,7 @@ export default function GuideManager({ initialGuides = [], canManage = true }) {
         </>
       )}
 
-      {canManage && isFormOpen && (
+      {canUpload && isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
@@ -437,18 +437,20 @@ export default function GuideManager({ initialGuides = [], canManage = true }) {
                   {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
                 </label>
               )}
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={formData.partnerViewable}
-                  onChange={(event) => setFormData((current) => ({
-                    ...current,
-                    partnerViewable: event.target.checked
-                  }))}
-                  className="h-4 w-4 accent-teal-700"
-                />
-                <span>Partner viewable</span>
-              </label>
+              {canManage && (
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.partnerViewable}
+                    onChange={(event) => setFormData((current) => ({
+                      ...current,
+                      partnerViewable: event.target.checked
+                    }))}
+                    className="h-4 w-4 accent-teal-700"
+                  />
+                  <span>Partner viewable</span>
+                </label>
+              )}
               <label className="flex flex-col gap-1">
                 <span>
                   PDF file

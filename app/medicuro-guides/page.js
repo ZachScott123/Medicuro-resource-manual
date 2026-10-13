@@ -22,7 +22,11 @@ export default async function Guides() {
           <p>Keep clinic procedures, reference materials, and everyday resources in one reliable place.</p>
         </div>
       </section>
-      <GuideManager initialGuides={[]} canManage={isAuthorized && isEditor} />
+      <GuideManager
+        initialGuides={[]}
+        canManage={isAuthorized && isEditor}
+        canUpload={isAuthorized}
+      />
     </div>
   )
 }
