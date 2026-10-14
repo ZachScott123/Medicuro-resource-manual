@@ -835,7 +835,7 @@ h3 {
 .home-hero {
 	background: 
 		linear-gradient(150deg, #f8fcfc52 42%, #f8fcfb00 80%, #c6eaffd7 100%),
-		url("/medicuro-home-setup.png") right center / 54% no-repeat;
+		url("/medicuro-home-setup.png") right center / 55% no-repeat;
 	margin: 0 calc(50% - 50vw);
 	min-height: 30rem;
 	overflow: hidden;
@@ -940,13 +940,13 @@ h3 {
 .directory-link-icon {
 	align-items: center;
 	background: #8ed4ff9d;
-	border-radius: 5rem;
+	border-radius: 1rem;
 	color: var(--blue);
 	display: flex;
 	flex: 0 0 auto;
-	height: 3.5rem;
+	height: 3.2rem;
 	justify-content: center;
-	width: 3.5rem;
+	width: 3.2rem;
 }
 
 .privacy-panel h2,
@@ -1060,7 +1060,7 @@ h3 {
 
 .home-context-icon {
 	align-items: center;
-	background: linear-gradient(130deg, #34dbc2, #0cb3a7);
+	background: #30d8bf;
 	border-radius: 0.8rem;
 	color: #ffffff;
 	display: flex;
@@ -1072,7 +1072,7 @@ h3 {
 }
 
 .home-context-notes article:nth-child(even) .home-context-icon {
-	background: linear-gradient(130deg, #4db3f7, #1a8ad0);
+	background: #4db3f7;
 }
 
 .home-context-number {
@@ -1220,7 +1220,8 @@ body:has(.admin-notes) .page-footer {
 	align-items: center;
 	background:
 		radial-gradient(ellipse at 78% 52%, #8fe1eb5c, transparent 42%),
-		linear-gradient(135deg, #fcfcfc 5%, #f0fbfb 100%);
+		linear-gradient(135deg, #fcfcfc 5%, #f0fbfbc8 100%),
+		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
 	display: grid;
 	flex: 1;
 	gap: clamp(1.5rem, 4vw, 4rem);
@@ -2965,6 +2966,8 @@ body:has(.admin-notes) {
 
 	.home-context-intro {
 		max-width: 42rem;
+		text-align: center;
+		margin-inline: auto;
 	}
 
 	.home-context-notes {
