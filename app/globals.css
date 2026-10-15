@@ -1248,6 +1248,7 @@ body:has(.admin-notes) .page-footer {
 }
 
 .not-found-copy h1 {
+	color: #134d68;
 	font-size: clamp(2.5rem, 5.2vw, 4.75rem);
 	letter-spacing: -0.045em;
 	line-height: 1.06;
@@ -1271,7 +1272,8 @@ body:has(.admin-notes) .page-footer {
 	background: linear-gradient(120deg, #37b5a8 0%, #17a6e9 100%);
 }
 
-.not-found-art {
+.not-found-art,
+.unauthorized-art {
 	display: block;
 	filter: drop-shadow(0 1.5rem 2rem #1232431f);
 	margin-inline: auto;
@@ -1288,12 +1290,23 @@ body:has(.admin-notes) .page-footer {
 		text-align: center;
 	}
 
+	.login-panel-unauthorized {
+		margin: 3rem 0rem -3rem;
+	}
+
+	.login-panel-unauthorized h1 {
+		max-width: 30rem;
+	}
+
 	.not-found-copy h1,
-	.not-found-copy p {
+	.not-found-copy p,
+	.login-panel-unauthorized h1,
+	.login-panel-unauthorized p {
 		margin-inline: auto;
 	}
 
-	.not-found-art {
+	.not-found-art,
+	.unauthorized-art {
 		max-width: min(22rem, 78vw);
 	}
 }
@@ -1425,35 +1438,42 @@ body:has(.admin-notes) .page-footer {
 .login-page-unauthorized {
 	align-items: center;
 	background:
-		linear-gradient(120deg, #dff8f4c4, #e5f2ffed),
-		url("/medicuro-background-plus-1") center / 130% no-repeat;
-	display: flex;
+		radial-gradient(ellipse at 78% 52%, #8fe1eb5c, transparent 42%),
+		linear-gradient(135deg, #fcfcfc 0%, #f0fbfbc8 90%),
+		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
+	display: grid;
 	flex: 1;
-	justify-content: center;
+	gap: clamp(1.5rem, 4vw, 4rem);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
 	margin: 0 calc(50% - 50vw);
-	min-height: 0;
-	padding: 3rem 1.5rem;
-	cursor: default;
+	min-height: min(70vh, 48rem);
+	overflow: hidden;
+	padding: clamp(1.5rem, 2vw, 1rem) max(clamp(1.5rem, 8vw, 7rem), calc((100vw - 90rem) / 2));
+}
+
+@media (max-width: 700px) {
+	.login-page-unauthorized {
+		gap: 0.5rem;
+		grid-template-columns: minmax(0, 1fr);
+		min-height: auto;
+		padding-block: 3rem;
+		text-align: center;
+	}
 }
 
 .login-panel-unauthorized {
-	background: #fffffff0;
-	border-radius: 1.25rem;
-	box-shadow: 0 22px 55px #12324329;
-	max-width: 27rem;
-	padding: 4.5rem 2.5rem;
-	position: relative;
-	text-align: center;
+	margin-inline: auto;
+	max-width: 38rem;
 	width: 100%;
 }
 
-.unauthorized-eyebrow {
-	color: #ff3030;
-	font-size: 0.75rem;
+.unauthorized-code {
+	color: var(--teal-dark);
+	display: inline-block;
+	font-size: 0.8rem;
 	font-weight: 800;
-	letter-spacing: 0.16em;
-	text-transform: uppercase;
-	margin-bottom: 4rem;
+	letter-spacing: 0.14em;
+	margin-bottom: 1.25rem;
 }
 
 .login-eyebrow {
@@ -1466,10 +1486,9 @@ body:has(.admin-notes) .page-footer {
 }
 
 .login-panel-unauthorized h1 {
-	font-size: clamp(2.25rem, 6vw, 3.1rem);
-	color: var(--ink);
-	margin-top: 0.65rem;
-	margin-bottom: 2rem;
+	font-size: clamp(2.5rem,5.2vw,4.75rem);
+	color: #134d68;
+	animation: .5s ease-out both fade-content-in;
 }
 
 .login-description {
@@ -1482,22 +1501,14 @@ body:has(.admin-notes) .page-footer {
 
 .login-description-unauthorized {
 	color: var(--muted-ink);
-	font-size: 1.05rem;
+	font-size: 1.3rem;
 	line-height: 1.6;
-	margin: 1rem auto 1.5rem;
+	margin: 1.8rem 0rem;
 	max-width: 25rem;
 }
 
-.unauthorized-redirect {
-	border-top: 1px solid var(--line);
-	color: var(--muted-ink);
-	font-size: 0.85rem;
-	padding-top: 1.25rem;
-}
-
-.unauthorized-redirect strong {
-	color: #000000;
-	font-size: 1rem;
+.login-description-unauthorized strong {
+	color: #134d68;
 }
 
 .nav-login {

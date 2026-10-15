@@ -24,12 +24,17 @@ export default function Unauthorized() {
 
     return (
         <main className="login-page-unauthorized">
-            <section className="login-panel-unauthorized" aria-labelledby="login-title">
-                <p className="unauthorized-eyebrow">Access restricted</p>
-                <h1 id="login-title-unauthorized">Unauthorized Account</h1>
-                <p className="login-description-unauthorized">This account is not authorized to access the Medicuro internal reference manual.</p>
-                <p className="unauthorized-redirect">Returning to home page in <strong>{secondsRemaining}</strong></p>
-            </section>
+            <div className="login-panel-unauthorized">
+                <span className="unauthorized-code">ERROR 401</span>
+                <h1 className="login-title-unauthorized">Unauthorized Login Attempt</h1>
+
+                <p className="login-description-unauthorized">Returning to home page in <strong>{secondsRemaining}</strong></p>
+            </div>
+            <img
+            className="unauthorized-art"
+            src="/medicuro-unauthorized-page.png"
+            alt="A person using laptop with lock symbol"
+            />
         </main>
     )
 }
