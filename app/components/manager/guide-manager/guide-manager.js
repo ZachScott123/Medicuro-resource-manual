@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { FiDownload, FiExternalLink, FiFileText, FiFolder, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
+//canManage = editors, canUpload = staff.
+
 const emptyGuide = {
   title: "",
   description: "",
@@ -317,7 +319,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </select>
             </label>
           </div>
-          {canManage && selectedFolder !== allFolders && (
+          {canUpload && selectedFolder !== allFolders && (
             <div className="guide-folder-permission">
               <label className="flex items-center gap-2">
                 <input
@@ -437,7 +439,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
                 </label>
               )}
-              {canManage && (
+              {canUpload && isFormOpen && (
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
