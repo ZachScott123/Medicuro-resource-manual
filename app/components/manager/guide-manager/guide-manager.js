@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiExternalLink, FiFileText, FiFolder, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiExternalLink, FiFileText, FiFolder, FiPlay, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 //canManage = editors, canUpload = staff.
@@ -13,12 +13,30 @@ const emptyGuide = {
   description: "",
   folder: "Uncategorized",
   partnerViewable: false,
+  type: "file",
   fileName: "",
-  fileData: ""
+  fileData: "",
+  videoUrl: "",
+  videoTitle: ""
 };
 
 const allFolders = "all";
 const newFolderOption = "__new_folder__";
+
+function getYouTubeVideoId(value) {
+  try {
+    const url = new URL(value);
+    const hostname = url.hostname.toLowerCase();
+    if (hostname === "youtu.be") {
+      return url.pathname.split("/").filter(Boolean)[0] || "";
+    }
+    if (!["youtube.com", "www.youtube.com", "m.youtube.com"].includes(hostname)) return "";
+    if (url.pathname === "/watch") return url.searchParams.get("v") || "";
+    return url.pathname.match(/^\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})(?:\/|$)/)?.[1] || "";
+  } catch {
+    return "";
+  }
+}
 
 export default function GuideManager({ initialGuides = [], canManage = true, canUpload = canManage }) {
   const [guides, setGuides] = useState(initialGuides);
@@ -35,6 +53,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,13 +72,24 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       });
     }, [initialGuides]);
 
+  useEffect(() => {
+      if (!selectedVideo) return undefined;
+
+      function closeOnEscape(event) {
+        if (event.key === "Escape") setSelectedVideo(null);
+      }
+
+      window.addEventListener("keydown", closeOnEscape);
+      return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [selectedVideo]);
+
   const folders = [...new Set(guides.map((guide) => guide.folder || "Uncategorized"))]
     .sort((first, second) => first.localeCompare(second));
   if (folders.length === 0) folders.push("Uncategorized");
   const query = searchQuery.trim().toLowerCase();
   const filteredGuides = guides.filter((guide) => {
     const matchesFolder = selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
-    const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.folder]
+    const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.videoTitle, guide.folder]
       .some((field) => field?.toLowerCase().includes(query));
     return matchesFolder && matchesQuery;
   });
@@ -97,6 +127,19 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   function updateField(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
+  }
+
+  function updateGuideType(event) {
+    setFormData((current) => ({
+      ...current,
+      type: event.target.value,
+      fileName: "",
+      fileData: "",
+      videoUrl: "",
+      videoTitle: ""
+    }));
+    setTouchedFields({});
+    setError("");
   }
 
   function updateFolderChoice(event) {
@@ -169,10 +212,12 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     if (!file) return;
 
     if (file.type !== "application/pdf") {
+      setFormData((current) => ({ ...current, fileName: "", fileData: "" }));
       setError("Please choose a PDF file.");
       return;
     }
 
+    setError("");
     const reader = new FileReader();
     reader.onload = () => {
       setFormData((current) => ({
@@ -189,7 +234,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
     const invalidFields = [
       !formData.title.trim() && "title",
-      !formData.fileData && "fileData",
+      formData.type === "file" && !formData.fileData && "fileData",
+      formData.type === "video" && !getYouTubeVideoId(formData.videoUrl) && "videoUrl",
+      formData.type === "video" && !formData.videoTitle.trim() && "videoTitle",
       isCreatingFolder && !newFolderName.trim() && "folder"
     ].filter(Boolean);
     if (invalidFields.length > 0) {
@@ -211,8 +258,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         ? folders.find((folder) => folder.toLowerCase() === newFolderName.trim().toLowerCase()) || newFolderName.trim()
         : formData.folder,
       partnerViewable: formData.partnerViewable,
-      fileName: formData.fileName,
-      fileData: formData.fileData
+      type: formData.type,
+      ...(formData.type === "video"
+        ? {
+          videoId: getYouTubeVideoId(formData.videoUrl),
+          videoTitle: formData.videoTitle.trim()
+        }
+        : {
+          fileName: formData.fileName,
+          fileData: formData.fileData
+        })
     };
 
     const response = await fetch("/api/guides", {
@@ -222,7 +277,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     });
 
     if (!response.ok) {
-      setError("Unable to save guide. Please choose a PDF and try again.");
+      setError(formData.type === "video"
+        ? "Unable to save guide. Please check the YouTube URL and video title."
+        : "Unable to save guide. Please choose a PDF and try again.");
       setIsSaving(false);
       return;
     }
@@ -290,9 +347,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               <h2 id="guide-library-title">Guides and Documents</h2>
             </div>
             {canUpload && (
-              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a PDF guide" title="Upload a PDF guide">
+              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
                 <FiUpload aria-hidden="true" />
-                <span>Upload PDF</span>
+                <span>Upload Guide</span>
               </button>
             )}
           </div>
@@ -346,15 +403,40 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     <h3>{guide.title}</h3>
                     <p>{guide.description}</p>
                     <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
-                    <small>{guide.fileName}</small>
+                    {guide.type === "video" ? (
+                      <button
+                        type="button"
+                        className="guide-video-title-link"
+                        onClick={() => setSelectedVideo(guide)}
+                        aria-label={`Watch ${guide.videoTitle}`}
+                      >
+                        {guide.videoTitle}
+                      </button>
+                    ) : (
+                      <small>{guide.fileName}</small>
+                    )}
                   </div>
                   <div className="guide-card-actions">
-                    <a href={`/api/guides/file/${encodeURIComponent(guide.id)}`} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
-                      <FiExternalLink aria-hidden="true" />
-                    </a>
-                    <a href={`/api/guides/file/${encodeURIComponent(guide.id)}?download=1`} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
-                      <FiDownload aria-hidden="true" />
-                    </a>
+                    {guide.type === "video" ? (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedVideo(guide)}
+                        className="btn-accent2"
+                        aria-label={`Watch ${guide.videoTitle}`}
+                        title={`Watch ${guide.videoTitle}`}
+                      >
+                        <FiPlay aria-hidden="true" />
+                      </button>
+                    ) : (
+                      <>
+                        <a href={`/api/guides/file/${encodeURIComponent(guide.id)}`} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
+                          <FiExternalLink aria-hidden="true" />
+                        </a>
+                        <a href={`/api/guides/file/${encodeURIComponent(guide.id)}?download=1`} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
+                          <FiDownload aria-hidden="true" />
+                        </a>
+                      </>
+                    )}
                     {canManage && (
                       <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                         <FiTrash2 aria-hidden="true" />
@@ -373,18 +455,48 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             <div className="guide-empty-state">
               <FiFileText aria-hidden="true" />
               <p>{canUpload
-                ? "No guides have been uploaded yet. Upload a PDF to create your first folder."
+                ? "No guides have been added yet. Upload a PDF or add a YouTube video to create your first folder."
                 : "There are no partner-viewable guides yet."}</p>
             </div>
           )}
         </>
       )}
 
+      {selectedVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="guide-video-title"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setSelectedVideo(null);
+          }}
+        >
+          <div className="guide-video-dialog w-full max-w-4xl rounded-xl bg-white p-4 text-[#123243] shadow-2xl sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 id="guide-video-title" className="text-xl font-bold">{selectedVideo.videoTitle}</h2>
+              <button type="button" onClick={() => setSelectedVideo(null)} className="p-2 text-[#607984] hover:text-[#123243]" aria-label="Close video">
+                <FiX size={22} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="guide-video-frame">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedVideo.videoId)}?autoplay=1`}
+                title={selectedVideo.videoTitle}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {canUpload && isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 id="guide-form-title" className="text-2xl font-bold">Upload PDF guide</h2>
+              <h2 id="guide-form-title" className="text-2xl font-bold">Upload Guide</h2>
               <button type="button" onClick={closeForm} className="p-2 text-[#607984] hover:text-[#123243]" aria-label="Close form">
                 <FiX size={22} aria-hidden="true" />
               </button>
@@ -413,6 +525,18 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </label>
               <label className="flex flex-col gap-1">Description
                 <textarea maxLength={1400} name="description" value={formData.description} onChange={updateField} placeholder="What is this guide for?" rows={3} className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900" />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span>Guide type</span>
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={updateGuideType}
+                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
+                >
+                  <option value="file">Upload a PDF file</option>
+                  <option value="video">YouTube video</option>
+                </select>
               </label>
               <label className="flex flex-col gap-1">
                 <span>Folder</span>
@@ -456,28 +580,69 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   <span>Partner viewable</span>
                 </label>
               )}
-              <label className="flex flex-col gap-1">
-                <span>
-                  PDF file
-                  {touchedFields.fileData && !formData.fileData && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
-                </span>
-                <input
-                  required
-                  name="fileData"
-                  type="file"
-                  accept="application/pdf,.pdf"
-                  onChange={handleFileChange}
-                  onBlur={markFieldAsTouched}
-                  aria-invalid={touchedFields.fileData && !formData.fileData}
-                  aria-describedby={touchedFields.fileData && !formData.fileData ? "file-error" : undefined}
-                  className={`text-neutral-400 rounded-md p-2 hover:text-neutral-900 transition-colors ${touchedFields.fileData && !formData.fileData ? "border-red-500" : "border-[#d8e8e8]"}`}
-                />
-                {touchedFields.fileData && !formData.fileData && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
-              </label>
-              {formData.fileName && <p className="text-sm text-[#607984]">Selected: {formData.fileName}</p>}
+              {formData.type === "file" ? (
+                <label className="flex flex-col gap-1">
+                  <span>
+                    Attach File
+                    {touchedFields.fileData && !formData.fileData && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                  </span>
+                  <input
+                    required
+                    name="fileData"
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    onChange={handleFileChange}
+                    onBlur={markFieldAsTouched}
+                    aria-invalid={touchedFields.fileData && !formData.fileData}
+                    aria-describedby={touchedFields.fileData && !formData.fileData ? "file-error" : undefined}
+                    className={`text-neutral-400 rounded-md p-2 hover:text-neutral-900 transition-colors ${touchedFields.fileData && !formData.fileData ? "border-red-500" : "border-[#d8e8e8]"}`}
+                  />
+                  {touchedFields.fileData && !formData.fileData && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
+                  {formData.fileName && <span className="text-sm text-[#607984]">Selected: {formData.fileName}</span>}
+                </label>
+              ) : (
+                <>
+                  <label className="flex flex-col gap-1">
+                    <span>
+                      YouTube video URL
+                      {touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl) && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                    </span>
+                    <input
+                      name="videoUrl"
+                      type="url"
+                      value={formData.videoUrl}
+                      onChange={updateField}
+                      onBlur={markFieldAsTouched}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      aria-invalid={touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl)}
+                      aria-describedby={touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl) ? "video-url-error" : undefined}
+                      className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl) ? "border-red-500" : "border-teal-400"}`}
+                    />
+                    {touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl) && <span id="video-url-error" className="text-sm text-red-600">Enter a valid YouTube video URL.</span>}
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span>
+                      Video title
+                      {touchedFields.videoTitle && !formData.videoTitle.trim() && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                    </span>
+                    <input
+                      name="videoTitle"
+                      maxLength={200}
+                      value={formData.videoTitle}
+                      onChange={updateField}
+                      onBlur={markFieldAsTouched}
+                      placeholder="Title shown on the guide card"
+                      aria-invalid={touchedFields.videoTitle && !formData.videoTitle.trim()}
+                      aria-describedby={touchedFields.videoTitle && !formData.videoTitle.trim() ? "video-title-error" : undefined}
+                      className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${touchedFields.videoTitle && !formData.videoTitle.trim() ? "border-red-500" : "border-teal-400"}`}
+                    />
+                    {touchedFields.videoTitle && !formData.videoTitle.trim() && <span id="video-title-error" className="text-sm text-red-600">Enter the video title.</span>}
+                  </label>
+                </>
+              )}
               <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeForm} className="rounded-md border border-[#d8e8e8] px-4 py-2">Cancel</button>
-                <button type="submit" disabled={isSaving || !formData.fileData} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData : !getYouTubeVideoId(formData.videoUrl) || !formData.videoTitle.trim())} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
                   <FiSave aria-hidden="true" />
                   {isSaving ? "Saving..." : "Save guide"}
                 </button>

@@ -23,7 +23,10 @@ function serializeGuide(record) {
     title: record.title || "",
     description: record.description || "",
     folder: record.folder || "Uncategorized",
+    type: record.type === "video" ? "video" : "file",
     fileName: record.fileName || "",
+    videoId: record.videoId || "",
+    videoTitle: record.videoTitle || "",
     createdAt: record.createdAt || "",
     partnerViewable: record.partnerViewable === true
   };
@@ -76,9 +79,11 @@ export async function POST(request) {
       title: guide.title.trim(),
       description: guide.description?.trim() || "...",
       folder,
+      type: guide.type,
       partnerViewable: guide.partnerViewable === true,
-      fileName: guide.fileName,
-      fileData: guide.fileData,
+      ...(guide.type === "video"
+        ? { videoId: guide.videoId, videoTitle: guide.videoTitle.trim() }
+        : { fileName: guide.fileName, fileData: guide.fileData }),
       createdAt: new Date().toISOString()
     };
 

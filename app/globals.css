@@ -501,6 +501,27 @@ h3 {
 	white-space: nowrap;
 }
 
+.guide-video-title-link {
+	background: transparent;
+	border: 0;
+	color: var(--teal-dark);
+	cursor: pointer;
+	display: block;
+	font-size: 0.75rem;
+	margin-top: 0.7rem;
+	max-width: 100%;
+	overflow: hidden;
+	padding: 0;
+	text-align: left;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.guide-video-title-link:hover,
+.guide-video-title-link:focus-visible {
+	text-decoration: underline;
+}
+
 .guide-card-copy .guide-card-folder {
 	align-items: center;
 	display: flex;
@@ -520,6 +541,25 @@ h3 {
 	flex: 0 0 auto;
 	justify-content: center;
 	padding: 0.65rem;
+}
+
+.guide-video-dialog {
+	max-height: calc(100dvh - 2rem);
+	overflow-y: auto;
+}
+
+.guide-video-frame {
+	aspect-ratio: 16 / 9;
+	background: #000000;
+	border-radius: 0.5rem;
+	overflow: hidden;
+	width: 100%;
+}
+
+.guide-video-frame iframe {
+	border: 0;
+	height: 100%;
+	width: 100%;
 }
 
 .guide-delete-button {
