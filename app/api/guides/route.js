@@ -72,28 +72,20 @@ export async function POST(request) {
     const folder = guide.folder?.trim() || "Uncategorized";
     const { db } = await connectToDB();
     const guides = db.collection(collectionName);
-    const existingFolderGuide = user.isEditor
-      ? null
-      : await guides.findOne(folderQuery(folder), { projection: { partnerViewable: 1 } });
-
     const record = {
       id: `${guide.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`,
       title: guide.title.trim(),
       description: guide.description?.trim() || "...",
       folder,
-      partnerViewable: user.isEditor
-        ? guide.partnerViewable === true
-        : existingFolderGuide?.partnerViewable === true,
+      partnerViewable: guide.partnerViewable === true,
       fileName: guide.fileName,
       fileData: guide.fileData,
       createdAt: new Date().toISOString()
     };
 
-    if (user.isEditor) {
-      await guides.updateMany(folderQuery(record.folder), {
-        $set: { partnerViewable: record.partnerViewable }
-      });
-    }
+    await guides.updateMany(folderQuery(record.folder), {
+      $set: { partnerViewable: record.partnerViewable }
+    });
     await guides.insertOne(record);
     return Response.json(record, { status: 201 });
 
@@ -105,9 +97,9 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const user = await getAuthenticatedUser({ requireEditor: true });
+  const user = await getAuthenticatedUser();
 
-  if (!user || !(await isAuthorizedEmail(user.email))) {
+  if (!user?.isAuthorized) {
     return Response.json(
       { error: "Unauthorized" },
       { status: 401 }

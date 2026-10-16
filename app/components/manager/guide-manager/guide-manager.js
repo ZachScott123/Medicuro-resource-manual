@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 //canManage = editors, canUpload = staff.
 
+//fix guide upload for staff - no perms
+
 const emptyGuide = {
   title: "",
   description: "",
