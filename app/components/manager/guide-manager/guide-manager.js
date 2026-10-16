@@ -349,10 +349,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     <small>{guide.fileName}</small>
                   </div>
                   <div className="guide-card-actions">
-                    <a href={guide.fileData} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
+                    <a href={`/api/guides/file/${encodeURIComponent(guide.id)}`} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
                       <FiExternalLink aria-hidden="true" />
                     </a>
-                    <a href={guide.fileData} download={guide.fileName} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
+                    <a href={`/api/guides/file/${encodeURIComponent(guide.id)}?download=1`} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
                       <FiDownload aria-hidden="true" />
                     </a>
                     {canManage && (

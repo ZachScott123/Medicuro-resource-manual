@@ -24,7 +24,6 @@ function serializeGuide(record) {
     description: record.description || "",
     folder: record.folder || "Uncategorized",
     fileName: record.fileName || "",
-    fileData: record.fileData || "",
     createdAt: record.createdAt || "",
     partnerViewable: record.partnerViewable === true
   };
@@ -87,7 +86,7 @@ export async function POST(request) {
       $set: { partnerViewable: record.partnerViewable }
     });
     await guides.insertOne(record);
-    return Response.json(record, { status: 201 });
+    return Response.json(serializeGuide(record), { status: 201 });
 
   } catch (e) {
 

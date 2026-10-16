@@ -95,7 +95,7 @@ export default async function ProfilePage() {
       <div className="directory-page mx-auto">
         <section className="profile-hero">
           <div className="directory-hero-copy">
-            <h1>{user.name}'s Profile</h1>
+            <h1>{user.name || "User"}'s Profile</h1>
             <p>Manage how your information appears across the site.</p>
           </div>
         </section>

@@ -1006,7 +1006,7 @@ h3 {
 }
 
 .home-context-intro h2 {
-	color: var(--ink);
+	color: #134d68;
 	font-size: clamp(2rem, 3.5vw, 3.15rem);
 	font-weight: 700;
 	letter-spacing: -0.025em;
@@ -2666,6 +2666,11 @@ body:has(.admin-notes) {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	.admin-page-heading {
+		text-align: center;
+		margin: 2.5rem 0rem 1rem;
+	}
+
 	.admin-sidebar-label {
 		padding-top: 2rem;
 	}
@@ -2691,6 +2696,16 @@ body:has(.admin-notes) {
 
 	.admin-notes {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 455px) {
+	.home-hero h1 {
+		font-size: clamp(3.1rem, 6vw, 4.1rem);
+	}
+
+	.home-hero h1 em {
+		font-size: clamp(3.3rem, 6vw, 4.3rem);
 	}
 }
 
@@ -2819,11 +2834,12 @@ body:has(.admin-notes) {
 
 	.profile-detail-header,
 	.profile-detail-main {
-		padding: 1.25rem;
+		padding: 2rem 0rem 0rem;
 	}
 
 	.profile-detail-main {
 		grid-template-columns: 1fr;
+		padding: 1rem;
 	}
 
 	.profile-detail-image,
@@ -2833,6 +2849,14 @@ body:has(.admin-notes) {
 
 	.profile-detail-contact {
 		grid-template-columns: 1fr;
+	}
+
+	.profile-detail-about {
+		padding: 2rem 1.5rem 1rem;
+	}
+
+	.profile-editor-actions {
+		padding: 2rem 2rem 1rem;
 	}
 
 	.profile-detail-footer {
