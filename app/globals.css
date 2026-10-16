@@ -323,6 +323,28 @@ h3 {
 	margin-bottom: 4rem;
 }
 
+.guide-upload-dialog {
+	max-height: calc(100dvh - 2rem);
+	min-width: 0;
+	overflow-y: auto;
+}
+
+.guide-upload-form > label {
+	min-width: 0;
+}
+
+.guide-upload-form input:not([type="checkbox"]),
+.guide-upload-form select,
+.guide-upload-form textarea {
+	min-width: 0;
+	max-width: 100%;
+	width: 100%;
+}
+
+.guide-upload-form input[type="file"] {
+	overflow: hidden;
+}
+
 .guide-toolbar {
 	margin-bottom: 1.5rem;
 }
@@ -401,7 +423,7 @@ h3 {
 .guide-folder-permission {
 	color: var(--muted-ink);
 	font-size: 0.9rem;
-	margin: -0.5rem 0 1.25rem;
+	margin: 0rem 0.5rem 1.25rem;
 }
 
 .guide-folder-permission label {
@@ -2971,6 +2993,18 @@ body:has(.admin-notes) {
 }
 
 @media (max-width: 440px) {
+	.guide-upload-dialog {
+		padding: 1.25rem;
+	}
+
+	.guide-upload-actions {
+		flex-wrap: wrap;
+	}
+
+	.guide-upload-actions button {
+		flex: 1 1 auto;
+	}
+
 	.login-panel {
 		padding: 2.25rem 1.5rem;
 	}
@@ -3018,9 +3052,7 @@ body:has(.admin-notes) {
 	.home-context-notes article {
 		padding: 1rem;
 	}
-}
 
-@media (max-width: 640px) {
 	.profile-form {
 		padding: 1.25rem;
 	}
@@ -3028,4 +3060,8 @@ body:has(.admin-notes) {
 	.profile-form-fields {
 		grid-template-columns: 1fr;
 	}
+}
+
+@media (max-width: 385px) {
+	
 }

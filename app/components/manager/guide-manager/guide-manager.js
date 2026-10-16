@@ -382,7 +382,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
       {canUpload && isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
-          <div className="w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
+          <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
               <h2 id="guide-form-title" className="text-2xl font-bold">Upload PDF guide</h2>
               <button type="button" onClick={closeForm} className="p-2 text-[#607984] hover:text-[#123243]" aria-label="Close form">
@@ -390,7 +390,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </button>
             </div>
 
-            <form onSubmit={saveGuide} noValidate className="grid gap-4">
+            <form onSubmit={saveGuide} noValidate className="guide-upload-form grid gap-4">
               <label className="flex flex-col gap-1">
                 <span>
                   Title
@@ -400,6 +400,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   required
                   name="title"
                   maxLength={200}
+                  minLength={0}
                   value={formData.title}
                   onChange={updateField}
                   onBlur={markFieldAsTouched}
@@ -474,7 +475,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 {touchedFields.fileData && !formData.fileData && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
               </label>
               {formData.fileName && <p className="text-sm text-[#607984]">Selected: {formData.fileName}</p>}
-              <div className="flex justify-end gap-3">
+              <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeForm} className="rounded-md border border-[#d8e8e8] px-4 py-2">Cancel</button>
                 <button type="submit" disabled={isSaving || !formData.fileData} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
                   <FiSave aria-hidden="true" />
