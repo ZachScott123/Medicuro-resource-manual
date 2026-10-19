@@ -5,6 +5,7 @@ import { FiCheck, FiEdit3, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi"
 import { useRouter } from "next/navigation";
 import SpecialistCard from "@/app/components/card/specialist-card/specialist-card";
 import { compressImage } from "@/app/lib/compress-image";
+import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
 
 const emptySpecialist = {
 	name: "",
@@ -246,26 +247,24 @@ export default function SpecialistManager({
 			)}
 
 			{isFormOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="specialist-form-title">
-					<div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
-						<div className="mb-6 flex items-center justify-between gap-4">
-							<h2 id="specialist-form-title" className="text-2xl font-bold">{editingId ? "Edit Specialist" : "Upload Specialist"}</h2>
-							<button type="button" onClick={closeForm} className="p-2 text-white/80 hover:text-white" aria-label="Close form"><FiX size={22} aria-hidden="true" /></button>
-						</div>
-						<form onSubmit={saveSpecialist} noValidate className="grid gap-4 sm:grid-cols-2">
-							{requiredSpecialistFields.map(renderRequiredField)}
-							<label className="flex flex-col gap-1">Location<input maxLength={200} name="location" value={formData.location} onChange={updateField} placeholder="123 Main Street, Town, NL" className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
-							<label className="flex flex-col gap-1 sm:col-span-2">About<textarea maxLength={2000} name="about" value={formData.about} onChange={updateField} placeholder="Tell us about yourself..." rows={5} className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
-							<label className="flex flex-col gap-1 sm:col-span-2">Image URL<input maxLength={7000000} name="imageUrl" value={formData.imageUrl} onChange={updateField} placeholder="/images/specialists/name.jpg" className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
-							<label className="flex flex-col gap-1 sm:col-span-2">Or upload an image<input type="file" accept="image/*" onChange={handleImageChange} className="text-neutral-400 rounded-md border border-white/20 p-2 hover:text-neutral-900 transition-colors" /></label>
-							{formData.imageUrl && <img src={formData.imageUrl} alt="Specialist preview" className="h-40 w-full rounded-lg object-cover sm:col-span-2" />}
-							<div className="flex justify-end gap-3 sm:col-span-2">
-								<button type="button" onClick={closeForm} className="rounded-md border border-white/30 px-4 py-2">Cancel</button>
-								<button type="submit" className="btn-accent inline-flex items-center gap-2"><FiSave aria-hidden="true" />Save Specialist</button>
-							</div>
-						</form>
+				<ProfileEditDrawer labelledBy="specialist-form-title" onClose={closeForm}>
+					<div className="mb-6 flex items-center justify-between gap-4">
+						<h2 id="specialist-form-title" className="text-2xl font-bold">{editingId ? "Edit Specialist" : "Upload Specialist"}</h2>
+						<button type="button" onClick={closeForm} className="admin-menu-close" aria-label="Close form"><FiX size={22} aria-hidden="true" /></button>
 					</div>
-				</div>
+					<form onSubmit={saveSpecialist} noValidate className="grid gap-4 sm:grid-cols-2">
+						{requiredSpecialistFields.map(renderRequiredField)}
+						<label className="flex flex-col gap-1">Location<input maxLength={200} name="location" value={formData.location} onChange={updateField} placeholder="123 Main Street, Town, NL" className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
+						<label className="flex flex-col gap-1 sm:col-span-2">About<textarea maxLength={2000} name="about" value={formData.about} onChange={updateField} placeholder="Tell us about yourself..." rows={5} className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
+						<label className="flex flex-col gap-1 sm:col-span-2">Image URL<input maxLength={7000000} name="imageUrl" value={formData.imageUrl} onChange={updateField} placeholder="/images/specialists/name.jpg" className="rounded-md p-2 text-neutral-900 border-[1.5px] border-teal-400" /></label>
+						<label className="flex flex-col gap-1 sm:col-span-2">Or upload an image<input type="file" accept="image/*" onChange={handleImageChange} className="text-neutral-400 rounded-md border border-white/20 p-2 hover:text-neutral-900 transition-colors" /></label>
+						{formData.imageUrl && <img src={formData.imageUrl} alt="Specialist preview" className="h-40 w-full rounded-lg object-cover sm:col-span-2" />}
+						<div className="flex justify-end gap-3 sm:col-span-2">
+							<button type="button" onClick={closeForm} className="rounded-md border border-white/30 px-4 py-2">Cancel</button>
+							<button type="submit" className="btn-accent inline-flex items-center gap-2"><FiSave aria-hidden="true" />Save Specialist</button>
+						</div>
+					</form>
+				</ProfileEditDrawer>
 			)}
 
 			{deleteTarget && (

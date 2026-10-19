@@ -394,13 +394,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             <div className="guide-grid">
               {filteredGuides.map((guide) => (
                 <article className="guide-card" key={guide.id}>
-                  <div className="guide-card-icon">
+                  
                     {guide.type === "video" ? (
-                      <FiFileText aria-hidden="true" />
+                      <div className="guide-card-icon-video">
+                        <FiTv aria-hidden="true" />
+                      </div>
                     ) : (
-                      <FiTv aria-hidden="true" />
+                      <div className="guide-card-icon-file">
+                        <FiFileText aria-hidden="true" />
+                      </div>
                     )}
-                  </div>
                   <div className="guide-card-copy">
                     <h3>{guide.title}</h3>
                     <p>{guide.description}</p>
@@ -537,7 +540,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
                 >
                   <option value="file">Upload PDF</option>
-                  <option value="video">YouTube video</option>
+                  <option value="video">Video Link</option>
                 </select>
               </label>
               <label className="flex flex-col gap-1">

@@ -10,7 +10,7 @@ export default async function Home() {
     <div className="home-page w-full">
       <section className="home-hero">
         <div className="home-hero-content">
-          <h1>A Clearer Way to <em>Coordinate Care</em></h1>
+          <h1>A Clearer Way to <em>Coordinate Care.</em></h1>
           <p>
             Medicuro's Internal Resource Manual is a private clinic reference for the people and partners who help Medicuro deliver accessible, patient-centered care.
           </p>
