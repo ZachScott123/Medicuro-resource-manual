@@ -461,7 +461,7 @@ h3 {
 	transform: translateY(-2px);
 }
 
-.guide-card-icon-video {
+.guide-card-icon-file {
 	align-items: center;
 	background: var(--mist);
 	border-radius: 0.75rem;
@@ -473,7 +473,7 @@ h3 {
 	width: 3rem;
 }
 
-.guide-card-icon-file {
+.guide-card-icon-video {
 	align-items: center;
 	background: #ebf7ff;
 	border-radius: 0.75rem;
@@ -531,6 +531,7 @@ h3 {
 
 .guide-video-title-link:hover,
 .guide-video-title-link:focus-visible {
+	color: #0c8dcd;
 	text-decoration: underline;
 }
 
