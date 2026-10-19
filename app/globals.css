@@ -968,6 +968,7 @@ h3 {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
 }
@@ -2842,12 +2843,8 @@ body:has(.admin-notes) {
 
 @media (max-width: 455px) {
 	.home-hero h1 {
-		font-size: clamp(3rem, 6vw, 3.9rem);
-	}
+		font-size: clamp(2.2rem, 4vw, 3.4rem);
 
-	.home-hero h1 em {
-		background: linear-gradient(45deg, #00aeffaf, #0c6fd2);
-		font-size: clamp(3.3rem, 6vw, 4.3rem);
 	}
 }
 
