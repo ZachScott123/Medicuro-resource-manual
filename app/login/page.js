@@ -9,6 +9,11 @@ async function handleLoginAction() {
 }
 
 export default function LoginPage() {
+
+    if (currentUser.authenticated) {
+        redirect("/");
+    }
+
     return (
         <main className="login-page">
             <div className="login-panel-behind">

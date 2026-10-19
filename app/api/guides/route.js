@@ -26,7 +26,6 @@ function serializeGuide(record) {
     type: record.type === "video" ? "video" : "file",
     fileName: record.fileName || "",
     videoId: record.videoId || "",
-    videoTitle: record.videoTitle || "",
     createdAt: record.createdAt || "",
     partnerViewable: record.partnerViewable === true
   };
@@ -82,7 +81,7 @@ export async function POST(request) {
       type: guide.type,
       partnerViewable: guide.partnerViewable === true,
       ...(guide.type === "video"
-        ? { videoId: guide.videoId, videoTitle: guide.videoTitle.trim() }
+        ? { videoId: guide.videoId }
         : { fileName: guide.fileName, fileData: guide.fileData }),
       createdAt: new Date().toISOString()
     };

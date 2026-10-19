@@ -82,7 +82,7 @@ h3 {
 	align-items: center;
 	display: flex;
 	width: 100%;
-	max-width: 90rem;
+	max-width: 100%;
 	gap: 1.5rem;
 	margin-inline: auto;
 	padding: 0.35rem clamp(1rem, 3vw, 2.5rem);
@@ -190,7 +190,7 @@ h3 {
 .nav-link {
 	border-radius: 999px;
 	color: #265B72;
-	font-size: clamp(0.95rem, 1.1vw, 1.125rem);
+	font-size: clamp(0.85rem, 1.1vw, 1.125rem);
 	font-weight: 500;
 	letter-spacing: 0.3px;
 	padding: 1.5rem 0.7rem;
@@ -544,14 +544,29 @@ h3 {
 }
 
 .guide-video-dialog {
+	background: #f8fcfcf0;
+	backdrop-filter: blur(8px);
+	border-radius: 0.75rem;
+	box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+	color: var(--ink);
+	margin-inline: auto;
+	max-width: 56rem;
 	max-height: calc(100dvh - 2rem);
 	overflow-y: auto;
+	padding: 1rem;
+	width: 100%;
+}
+
+@media (min-width: 640px) {
+	.guide-video-dialog {
+		padding: 1.5rem;
+	}
 }
 
 .guide-video-frame {
 	aspect-ratio: 16 / 9;
 	background: #000000;
-	border-radius: 0.5rem;
+	border-radius: 1rem;
 	overflow: hidden;
 	width: 100%;
 }
@@ -565,8 +580,13 @@ h3 {
 .guide-delete-button {
 	background: transparent;
 	border: 0;
+	border-radius: 999px;
 	color: #c24141;
 	cursor: pointer;
+}
+
+.guide-delete-button {
+	background: #ffeded;
 }
 
 .guide-empty-state {
@@ -2575,7 +2595,7 @@ body:has(.admin-notes) {
 
 .admin-menu-close:hover,
 .admin-menu-close:focus-visible {
-	background: var(--mist);
+	background:#e1f2ff;
 }
 
 .admin-menu-links {
@@ -2763,10 +2783,11 @@ body:has(.admin-notes) {
 
 @media (max-width: 455px) {
 	.home-hero h1 {
-		font-size: clamp(3.1rem, 6vw, 4.1rem);
+		font-size: clamp(3rem, 6vw, 3.9rem);
 	}
 
 	.home-hero h1 em {
+		background: linear-gradient(45deg, #00aeffaf, #0c6fd2);
 		font-size: clamp(3.3rem, 6vw, 4.3rem);
 	}
 }
