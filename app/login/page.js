@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getGoogleOauthUrl } from '@/app/auth/google/googleOauthUtils';
 import BackButton from '@/app/lib/back-button';
+import { getCurrentUser } from "@/app/lib/current-user";
 
 async function handleLoginAction() {
     "use server"
@@ -8,11 +9,12 @@ async function handleLoginAction() {
     redirect(redirectURL);
 }
 
-export default function LoginPage() {
-
-    if (currentUser.authenticated) {
+export default async function LoginPage() {
+    const { authenticated } = await getCurrentUser();
+    
+      if (authenticated) {
         redirect("/");
-    }
+      }
 
     return (
         <main className="login-page">
