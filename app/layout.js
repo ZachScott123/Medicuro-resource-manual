@@ -105,24 +105,10 @@ export default function RootLayout({ children }) {
                 {isNavOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
               </button>
               <div className={['nav-menu', isNavOpen ? 'nav-menu-open' : ''].filter(Boolean).join(' ')}>
-                <div className="nav-links">
-                  {(isLoggedIn && isEditor) && (
-                    <NavLink className="nav-link-header" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
-                  )}
-                  {(isLoggedIn && (isAuthorized || isPhysicianSpecialist)) && (
-                    <>
-                      <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
-                      <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
-                      <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
-                      <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
-                    </>
-                  )}
-                </div>
                 {isLoggedIn ? (
                   <div className="nav-account">
                     <button className="nav-login" onClick={handleLogout} type="button">
                       <FiLogOut aria-hidden="true" />
-                      <span>Logout</span>
                     </button>
                     <Link href="/profile" className="profile-icon" aria-label={profileAlt} title={profileAlt}>
                       {user.picture ? (
@@ -138,6 +124,19 @@ export default function RootLayout({ children }) {
                     <span>Login</span>
                   </button>
                 )}
+                <div className="nav-links">
+                  {(isLoggedIn && isEditor) && (
+                    <NavLink className="nav-link-header" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
+                  )}
+                  {(isLoggedIn && (isAuthorized || isPhysicianSpecialist)) && (
+                    <>
+                      <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
+                      <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
+                      <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
+                      <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </nav>}

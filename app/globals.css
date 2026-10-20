@@ -2930,6 +2930,15 @@ body:has(.admin-notes) {
 	.home-hero-actions {
 		flex-direction: column;
 	}
+
+	.nav-login {
+		display: contents;
+		text-align: inherit;
+	}
+
+	.profile-icon {
+		margin-right: auto;
+	}
 }
 
 @media (max-width: 1050px) {
