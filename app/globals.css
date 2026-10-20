@@ -2937,7 +2937,7 @@ body:has(.admin-notes) {
 	}
 
 	.profile-icon {
-		margin-right: auto;
+		margin-left: auto;
 	}
 }
 
