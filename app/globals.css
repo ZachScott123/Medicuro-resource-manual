@@ -558,11 +558,9 @@ h3 {
 
 .guide-preview-toolbar {
 	align-items: center;
-	border-bottom: 1px solid var(--line);
 	display: flex;
 	gap: 1rem;
 	justify-content: space-between;
-	margin-bottom: 1rem;
 	padding: 0.85rem;
 }
 
@@ -631,10 +629,13 @@ h3 {
 	height: min(68dvh, 54rem);
 	min-height: 20rem;
 	width: 100%;
+	box-shadow: 0 0px 35px #1232430d;
 }
 
 .guide-preview-checklist {
 	margin-bottom: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--line);
 }
 
 .guide-preview-checklist ul,
