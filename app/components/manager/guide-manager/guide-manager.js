@@ -511,6 +511,23 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <FiX size={22} aria-hidden="true" />
               </button>
             </div>
+            {selectedGuide.type === "video" ? (
+              <div className="guide-video-frame">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
+                  title={selectedGuide.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <iframe
+                className="guide-pdf-frame"
+                src={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
+                title={`${selectedGuide.title} PDF`}
+              />
+            )}
             {(selectedGuide.type === "file" || selectedGuide.checklist?.length > 0) && (
               <div className="guide-preview-toolbar">
                 <div className="guide-preview-toolbar-label">
@@ -527,7 +544,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       title="Open PDF in a new tab"
                     >
                       <FiExternalLink aria-hidden="true" />
-                      <span>Open PDF</span>
                     </a>
                     <a
                       href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}?download=1`}
@@ -536,7 +552,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       title={`Download ${selectedGuide.title}`}
                     >
                       <FiDownload aria-hidden="true" />
-                      <span>Download</span>
                     </a>
                   </div>
                 )}
@@ -563,23 +578,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   ))}
                 </ul>
               </section>
-            )}
-            {selectedGuide.type === "video" ? (
-              <div className="guide-video-frame">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
-                  title={selectedGuide.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
-            ) : (
-              <iframe
-                className="guide-pdf-frame"
-                src={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
-                title={`${selectedGuide.title} PDF`}
-              />
             )}
           </div>
         </div>

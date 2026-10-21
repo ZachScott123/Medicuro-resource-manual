@@ -563,7 +563,7 @@ h3 {
 	gap: 1rem;
 	justify-content: space-between;
 	margin-bottom: 1rem;
-	padding-bottom: 0.85rem;
+	padding: 0.85rem;
 }
 
 .guide-preview-toolbar-label h3 {
@@ -584,6 +584,7 @@ h3 {
 	display: inline-flex;
 	gap: 0.45rem;
 	justify-content: center;
+	padding: 0.7rem;
 }
 
 .guide-video-dialog {
