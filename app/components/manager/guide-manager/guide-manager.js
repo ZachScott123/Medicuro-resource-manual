@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiEye, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 //canManage = editors, canUpload = staff.
@@ -16,7 +16,9 @@ const emptyGuide = {
   type: "file",
   fileName: "",
   fileData: "",
-  videoUrl: ""
+  videoUrl: "",
+  checklistEnabled: false,
+  checklist: []
 };
 
 const allFolders = "all";
@@ -43,6 +45,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [selectedFolder, setSelectedFolder] = useState(allFolders);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState(emptyGuide);
+  const [checklistItem, setChecklistItem] = useState("");
+  const [checkedChecklistItems, setCheckedChecklistItems] = useState([]);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [touchedFields, setTouchedFields] = useState({});
@@ -75,7 +79,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       if (!selectedGuide) return undefined;
 
       function closeOnEscape(event) {
-        if (event.key === "Escape") setSelectedGuide(null);
+        if (event.key === "Escape") closeGuidePreview();
       }
 
       window.addEventListener("keydown", closeOnEscape);
@@ -110,6 +114,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     setIsCreatingFolder(false);
     setNewFolderName("");
     setTouchedFields({});
+    setChecklistItem("");
     setError("");
     setIsFormOpen(true);
   }
@@ -119,6 +124,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     setIsCreatingFolder(false);
     setNewFolderName("");
     setTouchedFields({});
+    setChecklistItem("");
     setError("");
     setIsFormOpen(false);
   }
@@ -126,6 +132,31 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   function updateField(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
+  }
+
+  function addChecklistItem() {
+    const item = checklistItem.trim();
+    if (!item || formData.checklist.length >= 50) return;
+
+    setFormData((current) => ({ ...current, checklist: [...current.checklist, item] }));
+    setChecklistItem("");
+  }
+
+  function removeChecklistItem(index) {
+    setFormData((current) => ({
+      ...current,
+      checklist: current.checklist.filter((_, itemIndex) => itemIndex !== index)
+    }));
+  }
+
+  function openGuidePreview(guide) {
+    setSelectedGuide(guide);
+    setCheckedChecklistItems([]);
+  }
+
+  function closeGuidePreview() {
+    setSelectedGuide(null);
+    setCheckedChecklistItems([]);
   }
 
   function updateGuideType(event) {
@@ -256,6 +287,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         : formData.folder,
       partnerViewable: formData.partnerViewable,
       type: formData.type,
+      checklist: formData.checklistEnabled ? formData.checklist : [],
       ...(formData.type === "video"
         ? {
           videoId: getYouTubeVideoId(formData.videoUrl)
@@ -412,7 +444,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       <button
                         type="button"
                         className="guide-video-title-link"
-                        onClick={() => setSelectedGuide(guide)}
+                        onClick={() => openGuidePreview(guide)}
                         aria-label={`Watch ${guide.title}`}
                       >
                         {guide.title}
@@ -425,7 +457,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     {guide.type === "video" ? (
                       <button
                         type="button"
-                        onClick={() => setSelectedGuide(guide)}
+                        onClick={() => openGuidePreview(guide)}
                         className="btn-accent2"
                         aria-label={`Watch ${guide.title}`}
                         title={`Watch ${guide.title}`}
@@ -434,9 +466,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       </button>
                     ) : (
                       <>
-                        <a href={`/api/guides/file/${encodeURIComponent(guide.id)}`} target="_blank" rel="noopener noreferrer" className="btn-accent2" aria-label={`Open ${guide.title}`} title={`Open ${guide.title}`}>
-                          <FiExternalLink aria-hidden="true" />
-                        </a>
+                        <button type="button" onClick={() => openGuidePreview(guide)} className="btn-accent2" aria-label={`Preview ${guide.title}`} title={`Preview ${guide.title}`}>
+                          <FiEye aria-hidden="true" />
+                        </button>
                         <a href={`/api/guides/file/${encodeURIComponent(guide.id)}?download=1`} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
                           <FiDownload aria-hidden="true" />
                         </a>
@@ -472,27 +504,58 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           role="dialog"
           aria-modal="true"
-          aria-labelledby="guide-video-title"
+          aria-labelledby="guide-preview-title"
           onClick={(event) => {
-            if (event.target === event.currentTarget) setSelectedGuide(null);
+            if (event.target === event.currentTarget) closeGuidePreview();
           }}
         >
           <div className="guide-video-dialog">
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 id="guide-video-title" className="text-xl font-bold">{selectedGuide.title}</h2>
-              <button type="button" onClick={() => setSelectedGuide(null)} className="admin-menu-close" aria-label="Close video">
+              <h2 id="guide-preview-title" className="text-xl font-bold">{selectedGuide.title}</h2>
+              <button type="button" onClick={closeGuidePreview} className="admin-menu-close" aria-label="Close guide preview">
                 <FiX size={22} aria-hidden="true" />
               </button>
             </div>
-            <div className="guide-video-frame">
+            {selectedGuide.type === "video" ? (
+              <div className="guide-video-frame">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
+                  title={selectedGuide.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
-                title={selectedGuide.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
+                className="guide-pdf-frame"
+                src={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
+                title={`${selectedGuide.title} PDF`}
               />
-            </div>
+            )}
+            {selectedGuide.checklist?.length > 0 && (
+              <section className="guide-preview-checklist" aria-labelledby="guide-checklist-title">
+                <h3 id="guide-checklist-title">Checklist</h3>
+                <ul>
+                  {selectedGuide.checklist.map((item, index) => (
+                    <li key={`${index}-${item}`}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={checkedChecklistItems.includes(index)}
+                          onChange={() => setCheckedChecklistItems((current) => (
+                            current.includes(index)
+                              ? current.filter((itemIndex) => itemIndex !== index)
+                              : [...current, index]
+                          ))}
+                        />
+                        <span>{item}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         </div>
       )}
@@ -585,6 +648,63 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   <span>Partner viewable</span>
                 </label>
               )}
+              <section className="guide-checklist-editor">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.checklistEnabled}
+                    onChange={(event) => setFormData((current) => ({
+                      ...current,
+                      checklistEnabled: event.target.checked
+                    }))}
+                    className="h-4 w-4 accent-teal-700"
+                  />
+                  <span>Add a checklist</span>
+                </label>
+                {formData.checklistEnabled && (
+                  <div className="guide-checklist-editor-content">
+                    <p>Add up to 50 items. Users can check them off while the guide is open.</p>
+                    <div className="guide-checklist-add">
+                      <input
+                        type="text"
+                        value={checklistItem}
+                        maxLength={300}
+                        onChange={(event) => setChecklistItem(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            addChecklistItem();
+                          }
+                        }}
+                        placeholder="Checklist item"
+                        aria-label="Checklist item"
+                        disabled={formData.checklist.length >= 50}
+                      />
+                      <button
+                        type="button"
+                        onClick={addChecklistItem}
+                        disabled={!checklistItem.trim() || formData.checklist.length >= 50}
+                        aria-label="Add checklist item"
+                      >
+                        <FiPlus aria-hidden="true" />
+                        Add item
+                      </button>
+                    </div>
+                    {formData.checklist.length > 0 && (
+                      <ul className="guide-checklist-items">
+                        {formData.checklist.map((item, index) => (
+                          <li key={`${index}-${item}`}>
+                            <span>{item}</span>
+                            <button type="button" onClick={() => removeChecklistItem(index)} aria-label={`Remove ${item}`}>
+                              <FiX aria-hidden="true" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </section>
               {formData.type === "file" ? (
                 <label className="flex flex-col gap-1">
                   <span>

@@ -30,6 +30,7 @@ export const guideSchema = z.object({
   folder: z.string().trim().min(1).max(100).optional(),
   partnerViewable: z.boolean().optional(),
   type: z.enum(["file", "video"]).default("file"),
+  checklist: z.array(z.string().trim().min(1).max(300)).max(50).optional(),
   fileName: z.string().trim().min(1).max(255).optional(),
   fileData: z.string().max(14_000_000).startsWith("data:application/pdf;base64,").optional(),
   videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional()

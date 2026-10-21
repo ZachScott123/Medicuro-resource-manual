@@ -24,6 +24,7 @@ function serializeGuide(record) {
     description: record.description || "",
     folder: record.folder || "Uncategorized",
     type: record.type === "video" ? "video" : "file",
+    checklist: Array.isArray(record.checklist) ? record.checklist : [],
     fileName: record.fileName || "",
     videoId: record.videoId || "",
     createdAt: record.createdAt || "",
@@ -79,6 +80,7 @@ export async function POST(request) {
       description: guide.description?.trim() || "...",
       folder,
       type: guide.type,
+      checklist: guide.checklist || [],
       partnerViewable: guide.partnerViewable === true,
       ...(guide.type === "video"
         ? { videoId: guide.videoId }
