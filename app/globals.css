@@ -547,6 +547,12 @@ h3 {
 	margin-left: auto;
 }
 
+.guide-card-actions .btn-accent2 {
+	border: 2px solid transparent;
+	background: #e9eef3;
+	color: var(--ink)
+}
+
 .guide-card-actions .btn-accent2,
 .guide-delete-button {
 	align-items: center;
@@ -740,8 +746,8 @@ h3 {
 }
 
 .guide-delete-button {
-	background: transparent;
-	border: 0;
+	background: #ffeeee;
+	border: 2px solid transparent;
 	border-radius: 999px;
 	color: #c24141;
 	cursor: pointer;
@@ -749,7 +755,8 @@ h3 {
 }
 
 .guide-delete-button:hover {
-	background: #ffeded;
+	background: #c24141;
+	color: #ffffff;
 }
 
 .guide-empty-state {

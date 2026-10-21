@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiBookOpen, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiBookOpen, FiEdit2, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 //canManage = editors, canUpload = staff.
@@ -44,6 +44,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(allFolders);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingGuide, setEditingGuide] = useState(null);
   const [formData, setFormData] = useState(emptyGuide);
   const [checklistItem, setChecklistItem] = useState("");
   const [checkedChecklistItems, setCheckedChecklistItems] = useState([]);
@@ -106,6 +107,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
   function openForm() {
     const folder = folders[0] || "Uncategorized";
+    setEditingGuide(null);
     setFormData({
       ...emptyGuide,
       folder,
@@ -119,7 +121,31 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     setIsFormOpen(true);
   }
 
+  function openEditForm(guide) {
+    setEditingGuide(guide);
+    setFormData({
+      ...emptyGuide,
+      title: guide.title,
+      description: guide.description,
+      folder: guide.folder || "Uncategorized",
+      partnerViewable: guide.partnerViewable === true,
+      type: guide.type,
+      fileName: guide.fileName || "",
+      videoUrl: guide.type === "video" ? `https://youtu.be/${guide.videoId}` : "",
+      checklistEnabled: guide.checklist?.length > 0,
+      checklist: guide.checklist || []
+    });
+
+    setIsCreatingFolder(false);
+    setNewFolderName("");
+    setTouchedFields({});
+    setChecklistItem("");
+    setError("");
+    setIsFormOpen(true);
+  }
+
   function closeForm() {
+    setEditingGuide(null);
     setFormData(emptyGuide);
     setIsCreatingFolder(false);
     setNewFolderName("");
@@ -263,7 +289,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
     const invalidFields = [
       !formData.title.trim() && "title",
-      formData.type === "file" && !formData.fileData && "fileData",
+      formData.type === "file" && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) && "fileData",
       formData.type === "video" && !getYouTubeVideoId(formData.videoUrl) && "videoUrl",
       isCreatingFolder && !newFolderName.trim() && "folder"
     ].filter(Boolean);
@@ -292,16 +318,18 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         ? {
           videoId: getYouTubeVideoId(formData.videoUrl)
         }
-        : {
-          fileName: formData.fileName,
-          fileData: formData.fileData
-        })
+        : formData.fileData
+          ? {
+              fileName: formData.fileName,
+              fileData: formData.fileData
+          }
+          : {})
     };
 
     const response = await fetch("/api/guides", {
-      method: "POST",
+      method: editingGuide ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(guide)
+      body: JSON.stringify(editingGuide ? { ...guide, id: editingGuide.id } : guide)
     });
 
     if (!response.ok) {
@@ -313,12 +341,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     }
 
     const savedGuide = await response.json();
-    setGuides((current) => [
-      savedGuide,
-      ...current.map((guide) => (guide.folder || "Uncategorized") === savedGuide.folder
-        ? { ...guide, partnerViewable: savedGuide.partnerViewable }
-        : guide)
-    ]);
+    setGuides((current) => {
+      const updatedGuides = current.map((item) => {
+        if (item.id === savedGuide.id) return savedGuide;
+        return (item.folder || "Uncategorized") === savedGuide.folder
+          ? { ...item, partnerViewable: savedGuide.partnerViewable }
+          : item;
+      });
+      
+      return editingGuide ? updatedGuides : [savedGuide, ...updatedGuides];
+    });
     setSelectedFolder(savedGuide.folder);
     setIsSaving(false);
     closeForm();
@@ -470,9 +502,14 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       </button>
                     )}
                     {canManage && (
-                      <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
-                        <FiTrash2 aria-hidden="true" />
-                      </button>
+                      <>
+                        <button type="button" onClick={() => openEditForm(guide)} className="btn-accent2" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
+                          <FiEdit2 aria-hidden="true" />
+                        </button>
+                        <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                          <FiTrash2 aria-hidden="true" />
+                        </button>
+                      </>
                     )}
                   </div>
                 </article>
@@ -587,7 +624,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 id="guide-form-title" className="text-2xl font-bold">Upload Guide</h2>
+              <h2 id="guide-form-title" className="text-2xl font-bold">{editingGuide ? "Edit Guide" : "Upload Guide"}</h2>
               <button type="button" onClick={closeForm} className="admin-menu-close" aria-label="Close form">
                 <FiX size={22} aria-hidden="true" />
               </button>
@@ -734,7 +771,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <label className="flex flex-col gap-1">
                   <span>
                     Attach File
-                    {touchedFields.fileData && !formData.fileData && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                    {touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
                   </span>
                   <input
                     required
@@ -743,12 +780,12 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     accept="application/pdf,.pdf"
                     onChange={handleFileChange}
                     onBlur={markFieldAsTouched}
-                    aria-invalid={touchedFields.fileData && !formData.fileData}
-                    aria-describedby={touchedFields.fileData && !formData.fileData ? "file-error" : undefined}
-                    className={`text-neutral-400 rounded-md p-2 hover:text-neutral-900 transition-colors ${touchedFields.fileData && !formData.fileData ? "border-red-500" : "border-[#d8e8e8]"}`}
+                    aria-invalid={touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName)}
+                    aria-describedby={touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) ? "file-error" : undefined}
+                    className={`text-neutral-400 rounded-md p-2 hover:text-neutral-900 transition-colors ${touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) ? "border-red-500" : "border-[#d8e8e8]"}`}
                   />
-                  {touchedFields.fileData && !formData.fileData && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
-                  {formData.fileName && <span className="text-sm text-[#607984]">Selected: {formData.fileName}</span>}
+                  {touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
+                  {formData.fileName && <span className="text-sm text-[#607984]">{editingGuide && !formData.fileData ? "Current file:" : "Selected:"} {formData.fileName}</span>}
                 </label>
               ) : (
                 <label className="flex flex-col gap-1">
@@ -772,9 +809,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               )}
               <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeForm} className="rounded-md border border-[#d8e8e8] px-4 py-2">Cancel</button>
-                <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData : !getYouTubeVideoId(formData.videoUrl))} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) : !getYouTubeVideoId(formData.videoUrl))} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
                   <FiSave aria-hidden="true" />
-                  {isSaving ? "Saving..." : "Save guide"}
+                  {isSaving ? "Saving..." : editingGuide ? "Save changes" : "Save guide"}
                 </button>
               </div>
             </form>

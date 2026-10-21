@@ -52,6 +52,35 @@ export const guideSchema = z.object({
   }
 });
 
+export const guideUpdateSchema = z.object({
+  id: z.string().min(1).max(250),
+  title: z.string().trim().min(1).max(200),
+  description: z.string().trim().max(2000),
+  folder: z.string().trim().min(1).max(100),
+  partnerViewable: z.boolean(),
+  type: z.enum(["file", "video"]),
+  checklist: z.array(z.string().trim().min(1).max(300)).max(50),
+  fileName: z.string().trim().min(1).max(255).optional(),
+  fileData: z.string().max(14_000_000).startsWith("data:application/pdf;base64,").optional(),
+  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional()
+}).strict().superRefine((guide, context) => {
+  if (guide.type === "video" && !guide.videoId) {
+    context.addIssue({
+      code: "custom",
+      message: "A YouTube video URL is required.",
+      path: ["videoId"]
+    });
+  }
+
+  if (guide.type === "file" && Boolean(guide.fileName) !== Boolean(guide.fileData)) {
+    context.addIssue({
+      code: "custom",
+      message: "A PDF file name and file data must be provided together.",
+      path: ["fileData"]
+    });
+  }
+});
+
 export const guideFolderSchema = z.object({
   folder: z.string().trim().min(1).max(100),
   partnerViewable: z.boolean()
