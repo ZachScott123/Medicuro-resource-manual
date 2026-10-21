@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiEye, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiDownload, FiBookOpen, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 //canManage = editors, canUpload = staff.
@@ -465,14 +465,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                         <FiPlay aria-hidden="true" />
                       </button>
                     ) : (
-                      <>
-                        <button type="button" onClick={() => openGuidePreview(guide)} className="btn-accent2" aria-label={`Preview ${guide.title}`} title={`Preview ${guide.title}`}>
-                          <FiEye aria-hidden="true" />
-                        </button>
-                        <a href={`/api/guides/file/${encodeURIComponent(guide.id)}?download=1`} className="btn-accent2" aria-label={`Download ${guide.title}`} title={`Download ${guide.title}`}>
-                          <FiDownload aria-hidden="true" />
-                        </a>
-                      </>
+                      <button type="button" onClick={() => openGuidePreview(guide)} className="btn-accent2" aria-label={`Preview ${guide.title}`} title={`Preview ${guide.title}`}>
+                        <FiBookOpen aria-hidden="true" />
+                      </button>
                     )}
                     {canManage && (
                       <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
@@ -516,26 +511,39 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <FiX size={22} aria-hidden="true" />
               </button>
             </div>
-            {selectedGuide.type === "video" ? (
-              <div className="guide-video-frame">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
-                  title={selectedGuide.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
+            {(selectedGuide.type === "file" || selectedGuide.checklist?.length > 0) && (
+              <div className="guide-preview-toolbar">
+                <div className="guide-preview-toolbar-label">
+                  {selectedGuide.checklist?.length > 0 && <h3 id="guide-checklist-title">Checklist</h3>}
+                </div>
+                {selectedGuide.type === "file" && (
+                  <div className="guide-preview-toolbar-actions">
+                    <a
+                      href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-accent2"
+                      aria-label={`Open ${selectedGuide.title} PDF in a new tab`}
+                      title="Open PDF in a new tab"
+                    >
+                      <FiExternalLink aria-hidden="true" />
+                      <span>Open PDF</span>
+                    </a>
+                    <a
+                      href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}?download=1`}
+                      className="btn-accent2"
+                      aria-label={`Download ${selectedGuide.title}`}
+                      title={`Download ${selectedGuide.title}`}
+                    >
+                      <FiDownload aria-hidden="true" />
+                      <span>Download</span>
+                    </a>
+                  </div>
+                )}
               </div>
-            ) : (
-              <iframe
-                className="guide-pdf-frame"
-                src={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
-                title={`${selectedGuide.title} PDF`}
-              />
             )}
             {selectedGuide.checklist?.length > 0 && (
               <section className="guide-preview-checklist" aria-labelledby="guide-checklist-title">
-                <h3 id="guide-checklist-title">Checklist</h3>
                 <ul>
                   {selectedGuide.checklist.map((item, index) => (
                     <li key={`${index}-${item}`}>
@@ -555,6 +563,23 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   ))}
                 </ul>
               </section>
+            )}
+            {selectedGuide.type === "video" ? (
+              <div className="guide-video-frame">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(selectedGuide.videoId)}?autoplay=1`}
+                  title={selectedGuide.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <iframe
+                className="guide-pdf-frame"
+                src={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
+                title={`${selectedGuide.title} PDF`}
+              />
             )}
           </div>
         </div>
@@ -634,20 +659,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
                 </label>
               )}
-              {canUpload && isFormOpen && (
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.partnerViewable}
-                    onChange={(event) => setFormData((current) => ({
-                      ...current,
-                      partnerViewable: event.target.checked
-                    }))}
-                    className="h-4 w-4 accent-teal-700"
-                  />
-                  <span>Partner viewable</span>
-                </label>
-              )}
               <section className="guide-checklist-editor">
                 <label className="flex items-center gap-2">
                   <input
@@ -705,6 +716,22 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   </div>
                 )}
               </section>
+              {canUpload && isFormOpen && (
+                <section className="guide-checklist-editor">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.partnerViewable}
+                      onChange={(event) => setFormData((current) => ({
+                        ...current,
+                        partnerViewable: event.target.checked
+                      }))}
+                      className="h-4 w-4 accent-teal-700"
+                    />
+                    <span>Partner viewable</span>
+                  </label>
+                </section>
+              )}
               {formData.type === "file" ? (
                 <label className="flex flex-col gap-1">
                   <span>

@@ -556,6 +556,36 @@ h3 {
 	padding: 0.65rem;
 }
 
+.guide-preview-toolbar {
+	align-items: center;
+	border-bottom: 1px solid var(--line);
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+	padding-bottom: 0.85rem;
+}
+
+.guide-preview-toolbar-label h3 {
+	color: var(--ink);
+	font-size: 1.1rem;
+	font-weight: 750;
+}
+
+.guide-preview-toolbar-actions {
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+	margin-left: auto;
+}
+
+.guide-preview-toolbar-actions .btn-accent2 {
+	align-items: center;
+	display: inline-flex;
+	gap: 0.45rem;
+	justify-content: center;
+}
+
 .guide-video-dialog {
 	background: #f8fcfc;
 	border-radius: 0.75rem;
@@ -603,14 +633,7 @@ h3 {
 }
 
 .guide-preview-checklist {
-	margin-top: 1.5rem;
-}
-
-.guide-preview-checklist h3 {
-	color: var(--ink);
-	font-size: 1.1rem;
-	font-weight: 750;
-	margin-bottom: 0.75rem;
+	margin-bottom: 1rem;
 }
 
 .guide-preview-checklist ul,
