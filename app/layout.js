@@ -4,7 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FiMenu, FiX, FiLogIn, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiX, FiLogIn, FiLogOut, FiArrowRight } from "react-icons/fi";
 
 function NavLink({ href, children, className = "", onClick }) {
   const pathname = usePathname();
@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
   const [user, setUser] = useState({ name: "", picture: "", email: "" });
   const pathname = usePathname();
   const router = useRouter();
+  const isAdminPage = pathname.startsWith("/admin");
   const isLoginPage = pathname === "/login";
   const isUnauthorizedPage = pathname === "/login-unauthorizedAccount";
   const isAuthPage = isLoginPage || isUnauthorizedPage;
@@ -87,13 +88,20 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-        <body className={['min-h-screen flex flex-col antialiased', isAuthPage ? 'login-layout' : ''].filter(Boolean).join(' ')}>
-                    {!isAuthPage && <nav className={['site-nav w-full', isScrolled ? 'site-nav-scrolled' : ''].filter(Boolean).join(' ')}>
+        <body className={['min-h-screen flex flex-col antialiased', isAuthPage ? 'login-layout' : '', isAdminPage ? 'admin-layout' : ''].filter(Boolean).join(' ')}>
+                    {!isAuthPage && <nav className={['site-nav w-full', isAdminPage ? 'admin-site-nav' : '', isScrolled ? 'site-nav-scrolled' : ''].filter(Boolean).join(' ')}>
             <div className="site-nav-inner">
               <Link href="/" className="brand-logo" aria-label="Medicuro home">
-                <img src="/medicuro-logo-tag-line-1.png" alt="Medicuro" 
-                      onMouseOver={(e) => (e.currentTarget.src = '/medicuro-logo-gradient.png')}
-                      onMouseOut={(e) => (e.currentTarget.src = '/medicuro-logo-tag-line-1.png')}/>
+                <img
+                  src={isAdminPage ? "/medicuro-logo-white.png" : "/medicuro-logo-tag-line-1.png"}
+                  alt="Medicuro"
+                  onMouseOver={(e) => {
+                    if (!isAdminPage) e.currentTarget.src = "/medicuro-logo-gradient.png";
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isAdminPage) e.currentTarget.src = "/medicuro-logo-tag-line-1.png";
+                  }}
+                />
               </Link>
               <button
                 className="nav-toggle"
@@ -107,14 +115,29 @@ export default function RootLayout({ children }) {
               <div className={['nav-menu', isNavOpen ? 'nav-menu-open' : ''].filter(Boolean).join(' ')}>
                 <div className="nav-links">
                   {(isLoggedIn && isEditor) && (
-                    <NavLink className="nav-link-header" href="/admin" onClick={() => setIsNavOpen(false)}>Admin</NavLink>
+                    <NavLink className={isAdminPage ? "admin-sidebar-link" : "nav-link-header"} href="/admin" onClick={() => setIsNavOpen(false)}>
+                      Admin
+                      {isAdminPage && <FiArrowRight className="admin-sidebar-arrow" aria-hidden="true" />}
+                    </NavLink>
                   )}
                   {(isLoggedIn && (isAuthorized || isPhysicianSpecialist)) && (
                     <>
-                      <NavLink className="nav-link-header" href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>Guides</NavLink>
-                      <NavLink className="nav-link-header" href="/staff-profiles" onClick={() => setIsNavOpen(false)}>Staff</NavLink>
-                      <NavLink className="nav-link-header" href="/physician-partners" onClick={() => setIsNavOpen(false)}>Physicians</NavLink>
-                      <NavLink className="nav-link-header" href="/specialist-partners" onClick={() => setIsNavOpen(false)}>Specialists</NavLink>
+                      <NavLink className={isAdminPage ? "admin-sidebar-link" : "nav-link-header"} href="/medicuro-guides" onClick={() => setIsNavOpen(false)}>
+                        Guides
+                        {isAdminPage && <FiArrowRight className="admin-sidebar-arrow" aria-hidden="true" />}
+                      </NavLink>
+                      <NavLink className={isAdminPage ? "admin-sidebar-link" : "nav-link-header"} href="/staff-profiles" onClick={() => setIsNavOpen(false)}>
+                        Staff
+                        {isAdminPage && <FiArrowRight className="admin-sidebar-arrow" aria-hidden="true" />}
+                      </NavLink>
+                      <NavLink className={isAdminPage ? "admin-sidebar-link" : "nav-link-header"} href="/physician-partners" onClick={() => setIsNavOpen(false)}>
+                        Physicians
+                        {isAdminPage && <FiArrowRight className="admin-sidebar-arrow" aria-hidden="true" />}
+                      </NavLink>
+                      <NavLink className={isAdminPage ? "admin-sidebar-link" : "nav-link-header"} href="/specialist-partners" onClick={() => setIsNavOpen(false)}>
+                        Specialists
+                        {isAdminPage && <FiArrowRight className="admin-sidebar-arrow" aria-hidden="true" />}
+                      </NavLink>
                     </>
                   )}
                 </div>

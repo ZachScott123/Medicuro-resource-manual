@@ -122,7 +122,11 @@ export default function AdminNotes({ isEditor = false }) {
         </article>
       </div>
 
-      {countsError && <p className="admin-menu-message" role="alert">{countsError}</p>}
+      {countsError && (
+        <div className="profile-banner profile-banner-error mt-4" role="alert">
+          {countsError}
+        </div>
+      )}
 
       {openMenu && (
         <div className="admin-menu-layer">
@@ -142,7 +146,7 @@ export default function AdminNotes({ isEditor = false }) {
             {openMenu === "staff" && (
               <>
                 <div className="admin-menu-heading">
-                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <img src="/medicuro-logo-default.png" alt="Medicuro" className="admin-menu-logo"/>
                   <h2 id="admin-staff-title">Staff Members</h2>
                   <button
                     className="admin-menu-close"
@@ -162,7 +166,7 @@ export default function AdminNotes({ isEditor = false }) {
             {openMenu === "partners" && (
               <>
                 <div className="admin-menu-heading">
-                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <img src="/medicuro-logo-default.png" alt="Medicuro" className="admin-menu-logo"/>
                   <h2 id="admin-partners-title">Authenticated Partners</h2>
                   <button
                     className="admin-menu-close"
@@ -189,7 +193,7 @@ export default function AdminNotes({ isEditor = false }) {
             {(openMenu === "physicians" || openMenu === "specialists") && (
               <>
                 <div className="admin-menu-heading">
-                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <img src="/medicuro-logo-default.png" alt="Medicuro" className="admin-menu-logo"/>
                   <h2 id={`admin-${openMenu}-title`}>
                     {openMenu === "physicians" ? "Physician Partners" : "Specialist Partners"}
                   </h2>
@@ -213,7 +217,7 @@ export default function AdminNotes({ isEditor = false }) {
             {openMenu === "accounts" && (
               <>
                 <div className="admin-menu-heading">
-                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <img src="/medicuro-logo-default.png" alt="Medicuro" className="admin-menu-logo"/>
                   <h2 id="admin-accounts-title">User Accounts</h2>
                   <button
                     className="admin-menu-close"
@@ -231,7 +235,7 @@ export default function AdminNotes({ isEditor = false }) {
             {openMenu === "administrators" && (
               <>
                 <div className="admin-menu-heading">
-                  <img src="/medicuro-logo-ink.png" alt="Medicuro" className="admin-menu-logo"/>
+                  <img src="/medicuro-logo-default.png" alt="Medicuro" className="admin-menu-logo"/>
                   <h2 id="admin-administrators-title">Administrative Users</h2>
                   <button
                     className="admin-menu-close"
