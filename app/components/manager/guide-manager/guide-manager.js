@@ -420,30 +420,22 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       ) : (
         <>
           <div className="directory-toolbar guide-toolbar">
-            <div>
-              <div className="eyebrow">Reference library</div>
-              <h2 id="guide-library-title">Find a care guide</h2>
-              <p className="guide-toolbar-description">Search by name or topic, or browse all folders to find the resource you need.</p>
-            </div>
-            {canUpload && (
-              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
-                <FiUpload aria-hidden="true" />
-                <span>Add a guide</span>
-              </button>
-            )}
-          </div>
-
-          <div className="guide-library-controls">
             <label className="guide-search">
               <FiSearch aria-hidden="true" />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Try “onboarding” or “prescriptions”"
+                placeholder="Search guides and documents"
                 aria-label="Search guides by name, description, or file"
               />
             </label>
+            {canUpload && (
+              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
+                <FiUpload aria-hidden="true" />
+                <span>Add a guide</span>
+              </button>
+            )}
           </div>
 
           <nav className="guide-folder-navigation" aria-label="Browse guides by folder">

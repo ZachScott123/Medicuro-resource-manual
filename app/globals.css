@@ -368,22 +368,9 @@ h3 {
 }
 
 .guide-toolbar {
+	align-items: center;
 	margin: 0 0 1.5rem;
 	padding: 0;
-}
-
-.guide-toolbar h2 {
-	color: var(--ink);
-	font-size: clamp(1.65rem, 3vw, 2.15rem);
-	letter-spacing: -0.025em;
-}
-
-.guide-toolbar-description {
-	color: var(--muted-ink);
-	font-size: 0.98rem;
-	line-height: 1.6;
-	margin-top: 0.45rem;
-	max-width: 42rem;
 }
 
 .guide-search {
@@ -426,16 +413,7 @@ h3 {
 	color: var(--muted-ink);
 }
 
-.guide-library-controls {
-	align-items: center;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-	margin-bottom: 1.25rem;
-	max-width: 52rem;
-}
-
-.guide-library-controls .guide-search {
+.guide-toolbar .guide-search {
 	flex: 1 1 22rem;
 	margin-bottom: 0;
 }
@@ -3374,7 +3352,7 @@ body:has(.admin-notes) {
 	}
 
 	.guide-toolbar {
-		align-items: flex-start;
+		align-items: center;
 	}
 
 	.guide-folder-options {
@@ -3429,7 +3407,7 @@ body:has(.admin-notes) {
 	}
 
 	.guide-toolbar > .btn-accent {
-		align-self: flex-start;
+		align-self: center;
 	}
 
 	.guide-folder-options {
