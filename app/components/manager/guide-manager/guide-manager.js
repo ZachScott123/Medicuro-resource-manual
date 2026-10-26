@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiDownload, FiBookOpen, FiEdit2, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX, FiLock } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { FiAlertCircle, FiDownload, FiBookOpen, FiEdit2, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 
 //canManage = editors, canUpload = staff.
 
@@ -55,26 +54,37 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [folderPermissionError, setFolderPermissionError] = useState("");
   const [isSavingFolderPermission, setIsSavingFolderPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [selectedGuide, setSelectedGuide] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
+    let isActive = true;
+    setIsLoading(true);
+    setLoadError("");
+
     fetch("/api/guides")
       .then((response) => {
         if (!response.ok) throw new Error("Unable to load guides.");
         return response.json();
       })
       .then((records) => {
+        if (!isActive) return;
         setGuides(records);
         setIsLoading(false);
       })
       .catch(() => {
-        setError("Access denied. Please login with an authorized account to access Guides and Documents.");
+        if (!isActive) return;
+        setLoadError("We couldn’t load guides right now. Check your connection and try again.");
         setIsLoading(false);
       });
-    }, [initialGuides]);
+
+    return () => {
+      isActive = false;
+    };
+    }, [initialGuides, loadAttempt]);
 
   useEffect(() => {
       if (!selectedGuide) return undefined;
@@ -90,6 +100,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const folders = [...new Set(guides.map((guide) => guide.folder || "Uncategorized"))]
     .sort((first, second) => first.localeCompare(second));
   if (folders.length === 0) folders.push("Uncategorized");
+  const populatedFolders = folders.filter((folder) =>
+    guides.some((guide) => (guide.folder || "Uncategorized") === folder)
+  );
   const query = searchQuery.trim().toLowerCase();
   const filteredGuides = guides.filter((guide) => {
     const matchesFolder = selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
@@ -386,60 +399,82 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   }
 
   return (
-    <section className="guide-library" aria-labelledby="guide-library-title">
+    <section className="guide-library" aria-label="Care delivery guides">
 
-      {error && (
-        <div className="manager-login-action" role="alert">
-          <button className="btn-accent-continue inline-flex items-center gap-2" onClick={() => router.push("/login")} type="button">
-            <FiLock aria-hidden="true" />
-            <span>Please Login to Continue</span>
-          </button>
-        </div>
-			)}
+      {error && <div className="guide-alert" role="alert"><FiAlertCircle aria-hidden="true" />{error}</div>}
 
       {isLoading ? (
-        <span/>
+        <div className="guide-loading" role="status" aria-live="polite">
+          <span className="guide-loading-mark" aria-hidden="true"><FiFileText /></span>
+          <span>Loading your guides…</span>
+        </div>
+      ) : loadError ? (
+        <div className="guide-empty-state guide-error-state" role="alert">
+          <FiAlertCircle aria-hidden="true" />
+          <h3>We couldn’t load the library</h3>
+          <p>{loadError}</p>
+          <button type="button" className="btn-accent" onClick={() => setLoadAttempt((attempt) => attempt + 1)}>
+            Try again
+          </button>
+        </div>
       ) : (
         <>
           <div className="directory-toolbar guide-toolbar">
             <div>
               <div className="eyebrow">Reference library</div>
-              <h2 id="guide-library-title">Guides and Documents</h2>
+              <h2 id="guide-library-title">Find a care guide</h2>
+              <p className="guide-toolbar-description">Search by name or topic, or browse all folders to find the resource you need.</p>
             </div>
             {canUpload && (
               <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
                 <FiUpload aria-hidden="true" />
-                <span>Upload Guide</span>
+                <span>Add a guide</span>
               </button>
             )}
           </div>
 
           <div className="guide-library-controls">
-            <div className="guide-search">
+            <label className="guide-search">
               <FiSearch aria-hidden="true" />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search guides..."
-                aria-label="Search guides"
+                placeholder="Try “onboarding” or “prescriptions”"
+                aria-label="Search guides by name, description, or file"
               />
-            </div>
-            <label className="guide-folder-filter">
-              <FiFolder aria-hidden="true" />
-              <span className="sr-only">Filter by folder</span>
-              <select
-                value={selectedFolder}
-                onChange={(event) => setSelectedFolder(event.target.value)}
-                aria-label="Filter guides by folder"
-              >
-                <option value={allFolders}>Any</option>
-                {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
-              </select>
             </label>
           </div>
+
+          <nav className="guide-folder-navigation" aria-label="Browse guides by folder">
+            <span className="guide-folder-navigation-label">Browse folders</span>
+            <div className="guide-folder-options">
+              <button
+                type="button"
+                className="guide-folder-option"
+                aria-pressed={selectedFolder === allFolders}
+                onClick={() => setSelectedFolder(allFolders)}
+              >
+                All folders <span>{guides.length}</span>
+              </button>
+              {populatedFolders.map((folder) => {
+                const folderCount = guides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
+                return (
+                  <button
+                    type="button"
+                    className="guide-folder-option"
+                    aria-pressed={selectedFolder === folder}
+                    key={folder}
+                    onClick={() => setSelectedFolder(folder)}
+                  >
+                    {folder} <span>{folderCount}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
           {canUpload && selectedFolder !== allFolders && (
-            <div className="guide-folder-permission">
+            <div className="guide-folder-permission guide-folder-access">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -454,62 +489,63 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             </div>
           )}
 
+          <div className="guide-results-summary" aria-live="polite">
+            <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "guide" : "guides"}
+            {(searchQuery || selectedFolder !== allFolders) && <span> matching your selection</span>}
+          </div>
+
           {filteredGuides.length > 0 ? (
             <div className="guide-grid">
               {filteredGuides.map((guide) => (
                 <article className="guide-card" key={guide.id}>
-                  
+                  <div className="guide-card-heading">
                     {guide.type === "video" ? (
-                      <div className="guide-card-icon-video">
+                      <div className="guide-card-icon-video" aria-hidden="true">
                         <FiTv aria-hidden="true" />
                       </div>
                     ) : (
-                      <div className="guide-card-icon-file">
+                      <div className="guide-card-icon-file" aria-hidden="true">
                         <FiFileText aria-hidden="true" />
                       </div>
                     )}
+                    <span className={`guide-type-badge${guide.type === "video" ? " guide-type-badge-video" : ""}`}>
+                      {guide.type === "video" ? "Video" : "PDF guide"}
+                    </span>
+                  </div>
                   <div className="guide-card-copy">
                     <h3>{guide.title}</h3>
-                    <p>{guide.description}</p>
-                    <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
-                    {guide.type === "video" ? (
-                      <button
-                        type="button"
-                        className="guide-video-title-link"
-                        onClick={() => openGuidePreview(guide)}
-                        aria-label={`Watch ${guide.title}`}
-                      >
-                        {guide.title}
-                      </button>
-                    ) : (
-                      <small>{guide.fileName}</small>
-                    )}
+                    {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
                   </div>
-                  <div className="guide-card-actions">
+                  <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
+                  {guide.type === "file" && guide.fileName && (
+                    <small className="guide-card-filename" title={guide.fileName}>{guide.fileName}</small>
+                  )}
+                  <div className="guide-card-footer">
                     {guide.type === "video" ? (
                       <button
                         type="button"
                         onClick={() => openGuidePreview(guide)}
-                        className="btn-accent2"
+                        className="guide-open-button"
                         aria-label={`Watch ${guide.title}`}
-                        title={`Watch ${guide.title}`}
                       >
                         <FiPlay aria-hidden="true" />
+                        <span>Watch video</span>
                       </button>
                     ) : (
-                      <button type="button" onClick={() => openGuidePreview(guide)} className="btn-accent2" aria-label={`Preview ${guide.title}`} title={`Preview ${guide.title}`}>
+                      <button type="button" onClick={() => openGuidePreview(guide)} className="guide-open-button" aria-label={`Open ${guide.title}`}>
                         <FiBookOpen aria-hidden="true" />
+                        <span>Open guide</span>
                       </button>
                     )}
                     {canManage && (
-                      <>
-                        <button type="button" onClick={() => openEditForm(guide)} className="btn-accent2" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
+                      <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
+                        <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
                           <FiEdit2 aria-hidden="true" />
                         </button>
-                        <button type="button" onClick={() => requestDelete(guide)} className="guide-delete-button" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                        <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                           <FiTrash2 aria-hidden="true" />
                         </button>
-                      </>
+                      </div>
                     )}
                   </div>
                 </article>
@@ -518,14 +554,28 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           ) : guides.length > 0 ? (
             <div className="guide-empty-state">
               <FiSearch aria-hidden="true" />
-              <p>No guides match the selected folder or search.</p>
+              <h3>No guides found</h3>
+              <p>Try another search term or choose a different folder.</p>
+              <button type="button" className="guide-clear-filters" onClick={() => {
+                setSearchQuery("");
+                setSelectedFolder(allFolders);
+              }}>
+                Clear search and folder
+              </button>
             </div>
           ) : (
             <div className="guide-empty-state">
               <FiFileText aria-hidden="true" />
+              <h3>{canUpload ? "Your guide library is ready" : "No guides are available yet"}</h3>
               <p>{canUpload
-                ? "No guides have been added yet. Upload a PDF or add a YouTube video to create your first folder."
-                : "There are no partner-viewable guides yet."}</p>
+                ? "Add a PDF or video to make your team’s first resource easy to find."
+                : "There are no guides shared with your account right now. Contact your clinic administrator if you need access."}</p>
+              {canUpload && (
+                <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2">
+                  <FiUpload aria-hidden="true" />
+                  <span>Add the first guide</span>
+                </button>
+              )}
             </div>
           )}
         </>

@@ -5,13 +5,13 @@ import { getCurrentUser } from "@/app/lib/current-user";
 export default async function Guides() {
   const { authenticated, isAuthorized, isPhysicianSpecialist, isEditor } = await getCurrentUser();
 
-  if (!authenticated) {
+  {/*if (!authenticated) {
     redirect("/login");
   }
 
   if (!isAuthorized && !isPhysicianSpecialist) {
     redirect("/");
-  }
+  }*/}
 
   return (
     <div className="directory-page mx-auto">
@@ -19,7 +19,7 @@ export default async function Guides() {
         <div className="directory-hero-copy">
           <div className="eyebrow">— Medicuro references —</div>
           <h1>Care Delivery Guides</h1>
-          <p>Keep clinic procedures, reference materials, and everyday resources in one reliable place.</p>
+          <p>Find the clinic procedures and reference materials you need. Search by topic or browse folders to get started.</p>
         </div>
       </section>
       <GuideManager

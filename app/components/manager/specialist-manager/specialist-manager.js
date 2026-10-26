@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import SpecialistCard from "@/app/components/card/specialist-card/specialist-card";
 import { compressImage } from "@/app/lib/compress-image";
 import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
+import DirectoryLoadError from "@/app/components/directory-load-error";
 
 const emptySpecialist = {
 	name: "",
@@ -38,6 +39,8 @@ export default function SpecialistManager({
 	const [touchedFields, setTouchedFields] = useState({});
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
+	const [loadError, setLoadError] = useState(false);
+	const [loadAttempt, setLoadAttempt] = useState(0);
 	const [deleteTarget, setDeleteTarget] = useState(null);
 	const router = useRouter();
 
@@ -55,20 +58,35 @@ export default function SpecialistManager({
 	const filteredSpecialists = [...specialists].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
 
 	useEffect(() => {
+		let isActive = true;
+		setIsLoading(true);
+		setLoadError(false);
+
 		fetch("/api/specialist")
 			.then((response) => {
 				if (!response.ok) throw new Error("Unable to load specialist records.");
 				return response.json();
 			})
 			.then((records) => {
+				if (!isActive) return;
+				if (!Array.isArray(records) || records.length === 0) {
+					setLoadError(true);
+					setIsLoading(false);
+					return;
+				}
 				setSpecialists(records);
 				setIsLoading(false);
 			})
 			.catch(() => {
-				setError("Access denied. Please login with an authorized account to access Specialist Records.");
+				if (!isActive) return;
+				setLoadError(true);
 				setIsLoading(false);
 			});
-	}, [initialSpecialists]);
+
+		return () => {
+			isActive = false;
+		};
+	}, [initialSpecialists, loadAttempt]);
 
 	function openCreateForm() {
 		setEditingId(null);
@@ -222,6 +240,8 @@ export default function SpecialistManager({
 
 			{isLoading ? (
 				<span/>
+			) : loadError ? (
+				<DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
 			) : (
 				<>
 					{isEditor && showManagementControls && !error && (
@@ -241,7 +261,7 @@ export default function SpecialistManager({
 							{filteredSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
 						</div>
 					) : (
-						!error && <p>No specialist partners were found in the MongoDB specialist-partners collection.</p>
+						<DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
 					)}
 				</>
 			)}

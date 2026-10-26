@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import StaffCard from "@/app/components/card/staff-card/staff-card";
 import { compressImage } from "@/app/lib/compress-image";
 import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
+import DirectoryLoadError from "@/app/components/directory-load-error";
 
 const emptyStaffMember = {
   name: "",
@@ -38,6 +39,8 @@ export default function StaffManager({
   const [touchedFields, setTouchedFields] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const router = useRouter();
 
@@ -52,20 +55,35 @@ export default function StaffManager({
   const filteredStaff = [...staff].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
 
   useEffect(() => {
+    let isActive = true;
+    setIsLoading(true);
+    setLoadError(false);
+
     fetch("/api/staff")
       .then((response) => {
         if (!response.ok) throw new Error("Unable to load staff records.");
         return response.json();
       })
       .then((records) => {
+        if (!isActive) return;
+        if (!Array.isArray(records) || records.length === 0) {
+          setLoadError(true);
+          setIsLoading(false);
+          return;
+        }
         setStaff(records);
         setIsLoading(false);
       })
       .catch(() => {
-        setError("Access denied. Please login with an authorized account to access Staff Records.");
+        if (!isActive) return;
+        setLoadError(true);
         setIsLoading(false);
       });
-  }, [initialStaff]);
+
+    return () => {
+      isActive = false;
+    };
+  }, [initialStaff, loadAttempt]);
 
   function openCreateForm() {
     setEditingId(null);
@@ -223,6 +241,8 @@ export default function StaffManager({
 
       {isLoading ? (
         <span/>
+      ) : loadError ? (
+        <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
       ) : (
         <>
           {isEditor && showManagementControls && !error && (
@@ -244,7 +264,7 @@ export default function StaffManager({
               ))}
             </div>
           ) : (
-            !error && <p>No staff profiles were found in the MongoDB staff collection.</p>
+            <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
           )}
         </>
       )}

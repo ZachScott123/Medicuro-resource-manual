@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import PhysicianCard from "@/app/components/card/physician-card/physician-card";
 import { compressImage } from "@/app/lib/compress-image";
 import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
+import DirectoryLoadError from "@/app/components/directory-load-error";
 
 const emptyPhysician = {
   name: "",
@@ -38,6 +39,8 @@ export default function PhysicianManager({
   const [touchedFields, setTouchedFields] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const router = useRouter();
 
@@ -55,20 +58,35 @@ export default function PhysicianManager({
   const filteredPhysicians = [...physicians].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
 
   useEffect(() => {
+    let isActive = true;
+    setIsLoading(true);
+    setLoadError(false);
+
     fetch("/api/physician")
       .then((response) => {
         if (!response.ok) throw new Error("Unable to load physician records.");
         return response.json();
       })
       .then((records) => {
+        if (!isActive) return;
+        if (!Array.isArray(records) || records.length === 0) {
+          setLoadError(true);
+          setIsLoading(false);
+          return;
+        }
         setPhysicians(records);
         setIsLoading(false);
       })
       .catch(() => {
-        setError("Access denied. Please login with an authorized account to access Physician Records.");
+        if (!isActive) return;
+        setLoadError(true);
         setIsLoading(false);
       });
-  }, [initialPhysicians]);
+
+    return () => {
+      isActive = false;
+    };
+  }, [initialPhysicians, loadAttempt]);
 
   function openCreateForm() {
     setEditingId(null);
@@ -223,6 +241,8 @@ export default function PhysicianManager({
 
       {isLoading ? (
         <span/>
+      ) : loadError ? (
+        <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
       ) : (
         <>
           {isEditor && showManagementControls && !error && (
@@ -244,7 +264,7 @@ export default function PhysicianManager({
               ))}
             </div>
           ) : (
-            !error && <p>No physician partners were found in the MongoDB physician-partners collection.</p>
+            <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
           )}
         </>
       )}
