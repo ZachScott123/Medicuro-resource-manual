@@ -86,9 +86,9 @@ export default async function ProfilePage() {
 
   const profile = await loadProfile(user.email);
 
-  const allowedProfileTypes = user.isPhysicianSpecialist
-    ? ["Physician", "Specialist"]
-    : ["Staff", "Physician", "Specialist"];
+  const allowedProfileTypes = user.isAuthorized
+    ? ["Staff"]
+    : ["Physician", "Specialist"];
 
   return (
     <main className="profile-page">
@@ -108,4 +108,3 @@ export default async function ProfilePage() {
     </main>
   );
 }
-

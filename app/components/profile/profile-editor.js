@@ -39,13 +39,11 @@ export default function ProfileEditor({ initialProfile, accountEmail, allowedPro
   const selectableProfileTypes = ALL_PROFILE_TYPES.filter((type) =>
     allowedProfileTypes.includes(type)
   );
-  const isRoleLocked = selectableProfileTypes.length <= 1;
 
   const initialProfileType = selectableProfileTypes.includes(initialProfile?.profileType)
     ? initialProfile.profileType
-    : isRoleLocked
-      ? selectableProfileTypes[0]
-      : initialProfile?.profileType || "";
+    : "";
+  const isRoleLocked = selectableProfileTypes.length === 1 && Boolean(initialProfileType);
 
   const [formData, setFormData] = useState({
     ...emptyProfile,
@@ -127,7 +125,7 @@ export default function ProfileEditor({ initialProfile, accountEmail, allowedPro
       .map(({ name }) => name)
       .filter(isRequiredFieldEmpty);
 
-    if (!formData.profileType) {
+    if (!selectableProfileTypes.includes(formData.profileType)) {
       invalidFields.push("profileType");
     }
 
@@ -137,6 +135,9 @@ export default function ProfileEditor({ initialProfile, accountEmail, allowedPro
         ...Object.fromEntries(invalidFields.map((field) => [field, true]))
       }));
       setError("Please complete the highlighted fields before saving.");
+      if (invalidFields.includes("profileType")) {
+        document.querySelector('[name="profileType"]')?.focus();
+      }
       return;
     }
 
@@ -291,7 +292,7 @@ export default function ProfileEditor({ initialProfile, accountEmail, allowedPro
               <label className="profile-form-field">
                 <span>
                   Role
-                  {touchedFields.profileType && !formData.profileType && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                  {touchedFields.profileType && !selectableProfileTypes.includes(formData.profileType) && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
                 </span>
                 <select
                   name="profileType"
@@ -299,17 +300,34 @@ export default function ProfileEditor({ initialProfile, accountEmail, allowedPro
                   onChange={handleProfileTypeChange}
                   onBlur={markFieldAsTouched}
                   disabled={isRoleLocked}
+                  required
+                  aria-invalid={touchedFields.profileType && !selectableProfileTypes.includes(formData.profileType)}
+                  aria-describedby="profile-type-hint"
                   className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900 disabled:cursor-not-allowed disabled:bg-teal-50/60 disabled:text-neutral-500">
 
+                  <option value="">
+                    {selectableProfileTypes.length === 1
+                      ? "Select Staff to continue"
+                      : selectableProfileTypes.includes("Staff")
+                        ? "Select a profile role"
+                        : "Select Physician or Specialist"}
+                  </option>
                   {selectableProfileTypes.map((type) => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
-                <span className="profile-form-hint">
+                <span className="profile-form-hint" id="profile-type-hint">
                   {isRoleLocked
-                    ? "Your account role is fixed to this option."
-                    : "This determines which directory your profile is published to."}
+                    ? "Your account is set up for the Staff directory."
+                    : selectableProfileTypes.length === 1
+                      ? "Select Staff to publish your profile."
+                      : selectableProfileTypes.includes("Staff")
+                        ? "Select the role that matches your Medicuro account."
+                        : "Choose Physician or Specialist to publish your profile."}
                 </span>
+                {touchedFields.profileType && !selectableProfileTypes.includes(formData.profileType) && (
+                  <span className="text-sm text-red-600">Select a role before saving your profile.</span>
+                )}
               </label>
 
               <label className="profile-form-field">

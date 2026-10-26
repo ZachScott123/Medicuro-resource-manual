@@ -114,7 +114,15 @@ export async function PUT(request) {
 
   const email = user.email?.toLowerCase();
 
-  if (!(await isAuthorizedEmail(email)) && !["Physician", "Specialist"].includes(payload.profileType)) {
+  const isStaffAccount = await isAuthorizedEmail(email);
+  if (isStaffAccount && payload?.profileType !== "Staff") {
+    return Response.json(
+      { e: "Staff accounts may only publish a Staff profile." },
+      { status: 403 }
+    );
+  }
+
+  if (!isStaffAccount && !["Physician", "Specialist"].includes(payload?.profileType)) {
     return Response.json(
       { e: "Your account may only publish a Physician or Specialist profile." },
       { status: 403 }
