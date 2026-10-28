@@ -775,14 +775,16 @@ h3 {
 }
 
 .guide-preview-toolbar-actions .btn-accent2 {
-	align-items: center;
-	display: inline-flex;
-	gap: 0.45rem;
-	justify-content: center;
-	padding: 0.7rem;
-	border: 1.5px solid #cdd9d7;
-	background: transparent;
-	color: var(--ink);
+    color: var(--ink);
+    background: 0 0;
+    border: 1.5px solid transparent;
+    justify-content: center;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem;
+    display: inline-flex;
+    border-radius: .35rem;
+    font-size: 1.15rem;
 }
 
 .guide-preview-toolbar-actions .btn-accent2:hover {
