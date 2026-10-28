@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiCheck, FiEdit3, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import SpecialistCard from "@/app/components/card/specialist-card/specialist-card";
 import { compressImage } from "@/app/lib/compress-image";
@@ -251,7 +251,7 @@ export default function SpecialistManager({
 									<FiUpload aria-hidden="true" />
 								</button>
 								<button type="button" onClick={() => setEditMode((current) => !current)} className="btn-accent2 inline-flex items-center gap-2" aria-pressed={editMode} aria-label={editMode ? "Done editing specialists" : "Edit specialists"} title={editMode ? "Done editing specialists" : "Edit specialists"}>
-									{editMode ? <FiCheck aria-hidden="true" /> : <FiEdit3 aria-hidden="true" />}
+									{editMode ? <FiCheck aria-hidden="true" /> : <FiEdit aria-hidden="true" />}
 								</button>
 							</div>
 						</div>

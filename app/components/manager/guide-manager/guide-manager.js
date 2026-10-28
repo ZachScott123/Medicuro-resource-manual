@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiAlertCircle, FiDownload, FiBookOpen, FiEdit2, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 
 //canManage = editors, canUpload = staff.
 
@@ -532,7 +532,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     {canManage && (
                       <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
                         <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
-                          <FiEdit2 aria-hidden="true" />
+                          <FiEdit aria-hidden="true" />
                         </button>
                         <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                           <FiTrash2 aria-hidden="true" />
@@ -586,6 +586,28 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           <div className="guide-video-dialog">
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 id="guide-preview-title" className="text-xl font-bold">{selectedGuide.title}</h2>
+              {selectedGuide.type === "file" && (
+                <div className="guide-preview-toolbar-actions">
+                  <a
+                    href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-accent2"
+                    aria-label={`Open ${selectedGuide.title} PDF in a new tab`}
+                    title="Open PDF in a new tab"
+                  >
+                    <FiExternalLink aria-hidden="true" />
+                  </a>
+                  <a
+                    href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}?download=1`}
+                    className="btn-accent2"
+                    aria-label={`Download ${selectedGuide.title}`}
+                    title={`Download ${selectedGuide.title}`}
+                  >
+                    <FiDownload aria-hidden="true" />
+                  </a>
+                </div>
+              )}
               <button type="button" onClick={closeGuidePreview} className="admin-menu-close" aria-label="Close guide preview">
                 <FiX size={22} aria-hidden="true" />
               </button>
@@ -612,28 +634,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <div className="guide-preview-toolbar-label">
                   {selectedGuide.checklist?.length > 0 && <h3 id="guide-checklist-title">Checklist</h3>}
                 </div>
-                {selectedGuide.type === "file" && (
-                  <div className="guide-preview-toolbar-actions">
-                    <a
-                      href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-accent2"
-                      aria-label={`Open ${selectedGuide.title} PDF in a new tab`}
-                      title="Open PDF in a new tab"
-                    >
-                      <FiExternalLink aria-hidden="true" />
-                    </a>
-                    <a
-                      href={`/api/guides/file/${encodeURIComponent(selectedGuide.id)}?download=1`}
-                      className="btn-accent2"
-                      aria-label={`Download ${selectedGuide.title}`}
-                      title={`Download ${selectedGuide.title}`}
-                    >
-                      <FiDownload aria-hidden="true" />
-                    </a>
-                  </div>
-                )}
               </div>
             )}
             {selectedGuide.checklist?.length > 0 && (
