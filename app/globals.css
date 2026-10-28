@@ -315,8 +315,8 @@ h3 {
 
 .guide-hero {
 	background:
-		linear-gradient(105deg, #2b7096f2 0%, #2c86b0d9 48%, #10cdbaaa 100%),
-		url("/guide-hero-photo.png") center / cover no-repeat;
+		linear-gradient(220deg, #1adbd2cf 0%, #004ec4 100%),
+		url("/medicuro-background-plus-1") 50% / 160% no-repeat;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -539,9 +539,9 @@ h3 {
 	color: var(--teal-dark);
 	display: flex;
 	flex: 0 0 auto;
-	height: 2.8rem;
+	height: 2.4rem;
 	justify-content: center;
-	width: 2.8rem;
+	width: 2.4rem;
 }
 
 .guide-card-icon-video {
@@ -677,8 +677,8 @@ h3 {
 }
 
 .guide-management-button:hover {
-	background: #e7eeee;
-	color: var(--ink);
+	background: #ebf7ff;
+	color: #005fb3;
 }
 
 .guide-management-delete:hover {

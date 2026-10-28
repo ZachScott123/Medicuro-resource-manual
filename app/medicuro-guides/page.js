@@ -5,13 +5,13 @@ import { getCurrentUser } from "@/app/lib/current-user";
 export default async function Guides() {
   const { authenticated, isAuthorized, isPhysicianSpecialist, isEditor } = await getCurrentUser();
 
-  if (!authenticated) {
+  {/*if (!authenticated) {
     redirect("/login");
   }
 
   if (!isAuthorized && !isPhysicianSpecialist) {
     redirect("/");
-  }
+  }*/}
 
   return (
     <div className="directory-page mx-auto">
