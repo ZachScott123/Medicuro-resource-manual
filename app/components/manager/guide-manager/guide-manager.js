@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiAlertCircle, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 
 //canManage = editors, canUpload = staff.
 
@@ -41,7 +41,7 @@ function getYouTubeVideoId(value) {
 export default function GuideManager({ initialGuides = [], canManage = true, canUpload = canManage }) {
   const [guides, setGuides] = useState(initialGuides);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState(allFolders);
+  const [selectedFolder, setSelectedFolder] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGuide, setEditingGuide] = useState(null);
   const [formData, setFormData] = useState(emptyGuide);
@@ -105,18 +105,19 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   );
   const query = searchQuery.trim().toLowerCase();
   const filteredGuides = guides.filter((guide) => {
-    const matchesFolder = selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
+    const matchesFolder = selectedFolder === null || selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
     const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.folder]
       .some((field) => field?.toLowerCase().includes(query));
     return matchesFolder && matchesQuery;
   });
+  const isFolderMenu = selectedFolder === null && !query && guides.length > 0;
 
   function isFolderPartnerViewable(folder) {
     const folderGuides = guides.filter((guide) => (guide.folder || "Uncategorized") === folder);
     return folderGuides.length > 0 && folderGuides.every((guide) => guide.partnerViewable === true);
   }
 
-  const selectedFolderPartnerViewable = selectedFolder !== allFolders && isFolderPartnerViewable(selectedFolder);
+  const selectedFolderPartnerViewable = selectedFolder !== null && selectedFolder !== allFolders && isFolderPartnerViewable(selectedFolder);
 
   function openForm() {
     const folder = folders[0] || "Uncategorized";
@@ -390,6 +391,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     const remainingGuides = guides.filter((item) => item.id !== deleteTarget.id);
     setGuides(remainingGuides);
     if (
+      selectedFolder &&
       selectedFolder !== allFolders &&
       !(remainingGuides.some((guide) => (guide.folder || "Uncategorized") === selectedFolder))
     ) {
@@ -438,34 +440,60 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             )}
           </div>
 
-          <nav className="guide-folder-navigation" aria-label="Browse guides by folder">
-            <span className="guide-folder-navigation-label">Browse folders</span>
-            <div className="guide-folder-options">
-              <button
-                type="button"
-                className="guide-folder-option"
-                aria-pressed={selectedFolder === allFolders}
-                onClick={() => setSelectedFolder(allFolders)}
-              >
-                All folders <span>{guides.length}</span>
-              </button>
-              {populatedFolders.map((folder) => {
-                const folderCount = guides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
-                return (
-                  <button
-                    type="button"
-                    className="guide-folder-option"
-                    aria-pressed={selectedFolder === folder}
-                    key={folder}
-                    onClick={() => setSelectedFolder(folder)}
-                  >
-                    {folder} <span>{folderCount}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </nav>
-          {canUpload && selectedFolder !== allFolders && (
+          {isFolderMenu ? (
+            <nav className="guide-folder-navigation" aria-label="Browse guides by folder">
+              <span className="guide-folder-navigation-label">Browse folders</span>
+              <div className="guide-folder-menu">
+                <button
+                  type="button"
+                  className="guide-folder-card guide-view-all-card"
+                  onClick={() => setSelectedFolder(allFolders)}
+                >
+                  <span className="guide-folder-card-icon"><FiFolder aria-hidden="true" /></span>
+                  <span className="guide-folder-card-copy">
+                    <strong>View all</strong>
+                    <small>{guides.length} {guides.length === 1 ? "item" : "items"}</small>
+                  </span>
+                </button>
+                {populatedFolders.map((folder) => {
+                  const folderCount = guides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
+                  return (
+                    <button
+                      type="button"
+                      className="guide-folder-card"
+                      key={folder}
+                      onClick={() => setSelectedFolder(folder)}
+                    >
+                      <span className="guide-folder-card-icon"><FiFolder aria-hidden="true" /></span>
+                      <span className="guide-folder-card-copy">
+                        <strong>{folder}</strong>
+                        <small>{folderCount} {folderCount === 1 ? "item" : "items"}</small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+          ) : (
+            <>
+              {(selectedFolder !== null || query) && <div className="guide-folder-content-header">
+                <button
+                  type="button"
+                  className="guide-back-button"
+                  onClick={() => {
+                    setSelectedFolder(null);
+                    setSearchQuery("");
+                  }}
+                  aria-label="Back to guide folders"
+                >
+                  <FiArrowLeft aria-hidden="true" />
+                  <span>Back</span>
+                </button>
+                {selectedFolder !== null && selectedFolder !== allFolders && (
+                  <h2 className="guide-folder-title">{selectedFolder}</h2>
+                )}
+              </div>}
+          {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
             <div className="guide-folder-permission guide-folder-access">
               <label className="flex items-center gap-2">
                 <input
@@ -481,10 +509,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             </div>
           )}
 
-          <div className="guide-results-summary" aria-live="polite">
+          {(searchQuery || selectedFolder === allFolders) && <div className="guide-results-summary" aria-live="polite">
             <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "guide" : "guides"}
-            {(searchQuery || selectedFolder !== allFolders) && <span> matching your selection</span>}
-          </div>
+            {searchQuery && <span> matching your search</span>}
+          </div>}
 
           {filteredGuides.length > 0 ? (
             <div className="guide-grid">
@@ -547,12 +575,12 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             <div className="guide-empty-state">
               <FiSearch aria-hidden="true" />
               <h3>No guides found</h3>
-              <p>Try another search term or choose a different folder.</p>
+              <p>Try another search term or return to the folder list.</p>
               <button type="button" className="guide-clear-filters" onClick={() => {
                 setSearchQuery("");
-                setSelectedFolder(allFolders);
+                setSelectedFolder(null);
               }}>
-                Clear search and folder
+                Back to folders
               </button>
             </div>
           ) : (
@@ -569,6 +597,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 </button>
               )}
             </div>
+          )}
+            </>
           )}
         </>
       )}
