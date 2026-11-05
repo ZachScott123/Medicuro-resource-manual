@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 
 //canManage = editors, canUpload = staff.
 
@@ -449,7 +449,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   className="guide-folder-card guide-view-all-card"
                   onClick={() => setSelectedFolder(allFolders)}
                 >
-                  <span className="guide-folder-card-icon"><FiFolder aria-hidden="true" /></span>
+                  <span className="guide-folder-card-icon"><FiGrid aria-hidden="true" /></span>
                   <span className="guide-folder-card-copy">
                     <strong>View all</strong>
                     <small>{guides.length} {guides.length === 1 ? "item" : "items"}</small>
@@ -489,9 +489,21 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   <FiArrowLeft aria-hidden="true" />
                   <span>Back</span>
                 </button>
-                {selectedFolder !== null && selectedFolder !== allFolders && (
-                  <h2 className="guide-folder-title">{selectedFolder}</h2>
-                )}
+                <div className="guide-folder-heading">
+                  {selectedFolder !== null && (
+                    <span className="guide-folder-heading-icon" aria-hidden="true">
+                      {selectedFolder === allFolders ? <FiGrid /> : <FiFolder />}
+                    </span>
+                  )}
+                  <div>
+                    <span className="guide-folder-heading-label">
+                      {selectedFolder === allFolders ? "Library" : query ? "Search results" : "Folder"}
+                    </span>
+                    <h2 className="guide-folder-title">
+                      {selectedFolder === allFolders ? "All guides" : selectedFolder || "Search results"}
+                    </h2>
+                  </div>
+                </div>
               </div>}
           {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
             <div className="guide-folder-permission guide-folder-access">
@@ -528,9 +540,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                         <FiFileText aria-hidden="true" />
                       </div>
                     )}
-                    <span className={`guide-type-badge${guide.type === "video" ? " guide-type-badge-video" : ""}`}>
-                      {guide.type === "video" ? "Video" : "PDF guide"}
-                    </span>
                   </div>
                   <div className="guide-card-copy">
                     <h3>{guide.title}</h3>
@@ -613,8 +622,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             if (event.target === event.currentTarget) closeGuidePreview();
           }}
         >
-          <div className="guide-video-dialog">
-            <div className="mb-4 flex items-center justify-between gap-4">
+          <div className={`guide-video-dialog${selectedGuide.type === "file" ? " guide-pdf-dialog" : ""}`}>
+            <div className={`guide-preview-header mb-4 flex items-center justify-between gap-4${selectedGuide.type === "file" ? " guide-pdf-preview-header" : ""}`}>
               <h2 id="guide-preview-title" className="text-xl font-bold">{selectedGuide.title}</h2>
               {selectedGuide.type === "file" && (
                 <div className="guide-preview-toolbar-actions">
@@ -659,7 +668,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 title={`${selectedGuide.title} PDF`}
               />
             )}
-            {(selectedGuide.type === "file" || selectedGuide.checklist?.length > 0) && (
+            {selectedGuide.checklist?.length > 0 && (
               <div className="guide-preview-toolbar">
                 <div className="guide-preview-toolbar-label">
                   {selectedGuide.checklist?.length > 0 && <h3 id="guide-checklist-title">Checklist</h3>}
