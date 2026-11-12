@@ -3393,16 +3393,16 @@ body:has(.admin-notes) {
 	}
 
 	.login-panel-behind::before {
-		background: linear-gradient(180deg, #57b2dc, #2173c6 50%);
-		clip-path: polygon(0 0, 100% 0, 100% 40%, 0 45%);
+		background: linear-gradient(#74cbf4, #0067d0);
+		clip-path: polygon(0 43%, 100% 50%, 100% 100%, 0 100%);
 		content: "";
 		inset: 0;
 		position: absolute;
-		z-index: 0;
+		z-index: 2;
 	}
 
 	.login-panel-behind::after {
-		background: url("/login-phone.png") center bottom / auto 60% no-repeat;
+		background: url("/login-phone.png") center top / auto 60% no-repeat;
 		content: "";
 		filter: blur(2px);
 		inset: 0;
@@ -3424,7 +3424,7 @@ body:has(.admin-notes) {
 
 	.login-panel {
 		margin: 0 auto;
-		z-index: 2;
+		z-index: 3;
 	}
 }
 
