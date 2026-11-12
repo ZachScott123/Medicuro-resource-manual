@@ -7,6 +7,7 @@ import SpecialistCard from "@/app/components/card/specialist-card/specialist-car
 import { compressImage } from "@/app/lib/compress-image";
 import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
 import DirectoryLoadError from "@/app/components/directory-load-error";
+import PageControls, { ITEMS_PER_PAGE } from "@/app/components/page-controls";
 
 const emptySpecialist = {
 	name: "",
@@ -41,6 +42,7 @@ export default function SpecialistManager({
 	const [isLoading, setIsLoading] = useState(true);
 	const [loadError, setLoadError] = useState(false);
 	const [loadAttempt, setLoadAttempt] = useState(0);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [deleteTarget, setDeleteTarget] = useState(null);
 	const router = useRouter();
 
@@ -56,6 +58,11 @@ export default function SpecialistManager({
 	}
 
 	const filteredSpecialists = [...specialists].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
+	const pageCount = Math.max(1, Math.ceil(filteredSpecialists.length / ITEMS_PER_PAGE));
+	const visibleSpecialists = filteredSpecialists.slice(
+		(Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
+		Math.min(currentPage, pageCount) * ITEMS_PER_PAGE
+	);
 
 	useEffect(() => {
 		let isActive = true;
@@ -257,9 +264,15 @@ export default function SpecialistManager({
 						</div>
 					)}
 					{specialists.length > 0 ? (
-						<div className="profile-grid">
-							{filteredSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
-						</div>
+						<>
+							<div className="profile-grid">
+								{visibleSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
+							</div>
+						<PageControls
+							itemCount={filteredSpecialists.length}
+							page={Math.min(currentPage, pageCount)}
+							onPageChange={setCurrentPage}/>
+						</>
 					) : (
 						<DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
 					)}

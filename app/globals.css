@@ -465,7 +465,6 @@ h3 {
 .guide-folder-heading-icon {
 	align-items: center;
 	background: #f5f7f7;
-	border: 1px solid #e8eded;
 	border-radius: 0.7rem;
 	color: #52666d;
 	display: inline-flex;
@@ -480,7 +479,7 @@ h3 {
 }
 
 .guide-view-all-card .guide-folder-card-icon {
-	background: #ffffff;
+	background: #edf3f3;
 	color: var(--ink);
 }
 
@@ -770,7 +769,6 @@ h3 {
 .guide-open-button {
 	align-items: center;
 	background: #f4f7f7;
-	border: 1.5px solid #e9efef;
 	border-radius: 0.7rem;
 	color: #3f5159;
 	cursor: pointer;
@@ -793,7 +791,6 @@ h3 {
 .guide-management-button {
 	align-items: center;
 	background: #f4f7f7;
-	border: 1px solid #e9efef;
 	border-radius: 0.65rem;
 	color: #3f5159;
 	cursor: pointer;
@@ -3838,4 +3835,45 @@ body:has(.admin-notes) {
 	.admin-site-nav .profile-icon {
 		border: 2px solid #3679ff;
 	}
+}
+
+.page-controls {
+	align-items: center;
+	color: var(--muted-ink);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-content: space-between;
+	margin-top: 1.5rem;
+}
+
+.page-actions {
+	align-items: center;
+	display: flex;
+	gap: 0.75rem;
+}
+
+.page-actions button {
+	background: #ffffff;
+	border: 1px solid var(--line);
+	border-radius: 0.65rem;
+	color: var(--blue);
+	cursor: pointer;
+	font: inherit;
+	font-weight: 700;
+	padding: 0.55rem 0.85rem;
+}
+
+.page-actions button:hover:not(:disabled) {
+	background: var(--mist);
+}
+
+.page-actions button:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.page-actions span {
+	font-size: 0.9rem;
+	font-weight: 700;
 }

@@ -7,6 +7,7 @@ import PhysicianCard from "@/app/components/card/physician-card/physician-card";
 import { compressImage } from "@/app/lib/compress-image";
 import ProfileEditDrawer from "@/app/components/manager/profile-edit-drawer";
 import DirectoryLoadError from "@/app/components/directory-load-error";
+import PageControls, { ITEMS_PER_PAGE } from "@/app/components/page-controls";
 
 const emptyPhysician = {
   name: "",
@@ -41,6 +42,7 @@ export default function PhysicianManager({
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const router = useRouter();
 
@@ -56,6 +58,11 @@ export default function PhysicianManager({
   }
 
   const filteredPhysicians = [...physicians].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
+  const pageCount = Math.max(1, Math.ceil(filteredPhysicians.length / ITEMS_PER_PAGE));
+  const visiblePhysicians = filteredPhysicians.slice(
+    (Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
+    Math.min(currentPage, pageCount) * ITEMS_PER_PAGE
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -258,11 +265,17 @@ export default function PhysicianManager({
             </div>
           )}
           {physicians.length > 0 ? (
-            <div className="profile-grid">
-              {filteredPhysicians.map((physician) => (
-                <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
-              ))}
-            </div>
+            <>
+              <div className="profile-grid">
+                {visiblePhysicians.map((physician) => (
+                  <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+                ))}
+              </div>
+            <PageControls
+              itemCount={filteredPhysicians.length}
+              page={Math.min(currentPage, pageCount)}
+              onPageChange={setCurrentPage}/>
+            </>
           ) : (
             <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
           )}

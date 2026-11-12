@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import PageControls, { ITEMS_PER_PAGE } from "@/app/components/page-controls";
 
-//canManage = editors, canUpload = staff.
-
-//fix guide upload for staff - no perms
 
 const emptyGuide = {
   title: "",
@@ -42,6 +40,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [guides, setGuides] = useState(initialGuides);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingGuide, setEditingGuide] = useState(null);
   const [formData, setFormData] = useState(emptyGuide);
@@ -110,7 +109,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       .some((field) => field?.toLowerCase().includes(query));
     return matchesFolder && matchesQuery;
   });
+  const pageCount = Math.max(1, Math.ceil(filteredGuides.length / ITEMS_PER_PAGE));
+  const visibleGuides = filteredGuides.slice(
+    (Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
+    Math.min(currentPage, pageCount) * ITEMS_PER_PAGE
+  );
   const isFolderMenu = selectedFolder === null && !query && guides.length > 0;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedFolder]);
 
   function isFolderPartnerViewable(folder) {
     const folderGuides = guides.filter((guide) => (guide.folder || "Uncategorized") === folder);
@@ -527,59 +535,65 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           </div>}
 
           {filteredGuides.length > 0 ? (
-            <div className="guide-grid">
-              {filteredGuides.map((guide) => (
-                <article className="guide-card" key={guide.id}>
-                  <div className="guide-card-heading">
-                    {guide.type === "video" ? (
-                      <div className="guide-card-icon-video" aria-hidden="true">
-                        <FiTv aria-hidden="true" />
-                      </div>
-                    ) : (
-                      <div className="guide-card-icon-file" aria-hidden="true">
-                        <FiFileText aria-hidden="true" />
-                      </div>
+            <>
+              <div className="guide-grid">
+                {visibleGuides.map((guide) => (
+                  <article className="guide-card" key={guide.id}>
+                    <div className="guide-card-heading">
+                      {guide.type === "video" ? (
+                        <div className="guide-card-icon-video" aria-hidden="true">
+                          <FiTv aria-hidden="true" />
+                        </div>
+                      ) : (
+                        <div className="guide-card-icon-file" aria-hidden="true">
+                          <FiFileText aria-hidden="true" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="guide-card-copy">
+                      <h3>{guide.title}</h3>
+                      {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
+                    </div>
+                    <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
+                    {guide.type === "file" && guide.fileName && (
+                      <small className="guide-card-filename" title={guide.fileName}>{guide.fileName}</small>
                     )}
-                  </div>
-                  <div className="guide-card-copy">
-                    <h3>{guide.title}</h3>
-                    {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
-                  </div>
-                  <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
-                  {guide.type === "file" && guide.fileName && (
-                    <small className="guide-card-filename" title={guide.fileName}>{guide.fileName}</small>
-                  )}
-                  <div className="guide-card-footer">
-                    {guide.type === "video" ? (
-                      <button
-                        type="button"
-                        onClick={() => openGuidePreview(guide)}
-                        className="guide-open-button"
-                        aria-label={`Watch ${guide.title}`}
-                      >
-                        <FiPlay aria-hidden="true" />
-                        <span>Watch video</span>
-                      </button>
-                    ) : (
-                      <button type="button" onClick={() => openGuidePreview(guide)} className="guide-open-button" aria-label={`Open ${guide.title}`}>
-                        <FiBookOpen aria-hidden="true" />
-                        <span>Open guide</span>
-                      </button>
-                    )}
-                    {canManage && (
-                      <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
-                        <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
-                          <FiEdit aria-hidden="true" />
+                    <div className="guide-card-footer">
+                      {guide.type === "video" ? (
+                        <button
+                          type="button"
+                          onClick={() => openGuidePreview(guide)}
+                          className="guide-open-button"
+                          aria-label={`Watch ${guide.title}`}
+                        >
+                          <FiPlay aria-hidden="true" />
+                          <span>Watch video</span>
                         </button>
-                        <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
-                          <FiTrash2 aria-hidden="true" />
+                      ) : (
+                        <button type="button" onClick={() => openGuidePreview(guide)} className="guide-open-button" aria-label={`Open ${guide.title}`}>
+                          <FiBookOpen aria-hidden="true" />
+                          <span>Open guide</span>
                         </button>
-                      </div>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
+                      )}
+                      {canManage && (
+                        <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
+                          <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
+                            <FiEdit aria-hidden="true" />
+                          </button>
+                          <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                            <FiTrash2 aria-hidden="true" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            <PageControls
+              itemCount={filteredGuides.length}
+              page={Math.min(currentPage, pageCount)}
+              onPageChange={setCurrentPage}/>
+            </>
           ) : guides.length > 0 ? (
             <div className="guide-empty-state">
               <FiSearch aria-hidden="true" />
