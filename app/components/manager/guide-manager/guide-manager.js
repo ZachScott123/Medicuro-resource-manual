@@ -526,7 +526,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </div>}
 
           <div className="guide-results-summary" aria-live="polite">
-            <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "guide" : "guides"}
+            <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "item" : "items"}
             {searchQuery && <span> matching your search</span>}
           </div>
 
@@ -596,12 +596,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               <FiSearch aria-hidden="true" />
               <h3>No guides found</h3>
               <p>Try another search term or return to the folder list.</p>
-              <button type="button" className="guide-clear-filters" onClick={() => {
-                setSearchQuery("");
-                setSelectedFolder(null);
-              }}>
-                Back to folders
-              </button>
             </div>
           ) : (
             <div className="guide-empty-state">
