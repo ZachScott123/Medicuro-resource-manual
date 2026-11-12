@@ -444,7 +444,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             {canUpload && (
               <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
                 <FiUpload aria-hidden="true" />
-                <span>Add a guide</span>
+                <span>Upload Guide</span>
               </button>
             )}
           </div>
@@ -523,7 +523,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                         disabled={isSavingFolderPermission}
                         className="h-4 w-4 accent-teal-700"
                       />
-                      <span>Partners can view this folder</span>
+                      <span>Partner Viewable</span>
                     </label>
                     {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
                   </div>
