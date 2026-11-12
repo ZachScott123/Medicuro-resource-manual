@@ -18,7 +18,7 @@ export default async function PhysicianPartners() {
                     <p>Licensed professionals committed to delivering accessible, patient-centered virtual healthcare.</p>
                 </div>
             </section>
-            <PhysicianManager initialPhysicians={[]} showManagementControls={false} />
+            <PhysicianManager initialPhysicians={[]} showManagementControls={false} showSearch />
         </div>
     );
 }

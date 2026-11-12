@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
-import PageControls, { ITEMS_PER_PAGE } from "@/app/components/page-controls";
+import PageControls from "@/app/components/page-controls";
 
 
 const emptyGuide = {
@@ -20,6 +20,7 @@ const emptyGuide = {
 
 const allFolders = "all";
 const newFolderOption = "__new_folder__";
+const ITEMS_PER_PAGE = 18;
 
 function getYouTubeVideoId(value) {
   try {
@@ -592,6 +593,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             <PageControls
               itemCount={filteredGuides.length}
               page={Math.min(currentPage, pageCount)}
+              pageSize={ITEMS_PER_PAGE}
               onPageChange={setCurrentPage}/>
             </>
           ) : guides.length > 0 ? (

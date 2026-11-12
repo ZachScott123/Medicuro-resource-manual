@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock, FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import PhysicianCard from "@/app/components/card/physician-card/physician-card";
 import { compressImage } from "@/app/lib/compress-image";
@@ -30,6 +30,7 @@ export default function PhysicianManager({
   initialPhysicians,
   isEditor = false,
   showManagementControls = true,
+  showSearch = false,
   onRecordsChange
 }) {
   const [physicians, setPhysicians] = useState(initialPhysicians);
@@ -43,6 +44,7 @@ export default function PhysicianManager({
   const [loadError, setLoadError] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const router = useRouter();
 
@@ -57,7 +59,8 @@ export default function PhysicianManager({
       .at(-1)?.toUpperCase() ?? "";
   }
 
-  const filteredPhysicians = [...physicians].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
+  const query = searchQuery.trim().toLowerCase();
+  const filteredPhysicians = physicians.filter((physician) => !query || String(physician.name ?? "").toLowerCase().includes(query)).sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
   const pageCount = Math.max(1, Math.ceil(filteredPhysicians.length / ITEMS_PER_PAGE));
   const visiblePhysicians = filteredPhysicians.slice(
     (Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
@@ -266,15 +269,42 @@ export default function PhysicianManager({
           )}
           {physicians.length > 0 ? (
             <>
-              <div className="profile-grid">
-                {visiblePhysicians.map((physician) => (
-                  <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
-                ))}
-              </div>
-            <PageControls
-              itemCount={filteredPhysicians.length}
-              page={Math.min(currentPage, pageCount)}
-              onPageChange={setCurrentPage}/>
+              {showSearch && (
+                <div className="directory-toolbar guide-toolbar">
+                  <label className="guide-search">
+                    <FiSearch aria-hidden="true" />
+                    <input
+                      type="search"
+                      value={searchQuery}
+                      onChange={(event) => {setSearchQuery(event.target.value); setCurrentPage(1);}}
+                      placeholder="Search physicians by name"
+                      aria-label="Search physicians by name"/>
+                  </label>
+                </div>
+              )}
+              {query && <div className="guide-results-summary" aria-live="polite">
+                <strong>{filteredPhysicians.length}</strong> {filteredPhysicians.length === 1 ? "physician" : "physicians"}
+                <span> matching your search</span>
+              </div>}
+              {filteredPhysicians.length > 0 ? (
+                <>
+                  <div className="profile-grid">
+                    {visiblePhysicians.map((physician) => (
+                      <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+                    ))}
+                  </div>
+                  <PageControls
+                    itemCount={filteredPhysicians.length}
+                    page={Math.min(currentPage, pageCount)}
+                    onPageChange={setCurrentPage}/>
+                </>
+              ) : (
+                <div className="guide-empty-state">
+                  <FiSearch aria-hidden="true" />
+                  <h3>No physician profiles found</h3>
+                  <p>Try another name.</p>
+                </div>
+              )}
             </>
           ) : (
             <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />

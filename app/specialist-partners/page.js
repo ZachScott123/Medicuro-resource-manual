@@ -19,7 +19,7 @@ export default async function SpecialistPartners() {
                     <p>Dedicated specialists helping deliver timely, connected, patient-centered care across the network.</p>
                 </div>
             </section>
-            <SpecialistManager initialSpecialists={[]} showManagementControls={false} />
+            <SpecialistManager initialSpecialists={[]} showManagementControls={false} showSearch />
         </div>
     );
 }

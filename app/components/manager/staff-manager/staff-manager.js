@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock, FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import StaffCard from "@/app/components/card/staff-card/staff-card";
 import { compressImage } from "@/app/lib/compress-image";
@@ -30,6 +30,7 @@ export default function StaffManager({
   initialStaff,
   isEditor = false,
   showManagementControls = true,
+  showSearch = false,
   onRecordsChange
 }) {
   const [staff, setStaff] = useState(initialStaff);
@@ -43,6 +44,7 @@ export default function StaffManager({
   const [loadError, setLoadError] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const router = useRouter();
 
@@ -54,7 +56,8 @@ export default function StaffManager({
       .at(-1)?.toUpperCase() ?? "";
   }
 
-  const filteredStaff = [...staff].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
+  const query = searchQuery.trim().toLowerCase();
+  const filteredStaff = staff.filter((employee) => !query || String(employee.name ?? "").toLowerCase().includes(query)).sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
   const pageCount = Math.max(1, Math.ceil(filteredStaff.length / ITEMS_PER_PAGE));
   const visibleStaff = filteredStaff.slice(
     (Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
@@ -266,15 +269,43 @@ export default function StaffManager({
           )}
           {staff.length > 0 ? (
             <>
-              <div className="profile-grid">
-                {visibleStaff.map((employee) => (
-                  <StaffCard key={employee.id} employee={employee} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
-                ))}
-              </div>
-            <PageControls
-              itemCount={filteredStaff.length}
-              page={Math.min(currentPage, pageCount)}
-              onPageChange={setCurrentPage}/>
+              {showSearch && (
+                <div className="directory-toolbar guide-toolbar">
+                  <label className="guide-search">
+                    <FiSearch aria-hidden="true" />
+                    <input
+                      type="search"
+                      value={searchQuery}
+                      onChange={(event) => {setSearchQuery(event.target.value); setCurrentPage(1); }}
+                      placeholder="Search staff by name"
+                      aria-label="Search staff by name"
+                    />
+                  </label>
+                </div>
+              )}
+              {query && <div className="guide-results-summary" aria-live="polite">
+                <strong>{filteredStaff.length}</strong> {filteredStaff.length === 1 ? "staff member" : "staff members"}
+                <span> matching your search</span>
+              </div>}
+              {filteredStaff.length > 0 ? (
+                <>
+                  <div className="profile-grid">
+                    {visibleStaff.map((employee) => (
+                      <StaffCard key={employee.id} employee={employee} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+                    ))}
+                  </div>
+                  <PageControls
+                    itemCount={filteredStaff.length}
+                    page={Math.min(currentPage, pageCount)}
+                    onPageChange={setCurrentPage}/>
+                </>
+              ) : (
+                <div className="guide-empty-state">
+                  <FiSearch aria-hidden="true" />
+                  <h3>No staff profiles found</h3>
+                  <p>Try another name.</p>
+                </div>
+              )}
             </>
           ) : (
             <DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />

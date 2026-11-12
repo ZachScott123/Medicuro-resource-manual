@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock } from "react-icons/fi";
+import { FiCheck, FiEdit, FiSave, FiUpload, FiX, FiLock, FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import SpecialistCard from "@/app/components/card/specialist-card/specialist-card";
 import { compressImage } from "@/app/lib/compress-image";
@@ -30,6 +30,7 @@ export default function SpecialistManager({
 	initialSpecialists,
 	isEditor = false,
 	showManagementControls = true,
+	showSearch = false,
 	onRecordsChange
 }) {
 	const [specialists, setSpecialists] = useState(initialSpecialists);
@@ -43,6 +44,7 @@ export default function SpecialistManager({
 	const [loadError, setLoadError] = useState(false);
 	const [loadAttempt, setLoadAttempt] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [searchQuery, setSearchQuery] = useState("");
 	const [deleteTarget, setDeleteTarget] = useState(null);
 	const router = useRouter();
 
@@ -57,7 +59,8 @@ export default function SpecialistManager({
 			.at(-1)?.toUpperCase() ?? "";
 	}
 
-	const filteredSpecialists = [...specialists].sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
+	const query = searchQuery.trim().toLowerCase();
+	const filteredSpecialists = specialists.filter((specialist) => !query || String(specialist.name ?? "").toLowerCase().includes(query)).sort((a, b) => getLastName(a.name).localeCompare(getLastName(b.name)));
 	const pageCount = Math.max(1, Math.ceil(filteredSpecialists.length / ITEMS_PER_PAGE));
 	const visibleSpecialists = filteredSpecialists.slice(
 		(Math.min(currentPage, pageCount) - 1) * ITEMS_PER_PAGE,
@@ -265,13 +268,41 @@ export default function SpecialistManager({
 					)}
 					{specialists.length > 0 ? (
 						<>
-							<div className="profile-grid">
-								{visibleSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
-							</div>
-						<PageControls
-							itemCount={filteredSpecialists.length}
-							page={Math.min(currentPage, pageCount)}
-							onPageChange={setCurrentPage}/>
+							{showSearch && (
+								<div className="directory-toolbar guide-toolbar">
+									<label className="guide-search">
+										<FiSearch aria-hidden="true" />
+										<input
+											type="search"
+											value={searchQuery}
+											onChange={(event) => {setSearchQuery(event.target.value); setCurrentPage(1); }}
+											placeholder="Search specialists by name"
+											aria-label="Search specialists by name"
+										/>
+									</label>
+								</div>
+							)}
+							{query && <div className="guide-results-summary" aria-live="polite">
+								<strong>{filteredSpecialists.length}</strong> {filteredSpecialists.length === 1 ? "specialist" : "specialists"}
+								<span> matching your search</span>
+							</div>}
+							{filteredSpecialists.length > 0 ? (
+								<>
+									<div className="profile-grid">
+										{visibleSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
+									</div>
+									<PageControls
+										itemCount={filteredSpecialists.length}
+										page={Math.min(currentPage, pageCount)}
+										onPageChange={setCurrentPage}/>
+								</>
+							) : (
+								<div className="guide-empty-state">
+									<FiSearch aria-hidden="true" />
+									<h3>No specialist profiles found</h3>
+									<p>Try another name.</p>
+								</div>
+							)}
 						</>
 					) : (
 						<DirectoryLoadError onRetry={() => setLoadAttempt((attempt) => attempt + 1)} />
