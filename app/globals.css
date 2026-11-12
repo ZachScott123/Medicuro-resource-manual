@@ -3720,6 +3720,10 @@ body:has(.admin-notes) {
 		margin-bottom: 1.5rem;
 	}
 
+	.guide-folder-navigation {
+		margin-top: 2.6rem;
+	}
+
 	.guide-back-button {
 		margin-bottom: 1.5rem;
 	}
@@ -3731,7 +3735,7 @@ body:has(.admin-notes) {
 		border: 0px solid var(--line);
 	}
 
-	.directory-toolbar {
+	.guide-toolbar {
 		margin-bottom: -2.6rem;
 		display: flex;
 	}
