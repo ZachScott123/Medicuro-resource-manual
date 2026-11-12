@@ -442,7 +442,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               />
             </label>
             {canUpload && (
-              <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
+              <button type="button" onClick={openForm} className="btn-accent3 inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
                 <FiUpload aria-hidden="true" />
                 <span>Upload Guide</span>
               </button>

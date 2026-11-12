@@ -3739,6 +3739,10 @@ body:has(.admin-notes) {
 		margin-bottom: -2.6rem;
 		display: flex;
 	}
+
+	.profile-grid {
+		margin-top: 5.2rem;
+	}
 }
 
 @media (max-width: 640px) {
