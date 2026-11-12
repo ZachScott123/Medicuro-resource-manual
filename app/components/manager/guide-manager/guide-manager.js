@@ -513,22 +513,22 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </h2>
                   </div>
                 </div>
+                {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
+                  <div className="guide-folder-permission guide-folder-access">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedFolderPartnerViewable}
+                        onChange={updateFolderPartnerViewable}
+                        disabled={isSavingFolderPermission}
+                        className="h-4 w-4 accent-teal-700"
+                      />
+                      <span>Partners can view this folder</span>
+                    </label>
+                    {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
+                  </div>
+                )}
               </div>}
-          {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
-            <div className="guide-folder-permission guide-folder-access">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={selectedFolderPartnerViewable}
-                  onChange={updateFolderPartnerViewable}
-                  disabled={isSavingFolderPermission}
-                  className="h-4 w-4 accent-teal-700"
-                />
-                <span>Partners can view this folder</span>
-              </label>
-              {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
-            </div>
-          )}
 
           {(searchQuery || selectedFolder === allFolders) && <div className="guide-results-summary" aria-live="polite">
             <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "guide" : "guides"}
