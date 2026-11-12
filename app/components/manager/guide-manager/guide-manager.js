@@ -499,11 +499,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   <span>Back</span>
                 </button>
                 <div className="guide-folder-heading">
-                  {selectedFolder !== null && (
-                    <span className="guide-folder-heading-icon" aria-hidden="true">
-                      {selectedFolder === allFolders ? <FiGrid /> : <FiFolder />}
-                    </span>
-                  )}
                   <div>
                     <span className="guide-folder-heading-label">
                       {selectedFolder === allFolders ? "Library" : query ? "Search results" : "Folder"}
@@ -530,10 +525,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 )}
               </div>}
 
-          {(searchQuery || selectedFolder === allFolders) && <div className="guide-results-summary" aria-live="polite">
+          <div className="guide-results-summary" aria-live="polite">
             <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "guide" : "guides"}
             {searchQuery && <span> matching your search</span>}
-          </div>}
+          </div>
 
           {filteredGuides.length > 0 ? (
             <>
