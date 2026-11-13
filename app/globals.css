@@ -62,7 +62,7 @@ h3 {
 }
 
 .site-nav {
-	background: #f8fcfcf0;
+	background: #f8fcfcd9;
 	backdrop-filter: blur(8px);
 	color: var(--ink);
 	display: flex;
@@ -416,6 +416,7 @@ h3 {
 .guide-toolbar .guide-search {
 	flex: 1 1 22rem;
 	margin-bottom: 0;
+	pointer-events: auto;
 }
 
 .guide-folder-navigation {
@@ -536,6 +537,7 @@ h3 {
 	font-size: 1.2rem;
 	font-weight: 750;
 	line-height: 1.25;
+	min-width: 10rem;
 	overflow-wrap: anywhere;
 }
 
@@ -951,6 +953,7 @@ h3 {
 
 .guide-pdf-preview-header {
 	margin-bottom: 1rem;
+	margin-left: 0.5rem;
 	padding-inline: 1rem;
 }
 
@@ -1480,6 +1483,7 @@ h3 {
 	font-weight: 800;
 	justify-content: center;
 	padding: 0.7rem 1rem;
+	pointer-events: auto;
 }
 
 .btn-accent3:hover {
@@ -1550,6 +1554,7 @@ h3 {
 	flex-wrap: wrap;
 	gap: 1.25rem;
 	margin-top: 2rem;
+	margin-bottom: 2rem;
 }
 
 .home-hero-actions .btn-accent {
@@ -3539,21 +3544,25 @@ body:has(.admin-notes) {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
+		backdrop-filter: blur(1px);
 	}
 
 	.home-hero-actions .btn-accent {
 		background: #fcfcfc;
+	}
+
+	.home-text-link {
+		background: #fcfcfc;
+		border: 2px solid #ffffff;
+		gap: .5rem;
+		padding: 0.7rem 1rem;
+		border-radius: 10px;
 	}
 }
 
 @media (max-width: 680px) {
 	body.min-h-screen {
 		min-height: 100dvh;
-	}
-
-	body:not(.login-layout) > main {
-		padding-block: max(1rem, env(safe-area-inset-top, 0px))
-			max(1rem, env(safe-area-inset-bottom, 0px));
 	}
 
 	.guide-library {
@@ -3732,10 +3741,19 @@ body:has(.admin-notes) {
 	.guide-toolbar {
 		margin-bottom: -2.6rem;
 		display: flex;
+		pointer-events: none;
 	}
 
 	.profile-grid {
 		margin-top: 5.2rem;
+	}
+
+	.admin-staff-manager .directory-toolbar {
+		margin-bottom: -3.5rem;
+	}
+
+	.admin-partner-manager .directory-toolbar {
+		margin-bottom: -3.5rem;
 	}
 }
 
