@@ -347,8 +347,8 @@ export default function StaffManager({
             <h2 id="delete-staff-title" className="text-xl font-bold">Delete {deleteTarget.name}?</h2>
             <p className="mt-2 text-sm text-[#607984]">This action cannot be undone.</p>
             <div className="mt-6 flex justify-end gap-3">
-              <button type="button" onClick={() => setDeleteTarget(null)} className="rounded-full border border-[#d8e8e8] px-4 py-2 text-sm font-bold text-[#176183]">Cancel</button>
-              <button type="button" onClick={deleteStaffMember} className="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700">Delete</button>
+              <button type="button" onClick={() => setDeleteTarget(null)} className="rounded-md border border-[#d8e8e8] px-4 py-2 text-sm text-[#176183]">Cancel</button>
+              <button type="button" onClick={deleteStaffMember} className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Delete</button>
             </div>
           </div>
         </div>

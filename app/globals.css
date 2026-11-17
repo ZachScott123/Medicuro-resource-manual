@@ -435,6 +435,10 @@ h3 {
 	text-transform: uppercase;
 }
 
+.guide-folder-actions {
+ display: contents;
+}
+
 .guide-folder-menu {
 	display: grid;
 	gap: 0.75rem;

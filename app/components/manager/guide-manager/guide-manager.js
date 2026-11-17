@@ -556,7 +556,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <div className="guide-folder-actions">
                   {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
                     <div className="guide-folder-permission guide-folder-access">
-                      <button type="button" onClick={openRenameFolder} className="font-semibold">
+                      <button type="button" onClick={openRenameFolder}>
                         Rename Folder
                       </button>
                     </div>
@@ -965,8 +965,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             <h2 id="delete-guide-title" className="text-xl font-bold">Delete {deleteTarget.title}?</h2>
             <p className="mt-2 text-sm text-[#607984]">This action cannot be undone.</p>
             <div className="mt-6 flex justify-end gap-3">
-              <button type="button" onClick={() => setDeleteTarget(null)} className="rounded-full border border-[#d8e8e8] px-4 py-2 text-sm font-bold text-[#176183]">Cancel</button>
-              <button type="button" onClick={deleteGuide} className="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700">Delete</button>
+              <button type="button" onClick={() => setDeleteTarget(null)} className="rounded-md border border-[#d8e8e8] px-4 py-2 text-sm text-[#176183]">Cancel</button>
+              <button type="button" onClick={deleteGuide} className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Delete</button>
             </div>
           </div>
         </div>
@@ -975,8 +975,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       {isRenameFolderOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="rename-folder-title">
           <form onSubmit={renameFolder} className="w-full max-w-md rounded-2xl bg-white p-6 text-[#123243] shadow-2xl">
-            <h2 id="rename-folder-title" className="text-xl font-bold">Rename folder</h2>
-            <label htmlFor="rename-folder-name" className="mt-4 block text-sm font-semibold">Folder name</label>
+            <h2 id="rename-folder-title" className="text-xl font-bold">Rename Folder</h2>
+            <label htmlFor="rename-folder-name" className="mt-4 block text-sm">Folder Name:</label>
             <input
               id="rename-folder-name"
               type="text"
@@ -989,8 +989,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
             />
             {renameFolderError && <p className="mt-2 text-sm text-red-600" role="alert">{renameFolderError}</p>}
             <div className="mt-6 flex justify-end gap-3">
-              <button type="button" onClick={() => setIsRenameFolderOpen(false)} disabled={isRenamingFolder} className="rounded-full border border-[#d8e8e8] px-4 py-2 text-sm font-bold text-[#176183] disabled:opacity-50">Cancel</button>
-              <button type="submit" disabled={isRenamingFolder || !renameFolderName.trim()} className="rounded-full bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={() => setIsRenameFolderOpen(false)} disabled={isRenamingFolder} className="rounded-md border border-[#d8e8e8] px-4 py-2 text-sm text-[#176183] disabled:opacity-50">Cancel</button>
+              <button type="submit" disabled={isRenamingFolder || !renameFolderName.trim()} className="btn-accent disabled:cursor-not-allowed disabled:opacity-50">
                 {isRenamingFolder ? "Confirm" : "Confirm"}
               </button>
             </div>
