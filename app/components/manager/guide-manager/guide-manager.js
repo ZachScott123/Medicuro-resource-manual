@@ -53,6 +53,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [error, setError] = useState("");
   const [folderPermissionError, setFolderPermissionError] = useState("");
   const [isSavingFolderPermission, setIsSavingFolderPermission] = useState(false);
+  const [isRenameFolderOpen, setIsRenameFolderOpen] = useState(false);
+  const [renameFolderName, setRenameFolderName] = useState("");
+  const [renameFolderError, setRenameFolderError] = useState("");
+  const [isRenamingFolder, setIsRenamingFolder] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -276,6 +280,47 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       setFolderPermissionError("Unable to update folder partner access. Please try again.");
     } finally {
       setIsSavingFolderPermission(false);
+    }
+  }
+
+  function openRenameFolder() {
+    setRenameFolderName(selectedFolder);
+    setRenameFolderError("");
+    setIsRenameFolderOpen(true);
+  }
+
+  async function renameFolder(event) {
+    event.preventDefault();
+    const newFolder = renameFolderName.trim();
+    if (!selectedFolder || !newFolder) return;
+
+    setIsRenamingFolder(true);
+    setRenameFolderError("");
+
+    try {
+      const response = await fetch("/api/guides", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder: selectedFolder, newFolder })
+      });
+
+      if (!response.ok) {
+        setRenameFolderError("Unable to rename folder. Please try again.");
+        return;
+      }
+
+      setGuides((current) => current.map((guide) =>
+        (guide.folder || "Uncategorized") === selectedFolder
+          ? { ...guide, folder: newFolder }
+          : guide
+      ));
+      setSelectedFolder(newFolder);
+      setIsRenameFolderOpen(false);
+
+    } catch {
+      setRenameFolderError("Unable to rename folder. Please try again.");
+    } finally {
+      setIsRenamingFolder(false);
     }
   }
 
@@ -508,21 +553,30 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </h2>
                   </div>
                 </div>
-                {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
-                  <div className="guide-folder-permission guide-folder-access">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedFolderPartnerViewable}
-                        onChange={updateFolderPartnerViewable}
-                        disabled={isSavingFolderPermission}
-                        className="h-4 w-4 accent-teal-700"
-                      />
-                      <span>Partner Viewable</span>
-                    </label>
-                    {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
-                  </div>
-                )}
+                <div className="guide-folder-actions">
+                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
+                    <div className="guide-folder-permission guide-folder-access">
+                      <button type="button" onClick={openRenameFolder} className="font-semibold">
+                        Rename Folder
+                      </button>
+                    </div>
+                  )}
+                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
+                    <div className="guide-folder-permission guide-folder-access">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedFolderPartnerViewable}
+                          onChange={updateFolderPartnerViewable}
+                          disabled={isSavingFolderPermission}
+                          className="h-4 w-4 accent-teal-700"
+                        />
+                        <span>Partner Viewable</span>
+                      </label>
+                      {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
+                    </div>
+                  )}
+                </div>
               </div>}
 
           <div className="guide-results-summary" aria-live="polite">
@@ -915,6 +969,32 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               <button type="button" onClick={deleteGuide} className="rounded-full bg-red-600 px-4 py-2 text-sm font-bold text-white hover:bg-red-700">Delete</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {isRenameFolderOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="rename-folder-title">
+          <form onSubmit={renameFolder} className="w-full max-w-md rounded-2xl bg-white p-6 text-[#123243] shadow-2xl">
+            <h2 id="rename-folder-title" className="text-xl font-bold">Rename folder</h2>
+            <label htmlFor="rename-folder-name" className="mt-4 block text-sm font-semibold">Folder name</label>
+            <input
+              id="rename-folder-name"
+              type="text"
+              value={renameFolderName}
+              onChange={(event) => setRenameFolderName(event.target.value)}
+              maxLength={100}
+              required
+              disabled={isRenamingFolder}
+              className="mt-2 w-full rounded-md border border-[#d8e8e8] px-3 py-2"
+            />
+            {renameFolderError && <p className="mt-2 text-sm text-red-600" role="alert">{renameFolderError}</p>}
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={() => setIsRenameFolderOpen(false)} disabled={isRenamingFolder} className="rounded-full border border-[#d8e8e8] px-4 py-2 text-sm font-bold text-[#176183] disabled:opacity-50">Cancel</button>
+              <button type="submit" disabled={isRenamingFolder || !renameFolderName.trim()} className="rounded-full bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">
+                {isRenamingFolder ? "Confirm" : "Confirm"}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </section>

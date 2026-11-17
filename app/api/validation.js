@@ -81,10 +81,20 @@ export const guideUpdateSchema = z.object({
   }
 });
 
-export const guideFolderSchema = z.object({
+const guideFolderPermissionSchema = z.object({
   folder: z.string().trim().min(1).max(100),
   partnerViewable: z.boolean()
 }).strict();
+
+const guideFolderRenameSchema = z.object({
+  folder: z.string().trim().min(1).max(100),
+  newFolder: z.string().trim().min(1).max(100)
+}).strict();
+
+export const guideFolderSchema = z.union([
+  guideFolderPermissionSchema,
+  guideFolderRenameSchema
+]);
 
 export function parseBody(schema, payload) {
   const result = schema.safeParse(payload);

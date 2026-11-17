@@ -116,21 +116,29 @@ export async function PATCH(request) {
     const parsed = parseBody(guideFolderSchema, await request.json());
     if (parsed.error) return Response.json({ e: parsed.error }, { status: 400 });
 
-    const { folder, partnerViewable } = parsed.data;
+    const { folder } = parsed.data;
     const { db } = await connectToDB();
-    const result = await db.collection(collectionName).updateMany(
+    const guides = db.collection(collectionName);
+    const isRename = "newFolder" in parsed.data;
+    const result = await guides.updateMany(
       folderQuery(folder),
-      { $set: { partnerViewable } }
+      {
+        $set: isRename
+          ? { folder: parsed.data.newFolder }
+          : { partnerViewable: parsed.data.partnerViewable }
+      }
     );
 
     if (result.matchedCount === 0) {
       return Response.json({ e: "Folder not found." }, { status: 404 });
     }
 
-    return Response.json({ folder, partnerViewable });
+    return Response.json(isRename
+      ? { folder, newFolder: parsed.data.newFolder }
+      : { folder, partnerViewable: parsed.data.partnerViewable });
   } catch (e) {
-    console.error("Unable to update guide folder access:", e);
-    return Response.json({ e: "Unable to update guide folder access." }, { status: 500 });
+    console.error("Unable to update guide folder:", e);
+    return Response.json({ e: "Unable to update guide folder." }, { status: 500 });
   }
 }
 
