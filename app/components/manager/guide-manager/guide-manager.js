@@ -976,13 +976,19 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 />
               </label>
 
-              <div className="guide-link-preview" aria-live="polite">
+              <article className="guide-card guide-link-card" aria-live="polite">
                 <WebsiteIcon key={linkUrl} url={linkUrl} />
-                <div>
-                  <strong>{getWebsiteTitle(linkUrl) || "Website title"}</strong>
-                  <small>{linkUrl || "The website title and icon are filled in automatically."}</small>
+                <div className="guide-card-copy">
+                  <h3>{getWebsiteTitle(linkUrl) || "Website title"}</h3>
+                  <a className="guide-link-url" href={isValidHttpUrl(linkUrl) ? linkUrl : undefined} target="_blank" rel="noopener noreferrer">
+                    <FiLink2 aria-hidden="true" />
+                    {linkUrl || "Website URL"}
+                  </a>
+                  {linkDescription.trim() && (
+                    <p className="guide-link-description">{linkDescription.trim()}</p>
+                  )}
                 </div>
-              </div>
+              </article>
 
               <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeLinkForm} disabled={isSavingLink} className="rounded-md border border-[#d8e8e8] px-4 py-2 disabled:opacity-50">
