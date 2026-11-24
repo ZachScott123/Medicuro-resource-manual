@@ -777,6 +777,12 @@ h3 {
 	overflow-wrap: anywhere;
 }
 
+.guide-link-card .guide-management-button {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 160ms ease;
+}
+
 .guide-link-card .guide-management-delete {
 	opacity: 0;
 	pointer-events: none;
@@ -784,7 +790,9 @@ h3 {
 }
 
 .guide-link-card:hover .guide-management-delete,
-.guide-link-card:focus-within .guide-management-delete {
+.guide-link-card:focus-within .guide-management-delete,
+.guide-link-card:hover .guide-management-button,
+.guide-link-card:focus-within .guide-management-button {
 	opacity: 1;
 	pointer-events: auto;
 }
@@ -926,6 +934,11 @@ h3 {
 
 @media (hover: none) {
 	.guide-link-card .guide-management-delete {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.guide-link-card .guide-management-button {
 		opacity: 1;
 		pointer-events: auto;
 	}
