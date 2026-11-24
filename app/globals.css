@@ -757,9 +757,9 @@ h3 {
 }
 
 .guide-link-url:hover {
-	color: #00c0c0;
+	color: #0088ff;
 	-webkit-text-fill-color: transparent;
-	background: linear-gradient(90deg, #00c0c0, #007fff);
+	background: linear-gradient(90deg, #0095ff, #00e1b8);
 	background-clip: text;
 	text-decoration: underline;
 	font-size: .8rem;
