@@ -43,6 +43,15 @@ function isValidHttpUrl(value) {
   }
 }
 
+function getWebsiteTitle(value) {
+  try {
+    const hostname = new URL(value).hostname.replace(/^www\./i, "");
+    return hostname ? `${hostname[0].toUpperCase()}${hostname.slice(1)}`.slice(0, 200) : "";
+  } catch {
+    return "";
+  }
+}
+
 function WebsiteIcon({ url }) {
   const [hasError, setHasError] = useState(false);
   const iconUrl = getWebsiteIconUrl(url);
@@ -77,6 +86,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkError, setLinkError] = useState("");
+  const [isSavingLink, setIsSavingLink] = useState(false);
   const [editingGuide, setEditingGuide] = useState(null);
   const [formData, setFormData] = useState(emptyGuide);
   const [checklistItem, setChecklistItem] = useState("");
@@ -219,6 +232,18 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     setChecklistItem("");
     setError("");
     setIsFormOpen(false);
+  }
+
+  function openLinkForm() {
+    setLinkUrl("");
+    setLinkError("");
+    setIsLinkFormOpen(true);
+  }
+
+  function closeLinkForm() {
+    setLinkUrl("");
+    setLinkError("");
+    setIsLinkFormOpen(false);
   }
 
   function updateField(event) {
@@ -471,6 +496,44 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     closeForm();
   }
 
+  async function saveLink(event) {
+    event.preventDefault();
+    const url = linkUrl.trim();
+    if (!isValidHttpUrl(url)) {
+      setLinkError("Enter a valid HTTP or HTTPS website URL.");
+      return;
+    }
+
+    setIsSavingLink(true);
+    setLinkError("");
+    try {
+      const response = await fetch("/api/guides", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: getWebsiteTitle(url),
+          description: "",
+          type: "link",
+          url
+        })
+      });
+
+      if (!response.ok) {
+        setLinkError("Unable to add this link. Check the URL and try again.");
+        return;
+      }
+
+      const savedLink = await response.json();
+      setGuides((current) => [savedLink, ...current]);
+      setSelectedFolder(linksFolder);
+      closeLinkForm();
+    } catch {
+      setLinkError("Unable to add this link. Check your connection and try again.");
+    } finally {
+      setIsSavingLink(false);
+    }
+  }
+
   function requestDelete(guide) {
     setDeleteTarget(guide);
   }
@@ -534,16 +597,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 aria-label="Search resources by name, description, file, or URL"
               />
             </label>
-            {canUpload && (
+            {canUpload && selectedFolder !== linksFolder && (
               <button
                 type="button"
-                onClick={() => openForm(selectedFolder === linksFolder ? "link" : "file")}
+                onClick={() => openForm()}
                 className="btn-accent3 inline-flex items-center gap-2"
-                aria-label={selectedFolder === linksFolder ? "Add a link" : "Upload a guide"}
-                title={selectedFolder === linksFolder ? "Add a link" : "Upload a guide"}
+                aria-label="Upload a guide"
+                title="Upload a guide"
               >
-                {selectedFolder === linksFolder ? <FiLink2 aria-hidden="true" /> : <FiUpload aria-hidden="true" />}
-                <span>{selectedFolder === linksFolder ? "Add Link" : "Upload Guide"}</span>
+                <FiUpload aria-hidden="true" />
+                <span>Upload Guide</span>
               </button>
             )}
           </div>
@@ -650,6 +713,14 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
                     </div>
                   )}
+                  {canUpload && selectedFolder === linksFolder && (
+                    <div className="guide-folder-permission guide-folder-access">
+                      <button type="button" onClick={openLinkForm} aria-label="Add links">
+                        <FiPlus aria-hidden="true" />
+                        <span>Add Links</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>}
 
@@ -675,9 +746,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </div>
                     {canManage && (
                       <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
-                        <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
-                          <FiEdit aria-hidden="true" />
-                        </button>
                         <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                           <FiTrash2 aria-hidden="true" />
                         </button>
@@ -724,9 +792,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       )}
                       {canManage && (
                         <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
-                          <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
-                            <FiEdit aria-hidden="true" />
-                          </button>
                           <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                             <FiTrash2 aria-hidden="true" />
                           </button>
@@ -857,6 +922,63 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         </div>
       )}
 
+      {canUpload && isLinkFormOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="add-link-title">
+          <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <h2 id="add-link-title" className="text-2xl font-bold">Add Link</h2>
+              <button type="button" onClick={closeLinkForm} className="admin-menu-close" aria-label="Close add link form" disabled={isSavingLink}>
+                <FiX size={22} aria-hidden="true" />
+              </button>
+            </div>
+
+            <form onSubmit={saveLink} noValidate className="guide-upload-form grid gap-4">
+              <label className="flex flex-col gap-1">
+                <span>Website URL</span>
+                <input
+                  autoFocus
+                  name="linkUrl"
+                  type="url"
+                  value={linkUrl}
+                  onChange={(event) => {
+                    setLinkUrl(event.target.value);
+                    setLinkError("");
+                  }}
+                  maxLength={2048}
+                  placeholder="https://example.com"
+                  aria-invalid={Boolean(linkError) || (linkUrl.length > 0 && !isValidHttpUrl(linkUrl))}
+                  aria-describedby={linkError || (linkUrl.length > 0 && !isValidHttpUrl(linkUrl)) ? "add-link-url-error" : undefined}
+                  className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${linkError || (linkUrl.length > 0 && !isValidHttpUrl(linkUrl)) ? "border-red-500" : "border-teal-400"}`}
+                />
+                {(linkError || (linkUrl.length > 0 && !isValidHttpUrl(linkUrl))) && (
+                  <span id="add-link-url-error" className="text-sm text-red-600" role={linkError ? "alert" : undefined}>
+                    {linkError || "Enter a valid HTTP or HTTPS website URL."}
+                  </span>
+                )}
+              </label>
+
+              <div className="guide-link-preview" aria-live="polite">
+                <WebsiteIcon key={linkUrl} url={linkUrl} />
+                <div>
+                  <strong>{getWebsiteTitle(linkUrl) || "Website title"}</strong>
+                  <small>{linkUrl || "The website title and icon are filled in automatically."}</small>
+                </div>
+              </div>
+
+              <div className="guide-upload-actions flex justify-end gap-3">
+                <button type="button" onClick={closeLinkForm} disabled={isSavingLink} className="rounded-md border border-[#d8e8e8] px-4 py-2 disabled:opacity-50">
+                  Cancel
+                </button>
+                <button type="submit" disabled={isSavingLink || !isValidHttpUrl(linkUrl)} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
+                  <FiPlus aria-hidden="true" />
+                  {isSavingLink ? "Adding..." : "Add Link"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {canUpload && isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
@@ -903,7 +1025,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 >
                   <option value="file">Upload PDF</option>
                   <option value="video">Video Link</option>
-                  <option value="link">Website Link</option>
                 </select>
               </label>
               <label className="flex flex-col gap-1">
