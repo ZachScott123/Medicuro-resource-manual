@@ -1043,30 +1043,34 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               <label className="flex flex-col gap-1">Description
                 <textarea maxLength={1400} name="description" value={formData.description} onChange={updateField} placeholder="What is this resource for?" rows={3} className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900" />
               </label>
-              <label className="flex flex-col gap-1">
-                <span>Resource type</span>
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={updateGuideType}
-                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
-                >
-                  <option value="file">Upload PDF</option>
-                  <option value="video">Video Link</option>
-                </select>
-              </label>
-              <label className="flex flex-col gap-1">
-                <span>Folder</span>
-                <select
-                  value={isCreatingFolder ? newFolderOption : formData.folder}
-                  onChange={updateFolderChoice}
-                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
-                >
-                  {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
-                  <option value={newFolderOption}>Create a new folder...</option>
-                </select>
-              </label>
-              {isCreatingFolder && (
+              {formData.type !== "link" && (
+                <>
+                  <label className="flex flex-col gap-1">
+                    <span>Resource type</span>
+                    <select
+                      name="type"
+                      value={formData.type}
+                      onChange={updateGuideType}
+                      className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
+                    >
+                      <option value="file">Upload PDF</option>
+                      <option value="video">Video Link</option>
+                    </select>
+                  </label>
+                  <label className="flex flex-col gap-1">
+                    <span>Folder</span>
+                    <select
+                      value={isCreatingFolder ? newFolderOption : formData.folder}
+                      onChange={updateFolderChoice}
+                      className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
+                    >
+                      {folders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
+                      <option value={newFolderOption}>Create a new folder...</option>
+                    </select>
+                  </label>
+                </>
+              )}
+              {formData.type !== "link" && isCreatingFolder && (
                 <label className="flex flex-col gap-1">
                   <span>New folder name</span>
                   <input
