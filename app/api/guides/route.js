@@ -79,7 +79,7 @@ export async function POST(request) {
     const record = {
       id: `${guide.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`,
       title: guide.title.trim(),
-      description: guide.description?.trim() || "...",
+      description: guide.type === "link" ? guide.description?.trim() || "" : guide.description?.trim() || "...",
       folder,
       type: guide.type,
       checklist: guide.checklist || [],
@@ -184,7 +184,7 @@ export async function PUT(request) {
 
     const setFields = {
       title: guide.title,
-      description: guide.description || "...",
+      description: guide.type === "link" ? guide.description : guide.description || "...",
       folder: guide.folder,
       partnerViewable: guide.partnerViewable,
       type: guide.type,

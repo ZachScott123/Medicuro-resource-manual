@@ -88,6 +88,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLinkFormOpen, setIsLinkFormOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
+  const [linkDescription, setLinkDescription] = useState("");
   const [linkError, setLinkError] = useState("");
   const [isSavingLink, setIsSavingLink] = useState(false);
   const [editingGuide, setEditingGuide] = useState(null);
@@ -236,12 +237,14 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
   function openLinkForm() {
     setLinkUrl("");
+    setLinkDescription("");
     setLinkError("");
     setIsLinkFormOpen(true);
   }
 
   function closeLinkForm() {
     setLinkUrl("");
+    setLinkDescription("");
     setLinkError("");
     setIsLinkFormOpen(false);
   }
@@ -512,7 +515,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: getWebsiteTitle(url),
-          description: "",
+          description: linkDescription.trim(),
           type: "link",
           url
         })
@@ -733,7 +736,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
 
           {filteredGuides.length > 0 ? (
             <>
-              <div className="guide-grid">
+              <div className={selectedFolder === linksFolder ? "link-grid" : "guide-grid"}>
                 {visibleGuides.map((guide) => selectedFolder === linksFolder ? (
                   <article className="guide-card guide-link-card" key={guide.id}>
                     <WebsiteIcon url={guide.url} />
@@ -743,6 +746,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                         {guide.url}
                         <FiExternalLink aria-hidden="true" />
                       </a>
+                      {guide.description && guide.description !== "..." && (
+                        <p className="guide-link-description">{guide.description}</p>
+                      )}
                     </div>
                     {canManage && (
                       <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
@@ -955,6 +961,19 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     {linkError || "Enter a valid HTTP or HTTPS website URL."}
                   </span>
                 )}
+              </label>
+
+              <label className="flex flex-col gap-1">
+                <span>Description</span>
+                <textarea
+                  name="linkDescription"
+                  value={linkDescription}
+                  onChange={(event) => setLinkDescription(event.target.value)}
+                  maxLength={1000}
+                  rows={3}
+                  placeholder="Add helpful context regarding this link"
+                  className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900"
+                />
               </label>
 
               <div className="guide-link-preview" aria-live="polite">

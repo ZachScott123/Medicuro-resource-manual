@@ -708,10 +708,16 @@ h3 {
 	width: 2.5rem;
 }
 
+.link-grid {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 1.5rem 1rem;
+	display: grid;
+}
+
 .guide-link-card {
 	align-items: center;
 	flex-direction: row;
-	min-height: 7rem;
+	min-height: 6rem;
 }
 
 .guide-link-card .guide-card-copy {
@@ -721,7 +727,6 @@ h3 {
 
 .guide-link-icon {
 	align-items: center;
-	background: #f1f3f4;
 	border-radius: 0.72rem;
 	color: #9aa0a6;
 	display: flex;
@@ -736,9 +741,9 @@ h3 {
 }
 
 .guide-link-icon img {
-	height: 1.5rem;
+	height: 2rem;
 	object-fit: contain;
-	width: 1.5rem;
+	width: 2rem;
 }
 
 .guide-link-url {
@@ -747,7 +752,6 @@ h3 {
 	display: flex;
 	font-size: 0.78rem;
 	gap: 0.3rem;
-	margin-top: 0.5rem;
 	overflow-wrap: anywhere;
 }
 
@@ -758,6 +762,14 @@ h3 {
 
 .guide-link-url svg {
 	flex: 0 0 auto;
+}
+
+.guide-card-copy .guide-link-description {
+	color: #758b93;
+	font-size: 0.78rem;
+	line-height: 1.45;
+	margin-top: 0.4rem;
+	overflow-wrap: anywhere;
 }
 
 .guide-link-card .guide-management-delete {
@@ -915,14 +927,13 @@ h3 {
 
 .guide-management-button {
 	align-items: center;
-	background: #f4f7f7;
 	border-radius: 0.65rem;
 	color: #3f5159;
 	cursor: pointer;
 	display: inline-flex;
-	height: 2.55rem;
+	height: 2.3rem;
 	justify-content: center;
-	width: 2.55rem;
+	width: 2.3rem;
 }
 
 .guide-management-button:hover {
@@ -3454,6 +3465,12 @@ body:has(.admin-notes) {
 	}
 }
 
+@media (max-width: 1300px) {
+	.link-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
 @media (max-width: 860px) {
 	
 	.site-nav-inner {
@@ -3738,6 +3755,10 @@ body:has(.admin-notes) {
 		grid-template-columns: 1fr;
 	}
 
+	.link-grid {
+		grid-template-columns: 1fr;
+	}
+
 	.guide-toolbar {
 		align-items: center;
 	}
@@ -3784,6 +3805,10 @@ body:has(.admin-notes) {
 
 @media (min-width: 681px) and (max-width: 1050px) {
 	.guide-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.link-grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
