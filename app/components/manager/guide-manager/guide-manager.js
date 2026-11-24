@@ -717,7 +717,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </div>
                   )}
                   {canUpload && selectedFolder === linksFolder && (
-                    <button class="btn-accent3" type="button" onClick={openLinkForm} aria-label="Add links">
+                    <button class="btn-accent3 gap-2" type="button" onClick={openLinkForm} aria-label="Add links">
                       <FiPlus aria-hidden="true" />
                       <span>Add Links</span>
                     </button>
