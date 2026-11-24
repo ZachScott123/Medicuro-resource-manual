@@ -24,10 +24,11 @@ function serializeGuide(record) {
     title: record.title || "",
     description: record.description || "",
     folder: record.folder || "Uncategorized",
-    type: record.type === "video" ? "video" : "file",
+    type: ["video", "link"].includes(record.type) ? record.type : "file",
     checklist: Array.isArray(record.checklist) ? record.checklist : [],
     fileName: record.fileName || "",
     videoId: record.videoId || "",
+    url: record.type === "link" ? record.url || "" : "",
     createdAt: record.createdAt || "",
     partnerViewable: record.partnerViewable === true
   };
@@ -46,7 +47,7 @@ export async function GET() {
   try {
     const { db } = await connectToDB();
     const query = user.isPhysicianSpecialist && !user.isAuthorized && !user.isEditor
-      ? { partnerViewable: true }
+      ? { partnerViewable: true, type: { $ne: "link" } }
       : {};
     const records = await db.collection(collectionName).find(query).sort({ createdAt: -1 }).toArray();
     return Response.json(records.map(serializeGuide));
@@ -82,16 +83,20 @@ export async function POST(request) {
       folder,
       type: guide.type,
       checklist: guide.checklist || [],
-      partnerViewable: guide.partnerViewable === true,
+      partnerViewable: guide.type !== "link" && guide.partnerViewable === true,
       ...(guide.type === "video"
         ? { videoId: guide.videoId }
-        : { fileName: guide.fileName, fileData: guide.fileData }),
+        : guide.type === "link"
+          ? { url: guide.url }
+          : { fileName: guide.fileName, fileData: guide.fileData }),
       createdAt: new Date().toISOString()
     };
 
-    await guides.updateMany(folderQuery(record.folder), {
-      $set: { partnerViewable: record.partnerViewable }
-    });
+    if (record.type !== "link") {
+      await guides.updateMany(folderQuery(record.folder), {
+        $set: { partnerViewable: record.partnerViewable }
+      });
+    }
     await guides.insertOne(record);
     return Response.json(serializeGuide(record), { status: 201 });
 
@@ -120,8 +125,11 @@ export async function PATCH(request) {
     const { db } = await connectToDB();
     const guides = db.collection(collectionName);
     const isRename = "newFolder" in parsed.data;
+    const updateQuery = isRename
+      ? folderQuery(folder)
+      : { $and: [folderQuery(folder), { type: { $ne: "link" } }] };
     const result = await guides.updateMany(
-      folderQuery(folder),
+      updateQuery,
       {
         $set: isRename
           ? { folder: parsed.data.newFolder }
@@ -183,13 +191,17 @@ export async function PUT(request) {
       checklist: guide.checklist,
       ...(guide.type === "video"
         ? { videoId: guide.videoId }
-        : hasReplacementFile
-          ? { fileName: guide.fileName, fileData: guide.fileData }
-          : {})
+        : guide.type === "link"
+          ? { url: guide.url }
+          : hasReplacementFile
+            ? { fileName: guide.fileName, fileData: guide.fileData }
+            : {})
     };
     const unsetFields = guide.type === "video"
-      ? { fileName: "", fileData: "" }
-      : { videoId: "" };
+      ? { fileName: "", fileData: "", url: "" }
+      : guide.type === "link"
+        ? { fileName: "", fileData: "", videoId: "" }
+        : { videoId: "", url: "" };
 
     const result = await guides.updateOne(query, {
       $set: setFields,
@@ -200,9 +212,11 @@ export async function PUT(request) {
       return Response.json({ e: "Guide not found." }, { status: 404 });
     }
 
-    await guides.updateMany(folderQuery(guide.folder), {
-      $set: { partnerViewable: guide.partnerViewable }
-    });
+    if (guide.type !== "link") {
+      await guides.updateMany(folderQuery(guide.folder), {
+        $set: { partnerViewable: guide.partnerViewable }
+      });
+    }
 
     const updatedGuide = await guides.findOne(query);
     return Response.json(serializeGuide(updatedGuide));

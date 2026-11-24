@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import Image from "next/image";
+import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiLink, FiLink2, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import PageControls from "@/app/components/page-controls";
 
 
@@ -14,13 +15,46 @@ const emptyGuide = {
   fileName: "",
   fileData: "",
   videoUrl: "",
+  url: "",
   checklistEnabled: false,
   checklist: []
 };
 
 const allFolders = "all";
+const linksFolder = "__links__";
 const newFolderOption = "__new_folder__";
 const ITEMS_PER_PAGE = 18;
+
+function getWebsiteIconUrl(value) {
+  try {
+    const url = new URL(value);
+    return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(url.origin)}&sz=128`;
+  } catch {
+    return "";
+  }
+}
+
+function isValidHttpUrl(value) {
+  try {
+    const protocol = new URL(value).protocol;
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function WebsiteIcon({ url }) {
+  const [hasError, setHasError] = useState(false);
+  const iconUrl = getWebsiteIconUrl(url);
+
+  return (
+    <span className="guide-link-icon" aria-hidden="true">
+      {iconUrl && !hasError
+        ? <Image src={iconUrl} alt="" width={32} height={32} unoptimized onError={() => setHasError(true)} />
+        : <FiLink2 />}
+    </span>
+  );
+}
 
 function getYouTubeVideoId(value) {
   try {
@@ -101,16 +135,19 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       return () => window.removeEventListener("keydown", closeOnEscape);
   }, [selectedGuide]);
 
+  const linkItems = guides.filter((guide) => guide.type === "link");
+  const libraryGuides = guides.filter((guide) => guide.type !== "link");
   const folders = [...new Set(guides.map((guide) => guide.folder || "Uncategorized"))]
     .sort((first, second) => first.localeCompare(second));
   if (folders.length === 0) folders.push("Uncategorized");
   const populatedFolders = folders.filter((folder) =>
-    guides.some((guide) => (guide.folder || "Uncategorized") === folder)
+    libraryGuides.some((guide) => (guide.folder || "Uncategorized") === folder)
   );
   const query = searchQuery.trim().toLowerCase();
-  const filteredGuides = guides.filter((guide) => {
-    const matchesFolder = selectedFolder === null || selectedFolder === allFolders || (guide.folder || "Uncategorized") === selectedFolder;
-    const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.folder]
+  const visibleResources = selectedFolder === linksFolder ? linkItems : libraryGuides;
+  const filteredGuides = visibleResources.filter((guide) => {
+    const matchesFolder = selectedFolder === null || selectedFolder === allFolders || selectedFolder === linksFolder || (guide.folder || "Uncategorized") === selectedFolder;
+    const matchesQuery = !query || [guide.title, guide.description, guide.fileName, guide.folder, guide.url]
       .some((field) => field?.toLowerCase().includes(query));
     return matchesFolder && matchesQuery;
   });
@@ -126,17 +163,18 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   }, [searchQuery, selectedFolder]);
 
   function isFolderPartnerViewable(folder) {
-    const folderGuides = guides.filter((guide) => (guide.folder || "Uncategorized") === folder);
+    const folderGuides = guides.filter((guide) => guide.type !== "link" && (guide.folder || "Uncategorized") === folder);
     return folderGuides.length > 0 && folderGuides.every((guide) => guide.partnerViewable === true);
   }
 
-  const selectedFolderPartnerViewable = selectedFolder !== null && selectedFolder !== allFolders && isFolderPartnerViewable(selectedFolder);
+  const selectedFolderPartnerViewable = selectedFolder !== null && selectedFolder !== allFolders && selectedFolder !== linksFolder && isFolderPartnerViewable(selectedFolder);
 
-  function openForm() {
+  function openForm(type = "file") {
     const folder = folders[0] || "Uncategorized";
     setEditingGuide(null);
     setFormData({
       ...emptyGuide,
+      type,
       folder,
       partnerViewable: isFolderPartnerViewable(folder)
     });
@@ -159,6 +197,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       type: guide.type,
       fileName: guide.fileName || "",
       videoUrl: guide.type === "video" ? `https://youtu.be/${guide.videoId}` : "",
+      url: guide.type === "link" ? guide.url || "" : "",
       checklistEnabled: guide.checklist?.length > 0,
       checklist: guide.checklist || []
     });
@@ -218,7 +257,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       type: event.target.value,
       fileName: "",
       fileData: "",
-      videoUrl: ""
+      videoUrl: "",
+      url: "",
+      checklist: [],
+      checklistEnabled: false
     }));
     setTouchedFields({});
     setError("");
@@ -359,6 +401,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       !formData.title.trim() && "title",
       formData.type === "file" && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) && "fileData",
       formData.type === "video" && !getYouTubeVideoId(formData.videoUrl) && "videoUrl",
+      formData.type === "link" && !isValidHttpUrl(formData.url) && "url",
       isCreatingFolder && !newFolderName.trim() && "folder"
     ].filter(Boolean);
     if (invalidFields.length > 0) {
@@ -379,14 +422,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
       folder: isCreatingFolder
         ? folders.find((folder) => folder.toLowerCase() === newFolderName.trim().toLowerCase()) || newFolderName.trim()
         : formData.folder,
-      partnerViewable: formData.partnerViewable,
+      partnerViewable: formData.type !== "link" && formData.partnerViewable,
       type: formData.type,
-      checklist: formData.checklistEnabled ? formData.checklist : [],
+      checklist: formData.type !== "link" && formData.checklistEnabled ? formData.checklist : [],
       ...(formData.type === "video"
         ? {
           videoId: getYouTubeVideoId(formData.videoUrl)
         }
-        : formData.fileData
+        : formData.type === "link"
+          ? { url: formData.url.trim() }
+          : formData.fileData
           ? {
               fileName: formData.fileName,
               fileData: formData.fileData
@@ -403,7 +448,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     if (!response.ok) {
       setError(formData.type === "video"
         ? "Unable to save guide. Please check the YouTube URL."
-        : "Unable to save guide. Please choose a PDF and try again.");
+        : formData.type === "link"
+          ? "Unable to save link. Please enter a valid HTTP or HTTPS URL."
+          : "Unable to save guide. Please choose a PDF and try again.");
       setIsSaving(false);
       return;
     }
@@ -412,14 +459,14 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     setGuides((current) => {
       const updatedGuides = current.map((item) => {
         if (item.id === savedGuide.id) return savedGuide;
-        return (item.folder || "Uncategorized") === savedGuide.folder
+        return savedGuide.type !== "link" && (item.folder || "Uncategorized") === savedGuide.folder
           ? { ...item, partnerViewable: savedGuide.partnerViewable }
           : item;
       });
       
       return editingGuide ? updatedGuides : [savedGuide, ...updatedGuides];
     });
-    setSelectedFolder(savedGuide.folder);
+    setSelectedFolder(savedGuide.type === "link" ? linksFolder : savedGuide.folder);
     setIsSaving(false);
     closeForm();
   }
@@ -447,6 +494,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
     if (
       selectedFolder &&
       selectedFolder !== allFolders &&
+      selectedFolder !== linksFolder &&
       !(remainingGuides.some((guide) => (guide.folder || "Uncategorized") === selectedFolder))
     ) {
       setSelectedFolder(allFolders);
@@ -455,7 +503,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
   }
 
   return (
-    <section className="guide-library" aria-label="Care delivery guides">
+    <section className="guide-library" aria-label="Care delivery resources">
 
       {error && <div className="guide-alert" role="alert"><FiAlertCircle aria-hidden="true" />{error}</div>}
 
@@ -482,20 +530,28 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search guides and documents"
-                aria-label="Search guides by name, description, or file"
+                placeholder="Search guides, documents, and links"
+                aria-label="Search resources by name, description, file, or URL"
               />
             </label>
             {canUpload && (
-              <button type="button" onClick={openForm} className="btn-accent3 inline-flex items-center gap-2" aria-label="Upload a guide" title="Upload a guide">
-                <FiUpload aria-hidden="true" />
-                <span>Upload Guide</span>
+              <button
+                type="button"
+                onClick={() => openForm(selectedFolder === linksFolder ? "link" : "file")}
+                className="btn-accent3 inline-flex items-center gap-2"
+                aria-label={selectedFolder === linksFolder ? "Add a link" : "Upload a guide"}
+                title={selectedFolder === linksFolder ? "Add a link" : "Upload a guide"}
+              >
+                {selectedFolder === linksFolder ? <FiLink2 aria-hidden="true" /> : <FiUpload aria-hidden="true" />}
+                <span>{selectedFolder === linksFolder ? "Add Link" : "Upload Guide"}</span>
               </button>
             )}
           </div>
 
           {isFolderMenu ? (
-            <nav className="guide-folder-navigation" aria-label="Browse guides by folder">
+            <>
+            {libraryGuides.length > 0 && (
+            <nav className="guide-folder-navigation" aria-label="Browse guide folders">
               <span className="guide-folder-navigation-label">Browse folders</span>
               <div className="guide-folder-menu">
                 <button
@@ -505,12 +561,12 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 >
                   <span className="guide-folder-card-icon"><FiGrid aria-hidden="true" /></span>
                   <span className="guide-folder-card-copy">
-                    <strong>View all</strong>
-                    <small>{guides.length} {guides.length === 1 ? "item" : "items"}</small>
+                    <strong>View all guides</strong>
+                    <small>{libraryGuides.length} {libraryGuides.length === 1 ? "item" : "items"}</small>
                   </span>
                 </button>
                 {populatedFolders.map((folder) => {
-                  const folderCount = guides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
+                  const folderCount = libraryGuides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
                   return (
                     <button
                       type="button"
@@ -528,6 +584,24 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 })}
               </div>
             </nav>
+            )}
+            <nav className="guide-folder-navigation" aria-label="Browse links">
+              <span className="guide-folder-navigation-label">Browse links</span>
+              <div className="guide-folder-menu">
+                <button
+                  type="button"
+                  className="guide-folder-card guide-view-all-card"
+                  onClick={() => setSelectedFolder(linksFolder)}
+                >
+                  <span className="guide-folder-card-icon"><FiLink aria-hidden="true" /></span>
+                  <span className="guide-folder-card-copy">
+                    <strong>View links</strong>
+                    <small>{linkItems.length} {linkItems.length === 1 ? "link" : "links"}</small>
+                  </span>
+                </button>
+              </div>
+            </nav>
+            </>
           ) : (
             <>
               {(selectedFolder !== null || query) && <div className="guide-folder-content-header">
@@ -538,7 +612,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     setSelectedFolder(null);
                     setSearchQuery("");
                   }}
-                  aria-label="Back to guide folders"
+                  aria-label="Back to resource sections"
                 >
                   <FiArrowLeft aria-hidden="true" />
                   <span>Back</span>
@@ -546,22 +620,22 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <div className="guide-folder-heading">
                   <div>
                     <span className="guide-folder-heading-label">
-                      {selectedFolder === allFolders ? "Library" : query ? "Search results" : "Folder"}
+                      {selectedFolder === linksFolder ? "Resource library" : selectedFolder === allFolders ? "Library" : query ? "Search results" : "Folder"}
                     </span>
                     <h2 className="guide-folder-title">
-                      {selectedFolder === allFolders ? "All guides" : selectedFolder || "Search results"}
+                      {selectedFolder === linksFolder ? "Links" : selectedFolder === allFolders ? "All guides" : selectedFolder || "Search results"}
                     </h2>
                   </div>
                 </div>
                 <div className="guide-folder-actions">
-                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
+                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && selectedFolder !== linksFolder && (
                     <div className="guide-folder-permission guide-folder-access">
                       <button type="button" onClick={openRenameFolder}>
                         Rename Folder
                       </button>
                     </div>
                   )}
-                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && (
+                  {canUpload && selectedFolder !== null && selectedFolder !== allFolders && selectedFolder !== linksFolder && (
                     <div className="guide-folder-permission guide-folder-access">
                       <label className="flex items-center gap-2">
                         <input
@@ -580,14 +654,37 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </div>}
 
           <div className="guide-results-summary" aria-live="polite">
-            <strong>{filteredGuides.length}</strong> {filteredGuides.length === 1 ? "item" : "items"}
+            <strong>{filteredGuides.length}</strong> {selectedFolder === linksFolder
+              ? filteredGuides.length === 1 ? "link" : "links"
+              : filteredGuides.length === 1 ? "item" : "items"}
             {searchQuery && <span> matching your search</span>}
           </div>
 
           {filteredGuides.length > 0 ? (
             <>
               <div className="guide-grid">
-                {visibleGuides.map((guide) => (
+                {visibleGuides.map((guide) => selectedFolder === linksFolder ? (
+                  <article className="guide-card guide-link-card" key={guide.id}>
+                    <WebsiteIcon url={guide.url} />
+                    <div className="guide-card-copy">
+                      <h3>{guide.title}</h3>
+                      <a className="guide-link-url" href={isValidHttpUrl(guide.url) ? guide.url : undefined} target="_blank" rel="noopener noreferrer">
+                        {guide.url}
+                        <FiExternalLink aria-hidden="true" />
+                      </a>
+                    </div>
+                    {canManage && (
+                      <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
+                        <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
+                          <FiEdit aria-hidden="true" />
+                        </button>
+                        <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
+                          <FiTrash2 aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
+                  </article>
+                ) : (
                   <article className="guide-card" key={guide.id}>
                     <div className="guide-card-heading">
                       {guide.type === "video" ? (
@@ -648,16 +745,16 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           ) : guides.length > 0 ? (
             <div className="guide-empty-state">
               <FiSearch aria-hidden="true" />
-              <h3>No guides found</h3>
-              <p>Try another search term or return to the folder list.</p>
+              <h3>{selectedFolder === linksFolder ? "No links found" : "No guides found"}</h3>
+              <p>Try another search term or return to the resource list.</p>
             </div>
           ) : (
             <div className="guide-empty-state">
               <FiFileText aria-hidden="true" />
               <h3>{canUpload ? "Your guide library is ready" : "No guides are available yet"}</h3>
               <p>{canUpload
-                ? "Add a PDF or video to make your team’s first resource easy to find."
-                : "There are no guides shared with your account right now. Contact your clinic administrator if you need access."}</p>
+                ? "Add a PDF, video, or link to make your team’s first resource easy to find."
+                : "There are no guides or links shared with your account right now. Contact your clinic administrator if you need access."}</p>
               {canUpload && (
                 <button type="button" onClick={openForm} className="btn-accent inline-flex items-center gap-2">
                   <FiUpload aria-hidden="true" />
@@ -764,7 +861,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="guide-form-title">
           <div className="guide-upload-dialog w-full max-w-xl rounded-xl bg-white p-6 text-[#123243] shadow-2xl">
             <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 id="guide-form-title" className="text-2xl font-bold">{editingGuide ? "Edit Guide" : "Upload Guide"}</h2>
+              <h2 id="guide-form-title" className="text-2xl font-bold">
+                {editingGuide ? formData.type === "link" ? "Edit Link" : "Edit Guide" : formData.type === "link" ? "Add Link" : "Upload Guide"}
+              </h2>
               <button type="button" onClick={closeForm} className="admin-menu-close" aria-label="Close form">
                 <FiX size={22} aria-hidden="true" />
               </button>
@@ -784,7 +883,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   value={formData.title}
                   onChange={updateField}
                   onBlur={markFieldAsTouched}
-                  placeholder="Guide title"
+                  placeholder="Resource title"
                   aria-invalid={touchedFields.title && !formData.title.trim()}
                   aria-describedby={touchedFields.title && !formData.title.trim() ? "title-error" : undefined}
                   className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${touchedFields.title && !formData.title.trim() ? "border-red-500" : "border-teal-400"}`}
@@ -792,10 +891,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 {touchedFields.title && !formData.title.trim() && <span id="title-error" className="text-sm text-red-600">This field is required.</span>}
               </label>
               <label className="flex flex-col gap-1">Description
-                <textarea maxLength={1400} name="description" value={formData.description} onChange={updateField} placeholder="What is this guide for?" rows={3} className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900" />
+                <textarea maxLength={1400} name="description" value={formData.description} onChange={updateField} placeholder="What is this resource for?" rows={3} className="rounded-md border-[1.5px] border-teal-400 p-2 text-neutral-900" />
               </label>
               <label className="flex flex-col gap-1">
-                <span>Guide type</span>
+                <span>Resource type</span>
                 <select
                   name="type"
                   value={formData.type}
@@ -804,6 +903,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 >
                   <option value="file">Upload PDF</option>
                   <option value="video">Video Link</option>
+                  <option value="link">Website Link</option>
                 </select>
               </label>
               <label className="flex flex-col gap-1">
@@ -834,7 +934,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   {touchedFields.folder && !newFolderName.trim() && <span className="text-sm text-red-600">A folder name is required.</span>}
                 </label>
               )}
-              <section className="guide-checklist-editor">
+              {formData.type !== "link" && <section className="guide-checklist-editor">
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -890,8 +990,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     )}
                   </div>
                 )}
-              </section>
-              {canUpload && isFormOpen && (
+              </section>}
+              {canUpload && isFormOpen && formData.type !== "link" && (
                 <section className="guide-checklist-editor">
                   <label className="flex items-center gap-2">
                     <input
@@ -927,7 +1027,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   {touchedFields.fileData && !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) && <span id="file-error" className="text-sm text-red-600">A PDF file is required.</span>}
                   {formData.fileName && <span className="text-sm text-[#607984]">{editingGuide && !formData.fileData ? "Current file:" : "Selected:"} {formData.fileName}</span>}
                 </label>
-              ) : (
+              ) : formData.type === "video" ? (
                 <label className="flex flex-col gap-1">
                   <span>
                     YouTube Video URL
@@ -946,12 +1046,31 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   />
                   {touchedFields.videoUrl && !getYouTubeVideoId(formData.videoUrl) && <span id="video-url-error" className="text-sm text-red-600">Enter a valid YouTube video URL.</span>}
                 </label>
+              ) : (
+                <label className="flex flex-col gap-1">
+                  <span>
+                    Website URL
+                    {touchedFields.url && !isValidHttpUrl(formData.url) && <span className="ml-1 text-red-600" aria-hidden="true">*</span>}
+                  </span>
+                  <input
+                    name="url"
+                    type="url"
+                    value={formData.url}
+                    onChange={updateField}
+                    onBlur={markFieldAsTouched}
+                    placeholder="https://example.com"
+                    aria-invalid={touchedFields.url && !isValidHttpUrl(formData.url)}
+                    aria-describedby={touchedFields.url && !isValidHttpUrl(formData.url) ? "link-url-error" : undefined}
+                    className={`rounded-md border-[1.5px] p-2 text-neutral-900 ${touchedFields.url && !isValidHttpUrl(formData.url) ? "border-red-500" : "border-teal-400"}`}
+                  />
+                  {touchedFields.url && !isValidHttpUrl(formData.url) && <span id="link-url-error" className="text-sm text-red-600">Enter a valid HTTP or HTTPS URL.</span>}
+                </label>
               )}
               <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeForm} className="rounded-md border border-[#d8e8e8] px-4 py-2">Cancel</button>
-                <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) : !getYouTubeVideoId(formData.videoUrl))} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) : formData.type === "video" ? !getYouTubeVideoId(formData.videoUrl) : !isValidHttpUrl(formData.url))} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
                   <FiSave aria-hidden="true" />
-                  {isSaving ? "Saving..." : editingGuide ? "Save changes" : "Save guide"}
+                  {isSaving ? "Saving..." : editingGuide ? "Save changes" : formData.type === "link" ? "Save link" : "Save guide"}
                 </button>
               </div>
             </form>

@@ -24,16 +24,22 @@ export const userProfileSchema = z.object({
   profileType: z.enum(["Staff", "Physician", "Specialist"])
 }).strict();
 
+const linkUrlSchema = z.string().trim().max(2048).url().refine((value) => {
+  const protocol = new URL(value).protocol;
+  return protocol === "http:" || protocol === "https:";
+}, { message: "A valid HTTP or HTTPS URL is required." });
+
 export const guideSchema = z.object({
   title: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000),
   folder: z.string().trim().min(1).max(100).optional(),
   partnerViewable: z.boolean().optional(),
-  type: z.enum(["file", "video"]).default("file"),
+  type: z.enum(["file", "video", "link"]).default("file"),
   checklist: z.array(z.string().trim().min(1).max(300)).max(50).optional(),
   fileName: z.string().trim().min(1).max(255).optional(),
   fileData: z.string().max(14_000_000).startsWith("data:application/pdf;base64,").optional(),
-  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional()
+  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional(),
+  url: linkUrlSchema.optional()
 }).strict().superRefine((guide, context) => {
   if (guide.type === "file" && (!guide.fileName || !guide.fileData)) {
     context.addIssue({
@@ -50,6 +56,14 @@ export const guideSchema = z.object({
       path: ["videoId"]
     });
   }
+
+  if (guide.type === "link" && !guide.url) {
+    context.addIssue({
+      code: "custom",
+      message: "A valid website URL is required.",
+      path: ["url"]
+    });
+  }
 });
 
 export const guideUpdateSchema = z.object({
@@ -58,11 +72,12 @@ export const guideUpdateSchema = z.object({
   description: z.string().trim().max(2000),
   folder: z.string().trim().min(1).max(100),
   partnerViewable: z.boolean(),
-  type: z.enum(["file", "video"]),
+  type: z.enum(["file", "video", "link"]),
   checklist: z.array(z.string().trim().min(1).max(300)).max(50),
   fileName: z.string().trim().min(1).max(255).optional(),
   fileData: z.string().max(14_000_000).startsWith("data:application/pdf;base64,").optional(),
-  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional()
+  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/).optional(),
+  url: linkUrlSchema.optional()
 }).strict().superRefine((guide, context) => {
   if (guide.type === "video" && !guide.videoId) {
     context.addIssue({
@@ -77,6 +92,14 @@ export const guideUpdateSchema = z.object({
       code: "custom",
       message: "A PDF file name and file data must be provided together.",
       path: ["fileData"]
+    });
+  }
+
+  if (guide.type === "link" && !guide.url) {
+    context.addIssue({
+      code: "custom",
+      message: "A valid website URL is required.",
+      path: ["url"]
     });
   }
 });
