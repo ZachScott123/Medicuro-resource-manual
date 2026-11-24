@@ -1219,6 +1219,21 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   {touchedFields.url && !isValidHttpUrl(formData.url) && <span id="link-url-error" className="text-sm text-red-600">Enter a valid HTTP or HTTPS URL.</span>}
                 </label>
               )}
+              {editingGuide && formData.type === "link" && (
+                <article className="guide-card guide-link-card" aria-live="polite">
+                  <WebsiteIcon key={formData.url} url={formData.url} />
+                  <div className="guide-card-copy">
+                    <h3>{formData.title || "Website title"}</h3>
+                    <a className="guide-link-url" href={isValidHttpUrl(formData.url) ? formData.url : undefined} target="_blank" rel="noopener noreferrer">
+                      <FiLink2 aria-hidden="true" />
+                      {formData.url || "Website URL"}
+                    </a>
+                    {formData.description.trim() && formData.description.trim() !== "..." && (
+                      <p className="guide-link-description">{formData.description.trim()}</p>
+                    )}
+                  </div>
+                </article>
+              )}
               <div className="guide-upload-actions flex justify-end gap-3">
                 <button type="button" onClick={closeForm} className="rounded-md border border-[#d8e8e8] px-4 py-2">Cancel</button>
                 <button type="submit" disabled={isSaving || (formData.type === "file" ? !formData.fileData && !(editingGuide?.type === "file" && formData.fileName) : formData.type === "video" ? !getYouTubeVideoId(formData.videoUrl) : !isValidHttpUrl(formData.url))} className="btn-accent inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50">
