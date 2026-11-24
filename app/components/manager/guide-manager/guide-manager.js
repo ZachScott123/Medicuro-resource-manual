@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiLink, FiLink2, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiLink, FiLink2, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import PageControls from "@/app/components/page-controls";
 
 
@@ -627,8 +627,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 >
                   <span className="guide-folder-card-icon"><FiGrid aria-hidden="true" /></span>
                   <span className="guide-folder-card-copy">
-                    <strong>View all guides</strong>
-                    <small>{libraryGuides.length} {libraryGuides.length === 1 ? "item" : "items"}</small>
+                    <strong>View All Guides</strong>
+                    <small><b>{libraryGuides.length}</b> {libraryGuides.length === 1 ? "item" : "items"}</small>
                   </span>
                 </button>
                 {populatedFolders.map((folder) => {
@@ -643,7 +643,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       <span className="guide-folder-card-icon"><FiFolder aria-hidden="true" /></span>
                       <span className="guide-folder-card-copy">
                         <strong>{folder}</strong>
-                        <small>{folderCount} {folderCount === 1 ? "item" : "items"}</small>
+                        <small><b>{folderCount}</b> {folderCount === 1 ? "item" : "items"}</small>
                       </span>
                     </button>
                   );
@@ -661,8 +661,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 >
                   <span className="guide-folder-card-icon"><FiLink aria-hidden="true" /></span>
                   <span className="guide-folder-card-copy">
-                    <strong>View links</strong>
-                    <small>{linkItems.length} {linkItems.length === 1 ? "link" : "links"}</small>
+                    <strong>View Links</strong>
+                    <small><b>{linkItems.length}</b> {linkItems.length === 1 ? "link" : "links"}</small>
                   </span>
                 </button>
               </div>
