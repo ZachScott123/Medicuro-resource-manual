@@ -752,6 +752,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </div>
                     {canManage && (
                       <div className="guide-card-actions" role="group" aria-label={`${guide.title} management actions`}>
+                        <button type="button" onClick={() => openEditForm(guide)} className="guide-management-button" aria-label={`Edit ${guide.title}`} title={`Edit ${guide.title}`}>
+                          <FiEdit aria-hidden="true" />
+                        </button>
                         <button type="button" onClick={() => requestDelete(guide)} className="guide-management-button guide-management-delete" aria-label={`Delete ${guide.title}`} title={`Delete ${guide.title}`}>
                           <FiTrash2 aria-hidden="true" />
                         </button>
