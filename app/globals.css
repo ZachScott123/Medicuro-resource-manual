@@ -644,16 +644,20 @@ h3 {
 	border-color: #b7c9cc;
 }
 
-.guide-folder-access > button {
+.guide-folder-access .btn-accent3 {
 	align-items: center;
-	color: inherit;
 	cursor: pointer;
 	display: inline-flex;
 	font: inherit;
 	gap: 0.45rem;
 }
 
-.guide-folder-access > button svg {
+.guide-folder-access .btn-accent3:hover {
+	color: #ffffff;
+	gap: 0.45rem;
+}
+
+.guide-folder-access .btn-accent3 svg {
 	font-size: 1rem;
 }
 

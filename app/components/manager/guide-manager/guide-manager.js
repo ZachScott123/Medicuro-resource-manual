@@ -717,12 +717,10 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     </div>
                   )}
                   {canUpload && selectedFolder === linksFolder && (
-                    <div className="guide-folder-permission guide-folder-access">
-                      <button type="button" onClick={openLinkForm} aria-label="Add links">
-                        <FiPlus aria-hidden="true" />
-                        <span>Add Links</span>
-                      </button>
-                    </div>
+                    <button class="btn-accent3" type="button" onClick={openLinkForm} aria-label="Add links">
+                      <FiPlus aria-hidden="true" />
+                      <span>Add Links</span>
+                    </button>
                   )}
                 </div>
               </div>}
