@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiEdit, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiLink, FiLink2, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiAlertCircle, FiArrowLeft, FiDownload, FiBookOpen, FiExternalLink, FiFileText, FiTv, FiFolder, FiGrid, FiLink, FiLink2, FiPlay, FiPlus, FiSave, FiSearch, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import PageControls from "@/app/components/page-controls";
 
 
@@ -743,8 +743,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     <div className="guide-card-copy">
                       <h3>{guide.title}</h3>
                       <a className="guide-link-url" href={isValidHttpUrl(guide.url) ? guide.url : undefined} target="_blank" rel="noopener noreferrer">
+                        <FiLink2 aria-hidden="true" />
                         {guide.url}
-                        <FiExternalLink aria-hidden="true" />
                       </a>
                       {guide.description && guide.description !== "..." && (
                         <p className="guide-link-description">{guide.description}</p>

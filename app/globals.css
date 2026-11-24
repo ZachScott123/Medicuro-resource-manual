@@ -753,11 +753,16 @@ h3 {
 	font-size: 0.78rem;
 	gap: 0.3rem;
 	overflow-wrap: anywhere;
+	transition: font-size .15s, background .15s, color .15s;
 }
 
 .guide-link-url:hover {
-	color: var(--teal-dark);
+	color: #00c0c0;
+	-webkit-text-fill-color: transparent;
+	background: linear-gradient(90deg, #00c0c0, #007fff);
+	background-clip: text;
 	text-decoration: underline;
+	font-size: .8rem;
 }
 
 .guide-link-url svg {
