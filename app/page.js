@@ -20,8 +20,8 @@ export default async function Home() {
               <Link href="/physician-partners" className="btn-accent">
                 View physicians <FiArrowUpRight aria-hidden="true" />
               </Link>
-              <Link href="/medicuro-guides" className="home-text-link">
-                View guides <FiArrowUpRight aria-hidden="true" />
+              <Link href="/staff-profiles" className="home-text-link">
+                View staff <FiArrowUpRight aria-hidden="true" />
               </Link>
             </>
         </div>

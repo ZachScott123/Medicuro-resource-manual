@@ -651,22 +651,24 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
               </div>
             </nav>
             )}
-            <nav className="guide-folder-navigation" aria-label="Browse links">
-              <span className="guide-folder-navigation-label">Browse links</span>
-              <div className="guide-folder-menu">
-                <button
-                  type="button"
-                  className="guide-folder-card guide-view-all-card"
-                  onClick={() => setSelectedFolder(linksFolder)}
-                >
-                  <span className="guide-folder-card-icon"><FiLink aria-hidden="true" /></span>
-                  <span className="guide-folder-card-copy">
-                    <strong>View Links</strong>
-                    <small><b>{linkItems.length}</b> {linkItems.length === 1 ? "link" : "links"}</small>
-                  </span>
-                </button>
-              </div>
-            </nav>
+            {canUpload && selectedFolder !== linksFolder && (
+              <nav className="guide-folder-navigation" aria-label="Browse links">
+                <span className="guide-folder-navigation-label">Browse links</span>
+                <div className="guide-folder-menu">
+                  <button
+                    type="button"
+                    className="guide-folder-card guide-view-all-card"
+                    onClick={() => setSelectedFolder(linksFolder)}
+                  >
+                    <span className="guide-folder-card-icon"><FiLink aria-hidden="true" /></span>
+                    <span className="guide-folder-card-copy">
+                      <strong>View Links</strong>
+                      <small><b>{linkItems.length}</b> {linkItems.length === 1 ? "link" : "links"}</small>
+                    </span>
+                  </button>
+                </div>
+              </nav>
+            )}
             </>
           ) : (
             <>
