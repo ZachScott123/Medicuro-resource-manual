@@ -1640,7 +1640,7 @@ h3 {
 	position: relative;
 	z-index: 1;
 	cursor: default;
-	animation: fade-content-in 700ms ease-out both;
+	animation: login-panel-in 700ms ease-out both;
 }
 
 .home-hero-kicker {
@@ -1780,6 +1780,20 @@ h3 {
 	max-width: 90rem;
 	padding: clamp(1.5rem, 5vw, 4rem);
 	cursor: default;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.privacy-icon.is-visible {
+		animation: login-panel-in 700ms ease-out both;
+	}
+
+	.privacy-panel-content.is-visible {
+		animation: login-panel-in 700ms ease-out both;
+	}
+
+	.home-context.is-visible {
+		animation: login-panel-in 700ms ease-out both;
+	}
 }
 
 .home-context-intro {

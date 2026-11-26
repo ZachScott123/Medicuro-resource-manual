@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FiArrowUpRight, FiLock, FiFolder, FiFileText, FiSearch } from "react-icons/fi";
 import { getCurrentUser } from "@/app/lib/current-user";
+import ScrollRevealSection from "@/app/components/scroll-reveal-section";
 
 export default async function Home() {
   const { isAuthorized, isPhysicianSpecialist } = await getCurrentUser();
@@ -30,17 +31,19 @@ export default async function Home() {
       </section>
 
       <section className="privacy-panel" aria-labelledby="privacy-title">
-        <div className="privacy-icon"><FiLock aria-hidden="true" /></div>
-        <div>
-          <div className="eyebrow">A note on privacy</div>
-          <h2 id="privacy-title">Keep provider information private.</h2>
-          <p>
-            Any information put in the internal resource manual is to remain private and is for clinic use only. Please treat existing records and anything added in the future as confidential.
-          </p>
-        </div>
+        <ScrollRevealSection className="privacy-icon"><FiLock aria-hidden="true" /></ScrollRevealSection>
+        <ScrollRevealSection className="privacy-panel-content">
+          <div>
+            <div className="eyebrow">A note on privacy</div>
+            <h2 id="privacy-title">Keep provider information private.</h2>
+            <p>
+              Any information put in the internal resource manual is to remain private and is for clinic use only. Please treat existing records and anything added in the future as confidential.
+            </p>
+          </div>
+        </ScrollRevealSection>
       </section>
 
-      <section className="home-context" aria-labelledby="context-title">
+      <ScrollRevealSection className="home-context" aria-labelledby="context-title">
         <div className="home-context-intro">
           <div className="eyebrow">Medicuro resource library</div>
           <h2 id="context-title">The right guidance, right when it’s needed.</h2>
@@ -74,7 +77,7 @@ export default async function Home() {
             <p>Make selected folders available to physician partners while keeping other internal resources private.</p>
           </article>
         </div>
-      </section>
+      </ScrollRevealSection>
     </div>
   );
 }
