@@ -289,7 +289,9 @@ export default function SpecialistManager({
 							{filteredSpecialists.length > 0 ? (
 								<>
 									<div className="profile-grid">
-										{visibleSpecialists.map((specialist) => <SpecialistCard key={specialist.id} specialist={specialist} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />)}
+										{visibleSpecialists.map((specialist, index) => (
+											<SpecialistCard key={specialist.id} specialist={specialist} style={{ animationDelay: `${index * 0.1}s` }} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+										))}
 									</div>
 									<PageControls
 										itemCount={filteredSpecialists.length}

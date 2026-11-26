@@ -631,12 +631,13 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     <small><b>{libraryGuides.length}</b> {libraryGuides.length === 1 ? "item" : "items"}</small>
                   </span>
                 </button>
-                {populatedFolders.map((folder) => {
+                {populatedFolders.map((folder, index) => {
                   const folderCount = libraryGuides.filter((guide) => (guide.folder || "Uncategorized") === folder).length;
                   return (
                     <button
                       type="button"
                       className="guide-folder-card"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                       key={folder}
                       onClick={() => setSelectedFolder(folder)}
                     >

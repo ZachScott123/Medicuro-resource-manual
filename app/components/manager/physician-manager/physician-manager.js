@@ -289,8 +289,8 @@ export default function PhysicianManager({
               {filteredPhysicians.length > 0 ? (
                 <>
                   <div className="profile-grid">
-                    {visiblePhysicians.map((physician) => (
-                      <PhysicianCard key={physician.id} physician={physician} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+                    {visiblePhysicians.map((physician, index) => (
+                      <PhysicianCard key={physician.id} physician={physician} style={{ animationDelay: `${index * 0.1}s` }} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
                     ))}
                   </div>
                   <PageControls

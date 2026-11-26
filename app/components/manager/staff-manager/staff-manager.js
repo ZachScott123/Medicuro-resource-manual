@@ -290,8 +290,8 @@ export default function StaffManager({
               {filteredStaff.length > 0 ? (
                 <>
                   <div className="profile-grid">
-                    {visibleStaff.map((employee) => (
-                      <StaffCard key={employee.id} employee={employee} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
+                    {visibleStaff.map((employee, index) => (
+                      <StaffCard key={employee.id} employee={employee} style={{ animationDelay: `${index * 0.1}s` }} editMode={isEditor && editMode} onEdit={openEditForm} onDelete={requestDelete} />
                     ))}
                   </div>
                   <PageControls

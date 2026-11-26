@@ -457,6 +457,7 @@ h3 {
 	min-height: 5.25rem;
 	padding: 0.9rem 1rem;
 	text-align: left;
+	animation: fade-content-in 600ms ease-out both;
 	transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
