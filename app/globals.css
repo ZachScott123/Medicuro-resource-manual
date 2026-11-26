@@ -758,14 +758,11 @@ h3 {
 	font-size: 0.78rem;
 	gap: 0.3rem;
 	overflow-wrap: anywhere;
-	transition: font-size .15s, background .15s, color .15s;
+	transition: font-size .15s, text-decoration .15s, color .15s;
 }
 
 .guide-link-url:hover {
 	color: #0088ff;
-	-webkit-text-fill-color: transparent;
-	background: linear-gradient(90deg, #0095ff, #00e1b8);
-	background-clip: text;
 	text-decoration: underline;
 	font-size: .8rem;
 }

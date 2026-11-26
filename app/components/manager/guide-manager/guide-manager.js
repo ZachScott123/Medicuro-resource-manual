@@ -766,22 +766,27 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                   <article className="guide-card" key={guide.id} style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="guide-card-heading">
                       {guide.type === "video" ? (
+                        <>
                         <div className="guide-card-icon-video" aria-hidden="true">
                           <FiTv aria-hidden="true" />
-                          <div className="guide-card-copy">
-                            <h3>{guide.title}</h3>
-                            {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
-                          </div>
                         </div>
+                        <div className="guide-card-copy">
+                          <h3>{guide.title}</h3>
+                        </div>
+                        </>
                       ) : (
+                        <>
                         <div className="guide-card-icon-file" aria-hidden="true">
                           <FiFileText aria-hidden="true" />
-                          <div className="guide-card-copy">
-                            <h3>{guide.title}</h3>
-                            {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
-                          </div>
                         </div>
+                        <div className="guide-card-copy">
+                          <h3>{guide.title}</h3>
+                        </div>
+                        </>
                       )}
+                    <div>
+                      {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
+                    </div>
                     </div>
                     <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
                     {guide.type === "file" && guide.fileName && (
