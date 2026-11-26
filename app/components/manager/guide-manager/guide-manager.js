@@ -23,7 +23,7 @@ const emptyGuide = {
 const allFolders = "all";
 const linksFolder = "__links__";
 const newFolderOption = "__new_folder__";
-const ITEMS_PER_PAGE = 18;
+const ITEMS_PER_PAGE = 20;
 
 function getWebsiteIconUrl(value) {
   try {
@@ -768,16 +768,20 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       {guide.type === "video" ? (
                         <div className="guide-card-icon-video" aria-hidden="true">
                           <FiTv aria-hidden="true" />
+                          <div className="guide-card-copy">
+                            <h3>{guide.title}</h3>
+                            {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
+                          </div>
                         </div>
                       ) : (
                         <div className="guide-card-icon-file" aria-hidden="true">
                           <FiFileText aria-hidden="true" />
+                          <div className="guide-card-copy">
+                            <h3>{guide.title}</h3>
+                            {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
+                          </div>
                         </div>
                       )}
-                    </div>
-                    <div className="guide-card-copy">
-                      <h3>{guide.title}</h3>
-                      {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
                     </div>
                     <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
                     {guide.type === "file" && guide.fileName && (

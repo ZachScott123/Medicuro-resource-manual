@@ -666,7 +666,7 @@ h3 {
 	display: grid;
 	column-gap: 1rem;
 	row-gap: 1.5rem;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .guide-card {
@@ -696,9 +696,9 @@ h3 {
 	color: var(--teal-dark);
 	display: flex;
 	flex: 0 0 auto;
-	height: 2.5rem;
+	height: 2rem;
 	justify-content: center;
-	width: 2.5rem;
+	width: 2rem;
 }
 
 .guide-card-icon-video {
@@ -708,9 +708,9 @@ h3 {
 	color: #4658a8;
 	display: flex;
 	flex: 0 0 auto;
-	height: 2.5rem;
+	height: 2rem;
 	justify-content: center;
-	width: 2.5rem;
+	width: 2rem;
 }
 
 .link-grid {
@@ -812,7 +812,7 @@ h3 {
 
 .guide-card-copy {
 	min-width: 0;
-	min-height: 4.5rem;
+	min-height: 0;
 	width: 100%;
 }
 
