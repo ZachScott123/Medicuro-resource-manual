@@ -737,8 +737,8 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
           {filteredGuides.length > 0 ? (
             <>
               <div className={selectedFolder === linksFolder ? "link-grid" : "guide-grid"}>
-                {visibleGuides.map((guide) => selectedFolder === linksFolder ? (
-                  <article className="guide-card guide-link-card" key={guide.id}>
+                {visibleGuides.map((guide, index) => selectedFolder === linksFolder ? (
+                  <article className="guide-card guide-link-card" key={guide.id} style={{ animationDelay: `${index * 0.1}s` }}>
                     <WebsiteIcon url={guide.url} />
                     <div className="guide-card-copy">
                       <h3>{guide.title}</h3>
@@ -762,7 +762,7 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                     )}
                   </article>
                 ) : (
-                  <article className="guide-card" key={guide.id}>
+                  <article className="guide-card" key={guide.id} style={{ animationDelay: `${index * 0.1}s` }}>
                     <div className="guide-card-heading">
                       {guide.type === "video" ? (
                         <div className="guide-card-icon-video" aria-hidden="true">
