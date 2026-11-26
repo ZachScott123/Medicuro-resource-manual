@@ -784,9 +784,9 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                         </div>
                         </>
                       )}
-                    <div>
-                      {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
                     </div>
+                    <div class="guide-card-copy">
+                      {guide.description && guide.description !== "..." && <p>{guide.description}</p>}
                     </div>
                     <small className="guide-card-folder"><FiFolder aria-hidden="true" /> {guide.folder || "Uncategorized"}</small>
                     {guide.type === "file" && guide.fileName && (
