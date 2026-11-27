@@ -3747,11 +3747,13 @@ body:has(.admin-notes) {
 	}
 
 	.login-panel-behind::after {
+		background: linear-gradient(0deg, #5dbeeb 0%, #1b80e5 90%);
+		clip-path: polygon(0 12%, 100% 2%, 100% 88%, 0 98%);
 		content: "";
 		inset: 0;
 		pointer-events: none;
 		position: absolute;
-		transform: scale(1.01);
+		transform: scale(1.02);
 		z-index: 1;
 	}
 
