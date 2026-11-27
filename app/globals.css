@@ -1620,10 +1620,6 @@ h3 {
 	color: var(--muted-ink);
 }
 
-.home-page {
-	padding-bottom: 2rem;
-}
-
 .home-hero {
 	background: 
 		linear-gradient(150deg, #f8fcfc52 42%, #f8fcfb00 80%, #c6eaffd7 100%),
@@ -1717,11 +1713,11 @@ h3 {
 	background:
 		linear-gradient(120deg, #3492d4 0%, #41bfb3ce 100%),
 		url("/medicuro-background-plus-1") center / 160% auto no-repeat;
-	border: 1px solid var(--line);
 	box-shadow: 0 12px 30px #1232430d;
 	display: flex;
 	gap: 1.25rem;
 	margin: 0 calc(50% - 50vw) 5rem;
+	margin-bottom: 3.5rem;
 	padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 6vw, 6rem);
 	cursor: default;
 }
@@ -1738,6 +1734,7 @@ h3 {
 	color: var(--blue);
 	display: flex;
 	flex: 0 0 auto;
+	font-size: 1.4rem;
 	height: 3.2rem;
 	justify-content: center;
 	width: 3.2rem;
@@ -1782,6 +1779,155 @@ h3 {
 	cursor: default;
 }
 
+.home-profile-panel {
+	background: #41bfb333;
+	box-shadow: 0 12px 30px #1232430d;
+	cursor: default;
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3rem);
+	grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+	align-items: center;
+	margin: 0 calc(50% - 50vw) 5rem;
+	padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 6vw, 6rem) clamp(1.5rem, 6vw, 6rem);
+	width: 100vw;
+}
+
+body:has(.home-page) .home-profile-panel {
+	margin-bottom: 0;
+}
+
+body:has(.home-page) .page-footer {
+	margin-top: 0;
+}
+
+.home-profile-intro {
+	max-width: 48rem;
+}
+
+.home-profile-intro .eyebrow {
+	align-items: center;
+	background: #dff3f0;
+	border-radius: 999px;
+	color: var(--teal-dark);
+	display: inline-flex;
+	font-size: 0.68rem;
+	font-weight: 800;
+	letter-spacing: 0.13em;
+	padding: 0.45rem 0.75rem;
+}
+
+.home-profile-intro h2 {
+	color: #134d68;
+	font-size: clamp(2rem, 4vw, 3.2rem);
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	line-height: 1.06;
+	margin-top: 1rem;
+	max-width: 46rem;
+}
+
+.home-profile-intro p {
+	color: inherit;
+	font-size: 1.02rem;
+	line-height: 1.7;
+	margin-top: 1rem;
+	max-width: 44rem;
+}
+
+.home-profile-grid {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-profile-grid article {
+	border: 1px solid #dcebea;
+	border-radius: 0;
+	box-shadow: 0 8px 24px #12324308;
+	display: grid;
+	gap: 0.9rem 0.75rem;
+	grid-template-areas:
+		"icon number"
+		"title title"
+		"copy copy"
+		"link link";
+	grid-template-columns: auto minmax(0, 1fr);
+	padding: clamp(1.1rem, 2vw, 1.5rem);
+	transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.home-profile-grid article:nth-child(1) {
+	background: #5bc7b899;
+}
+
+.home-profile-grid article:nth-child(2) {
+	background: #0c91d299;
+}
+
+.home-profile-grid article:nth-child(3) {
+	background: #00adff99;
+}
+
+.home-profile-grid article:hover {
+	border-color: #9bd8ce;
+	box-shadow: 0 16px 32px #12324314;
+	transform: translateY(-3px);
+	.home-profile-icon {
+		font-size: 2.3rem;
+	}
+}
+
+.home-profile-icon {
+	align-items: center;
+	border-radius: 0.9rem;
+	color: #00a370;
+	display: flex;
+	font-size: 2rem;
+	grid-area: icon;
+	height: 3rem;
+	justify-content: center;
+	width: 3rem;
+	transition: font-size 200ms ease;
+}
+
+.home-profile-grid article:nth-child(2) .home-profile-icon {
+	color: #0085be;
+}
+
+.home-profile-grid article:nth-child(3) .home-profile-icon {
+	color: #0091f1;;
+}
+
+.home-profile-grid h3 {
+	color: var(--ink);
+	font-size: 1.08rem;
+	font-weight: 750;
+	grid-area: title;
+	line-height: 1.3;
+}
+
+.home-profile-grid p {
+	color: inherit;
+	font-size: 0.9rem;
+	grid-area: copy;
+	line-height: 1.65;
+}
+
+.home-profile-link {
+	align-items: center;
+	color: #176183;
+	display: inline-flex;
+	font-weight: 750;
+	gap: 0.55rem;
+	grid-area: link;
+	width: fit-content;
+}
+
+.home-profile-link:hover {
+	color: #0b8490;
+	gap: 0.75rem;
+}
+
 @media (prefers-reduced-motion: no-preference) {
 	.privacy-icon.is-visible {
 		animation: login-panel-in 700ms ease-out both;
@@ -1794,23 +1940,14 @@ h3 {
 	.home-context.is-visible {
 		animation: login-panel-in 700ms ease-out both;
 	}
+
+	.home-profile-panel.is-visible {
+		animation: login-panel-in 700ms ease-out both;
+	}
 }
 
 .home-context-intro {
 	max-width: 48rem;
-}
-
-.home-context-intro .eyebrow {
-	align-items: center;
-	background: #dff3f0;
-	border-radius: 999px;
-	color: var(--teal-dark);
-	display: inline-flex;
-	font-size: 0.68rem;
-	font-weight: 800;
-	letter-spacing: 0.13em;
-	margin-bottom: 0;
-	padding: 0.45rem 0.75rem;
 }
 
 .home-context-intro h2 {
@@ -1819,7 +1956,6 @@ h3 {
 	font-weight: 700;
 	letter-spacing: -0.04em;
 	line-height: 1.06;
-	margin-top: 1rem;
 	max-width: 46rem;
 }
 
@@ -1835,7 +1971,7 @@ h3 {
 	align-items: center;
 	background: #ffffff;
 	border: 1px solid #d4e5e7;
-	border-radius: 999px;
+	border-radius: 1rem;
 	box-shadow: 0 5px 16px #1232430a;
 	color: #176183;
 	display: inline-flex;
@@ -1861,7 +1997,7 @@ h3 {
 
 .home-context-notes article {
 	background: #ffffff;
-	border: 1px solid #e0ebed;
+	border: 1px solid #46d2d7;
 	border-radius: 1.2rem;
 	display: grid;
 	gap: 0.9rem 0.75rem;
@@ -1877,9 +2013,12 @@ h3 {
 }
 
 .home-context-notes article:hover {
-	border-color: #b4d9d9;
+	border-color: #009dff;
 	box-shadow: 0 16px 32px #12324314;
 	transform: translateY(-3px);
+	.home-context-icon {
+		font-size: 1.5rem;
+	}
 }
 
 .home-context-icon {
@@ -1890,25 +2029,20 @@ h3 {
 	display: flex;
 	font-size: 1.2rem;
 	grid-area: icon;
-	height: 3rem;
+	height: 2.8rem;
 	justify-content: center;
-	width: 3rem;
+	width: 2.8rem;
+	transition: font-size 200ms ease;
 }
 
-.home-context-notes article:nth-child(even) .home-context-icon {
-	background: linear-gradient(135deg, #e0f0ff, #e3f4f7);
-	color: #176183;
+.home-context-notes article:nth-child(2) .home-context-icon {
+	background: linear-gradient(135deg, #cdf0ff, #d0e9ff);
+	color: #3063cf;
 }
 
-.home-context-number {
-	color: #65818b;
-	font-size: 0.62rem;
-	font-weight: 800;
-	grid-area: number;
-	justify-self: end;
-	letter-spacing: 0.09em;
-	line-height: 1.4;
-	text-align: right;
+.home-context-notes article:nth-child(3) .home-context-icon {
+	background: linear-gradient(135deg, #e0f6ff, #e0f6ff);
+	color: #0081bd;
 }
 
 .home-context-notes h3 {
@@ -3477,6 +3611,9 @@ body:has(.admin-notes) {
 }
 
 @media (max-width: 860px) {
+	.home-profile-panel {
+		grid-template-columns: 1fr;
+	}
 	
 	.site-nav-inner {
 		flex-wrap: wrap;
@@ -3936,6 +4073,10 @@ body:has(.admin-notes) {
 }
 
 @media (max-width: 640px) {
+	.home-profile-grid {
+		grid-template-columns: 1fr;
+	}
+
 	.home-context-notes {
 		grid-template-columns: 1fr;
 	}
