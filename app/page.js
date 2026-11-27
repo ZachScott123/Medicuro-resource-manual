@@ -76,7 +76,7 @@ export default async function Home() {
 
       <ScrollRevealSection className="home-profile-panel" aria-labelledby="profiles-title">
         <div className="home-profile-intro">
-          <h2 id="profiles-title">People Behind the Care.</h2>
+          <h2 id="profiles-title">Staff and Partners Behind the Care.</h2>
           <p>
             Find the staff and care partners who support your patients, with the roles and clinical focus that help your team connect with the right person quickly.
           </p>
