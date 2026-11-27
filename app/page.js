@@ -86,7 +86,7 @@ export default async function Home() {
           <article>
             <span className="home-profile-icon"><FiUsers aria-hidden="true" /></span>
             <h3>Medicuro Staff Profiles</h3>
-            <p>View team roles and the people available to support clinic operations, patient care, and day-to-day questions.</p>
+            <p>View team roles and the people who work to support clinic operations, patient care, and day-to-day inqiuries.</p>
             {canViewGuides && (
               <Link href="/staff-profiles" className="home-profile-link">
                 View staff <FiArrowUpRight aria-hidden="true" />
@@ -96,7 +96,7 @@ export default async function Home() {
           <article>
             <span className="home-profile-icon"><FiBriefcase aria-hidden="true" /></span>
             <h3>Physician Partners</h3>
-            <p>Keep physician information, specialties, and clinic contacts together for straightforward referrals and follow-up.</p>
+            <p>Organize physician partners and their areas of expertise to support collaborative, patient-centered care.</p>
             {canViewGuides && (
               <Link href="/physician-partners" className="home-profile-link">
                 View physicians <FiArrowUpRight aria-hidden="true" />
@@ -106,7 +106,7 @@ export default async function Home() {
           <article>
             <span className="home-profile-icon"><FiHeart aria-hidden="true" /></span>
             <h3>Specialist Partners</h3>
-            <p>Find specialist areas of practice and shared care information to help patients reach the right next step.</p>
+            <p>Find specialist areas of practice and shared care information to help patients get appropriate referrals.</p>
             {canViewGuides && (
               <Link href="/specialist-partners" className="home-profile-link">
                 View specialists <FiArrowUpRight aria-hidden="true" />
