@@ -612,6 +612,12 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                 <span>Upload Guide</span>
               </button>
             )}
+            {canUpload && selectedFolder === linksFolder && (
+              <button class="btn-accent3 gap-2" type="button" onClick={openLinkForm} aria-label="Add links">
+                <FiPlus aria-hidden="true" />
+                <span>Add Links</span>
+              </button>
+            )}
           </div>
 
           {isFolderMenu ? (
@@ -718,12 +724,6 @@ export default function GuideManager({ initialGuides = [], canManage = true, can
                       </label>
                       {folderPermissionError && <p role="alert">{folderPermissionError}</p>}
                     </div>
-                  )}
-                  {canUpload && selectedFolder === linksFolder && (
-                    <button class="btn-accent3 gap-2" type="button" onClick={openLinkForm} aria-label="Add links">
-                      <FiPlus aria-hidden="true" />
-                      <span>Add Links</span>
-                    </button>
                   )}
                 </div>
               </div>}
