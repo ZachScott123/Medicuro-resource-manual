@@ -5,11 +5,11 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 
 const defaultProfileImage = "/default-profile-physician.svg";
 
-export default function SpecialistCard({ specialist, editMode, onEdit, onDelete }) {
+export default function SpecialistCard({ specialist, editMode, onEdit, onDelete, style }) {
   const router = useRouter();
 
   return (
-    <div className="profile-card">
+    <div className="profile-card" style={style}>
       <div className="profile-card-heading">
         <div className="profile-card-name">{specialist.name}</div>
         <div className="profile-card-role">{specialist.position}</div>

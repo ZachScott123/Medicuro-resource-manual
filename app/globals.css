@@ -1925,19 +1925,27 @@ body:has(.home-page) .page-footer {
 	grid-area: link;
 	width: fit-content;
 	padding: 0.7rem 1rem;
+	transition: color 200ms ease;
 }
 
-.home-profile-link:nth-child(2) {
-	color: #0085be;
+.home-profile-grid article:nth-child(2) .home-profile-link {
+    color: #0085be;
 }
 
-.home-profile-link:nth-child(3) {
-	color: #0091f1;
+.home-profile-grid article:nth-child(3) .home-profile-link {
+    color: #0091f1;
 }
 
 .home-profile-link:hover {
-	color: #0b8490;
-	gap: 0.75rem;
+	color: #00835a;
+}
+
+.home-profile-grid article:nth-child(2) .home-profile-link:hover {
+	color: #006591;
+}
+
+.home-profile-grid article:nth-child(3) .home-profile-link:hover {
+	color: #007acb;
 }
 
 @media (prefers-reduced-motion: no-preference) {
