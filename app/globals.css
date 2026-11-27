@@ -1297,13 +1297,12 @@ h3 {
 .staff-hero .eyebrow,
 .physician-hero .eyebrow,
 .specialist-hero .eyebrow {
-	background: linear-gradient(120deg, #0c8dcd, #01a19444);
 	border-radius: 10px;
 	padding: 0.2rem 1.2rem;
-	color: #ffffff;
+	color: var(--ink);
 	display: inline-flex;
 	align-items: center;
-	font-size: 0.75rem;
+	font-size: 1rem;
 	font-weight: 800;
 	letter-spacing: 0.16em;
 	text-transform: uppercase;
