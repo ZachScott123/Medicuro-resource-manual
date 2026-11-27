@@ -1711,13 +1711,13 @@ h3 {
 .privacy-panel {
 	align-items: flex-start;
 	background:
-		linear-gradient(120deg, #3492d4 0%, #41bfb3ce 100%);
+		linear-gradient(120deg, #2c88f1e4 0%, #05c5b2f7 90%);
 	box-shadow: 0 12px 30px #1232430d;
 	display: flex;
 	gap: 1.25rem;
 	margin: 0 calc(50% - 50vw) 5rem;
 	margin-bottom: 3.5rem;
-	padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 6vw, 6rem);
+	padding: clamp(6rem, 5vw, 4.5rem) clamp(1.5rem, 6vw, 6rem);
 	cursor: default;
 }
 
@@ -1728,7 +1728,7 @@ h3 {
 .privacy-icon,
 .directory-link-icon {
 	align-items: center;
-	background: #8ed4ff9d;
+	background: #73b9ff96;
 	border-radius: 1rem;
 	color: var(--blue);
 	display: flex;
@@ -1758,7 +1758,7 @@ h3 {
 	font-size: 1.02rem;
 	line-height: 1.65;
 	margin-top: 0.7rem;
-	max-width: 760px;
+	max-width: 700px;
 	letter-spacing: 0.3px;
 }
 
@@ -1918,12 +1918,21 @@ body:has(.home-page) .page-footer {
 
 .home-profile-link {
 	align-items: center;
-	color: #176183;
+	color: #00a370;
 	display: inline-flex;
 	font-weight: 750;
 	gap: 0.55rem;
 	grid-area: link;
 	width: fit-content;
+	padding: 0.7rem 1rem;
+}
+
+.home-profile-link:nth-child(2) {
+	color: #0085be;
+}
+
+.home-profile-link:nth-child(3) {
+	color: #0091f1;
 }
 
 .home-profile-link:hover {
@@ -1986,14 +1995,13 @@ body:has(.home-page) .page-footer {
 	gap: 0.55rem;
 	margin-top: 1.5rem;
 	padding: 0.75rem 1rem;
-	transition: background 160ms ease, border-color 160ms ease, color 160ms ease, gap 160ms ease;
+	transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .home-context-link:hover {
 	background: #f0fbf9;
 	border-color: #9bd8ce;
 	color: #0b8490;
-	gap: 0.75rem;
 }
 
 .home-context-notes {
@@ -2004,7 +2012,7 @@ body:has(.home-page) .page-footer {
 
 .home-context-notes article {
 	background: #ffffff;
-	border: 1px solid #46d2d7;
+	border: 1.5px solid #46d2d7b9;
 	border-radius: 1.2rem;
 	display: grid;
 	gap: 0.9rem 0.75rem;
@@ -2019,8 +2027,15 @@ body:has(.home-page) .page-footer {
 	transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
+.home-context-notes article:nth-child(2) {
+	border: 1.5px solid #008adf7d;
+}
+
+.home-context-notes article:nth-child(3) {
+	border: 1.5px solid #29c2ff75;
+}
+
 .home-context-notes article:hover {
-	border-color: #009dff;
 	box-shadow: 0 16px 32px #12324314;
 	transform: translateY(-3px);
 	.home-context-icon {
@@ -3600,14 +3615,6 @@ body:has(.admin-notes) {
 
 	.home-hero p {
 		font-size: clamp(1rem, 2vw, 1.4rem);
-	}
-
-	.privacy-panel {
-		padding: clamp(6rem, 5vw, 4.5rem) clamp(1.5rem, 6vw, 6rem);
-	}
-
-	.privacy-panel h2 {
-		font-size: clamp(2.75rem, 3vw, 2.5rem);
 	}
 }
 
